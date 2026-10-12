@@ -1,4 +1,4 @@
-import { execFileSync } from "node:child_process"
+import { execSync } from "node:child_process"
 
 export interface LocalSupabase {
   url: string
@@ -11,10 +11,9 @@ export interface LocalSupabase {
 export function readLocalSupabase(): LocalSupabase {
   let out: string
   try {
-    out = execFileSync(process.platform === "win32" ? "pnpm.cmd" : "pnpm", ["exec", "supabase", "status", "-o", "env"], {
+    out = execSync("pnpm exec supabase status -o env", {
       encoding: "utf8",
       stdio: ["ignore", "pipe", "pipe"],
-      shell: process.platform === "win32",
     })
   } catch {
     throw new Error(

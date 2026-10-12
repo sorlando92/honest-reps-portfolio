@@ -1,10 +1,14 @@
 import "server-only"
 import { cookies } from "next/headers"
+import { connection } from "next/server"
 import { createServerClient } from "@supabase/ssr"
 import { publicEnv } from "@/lib/env"
 
 /** Supabase client acting as the signed in user. RLS applies. */
 export async function createClient() {
+  // Session checks compare token expiry with the current time, so anything
+  // using this client renders at request time, never in a prerender.
+  await connection()
   const cookieStore = await cookies()
 
   return createServerClient(publicEnv.supabaseUrl, publicEnv.supabaseAnonKey, {
