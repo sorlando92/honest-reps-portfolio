@@ -12,7 +12,8 @@ Engineering adds questions here with: feature ID, the decision needed, and a rec
 6. **Privacy policy and terms.** Engineering ships templates; Sean approves final text before alpha.
 7. **Product name.** Honest Reps is a working title in `app_config`. Not a blocker.
 8. **Accounts for M0.** GitHub repo, Supabase project, Vercel team. Sean is creating these. Blocks the M0 deploy steps.
-9. **Email sender.** Supabase's built-in email allows only a few emails per hour and is for testing only. Pick a transactional email provider (recommend Resend) and verify a sending domain. Blocks alpha, not M0.
+9. **Email sender.** Supabase's built-in email allows only a few emails per hour and is for testing only. Pick a transactional email provider (recommend Resend) and verify a sending domain. **Now blocks M0** (updated 2026-10-12): Supabase only allows editing email templates once custom SMTP is set up, and the default template has no 6 digit code and a link format `/auth/confirm` does not accept. Sign in on the hosted project fails until this is done.
+10. **Two-factor on owner accounts.** Turn on two-factor (authenticator app) for the Supabase, GitHub, Vercel and Stripe accounts before the alpha. Does not block M0. See Q31.
 
 ## Engineering questions
 
@@ -22,6 +23,7 @@ Numbering follows the kickoff review (2026-10-12). The v1.1 handoff reset this f
 
 - **Q1** Spec file mapping confirmed. The mislabeled root copies are gone, and the v1.1 files are in `docs/`.
 - **Q2** Email OTP: every sign-in email has a magic link and a 6 digit code.
+- **Q31** (2026-10-12) Multi-factor authentication is out of scope for v1. App sign in stays passwordless email OTP with no second factor, and Supabase Auth MFA stays off. Revisit if the coach view or billing ever needs stronger sign in. Owner account two-factor is tracked separately as owner task 10. PM: add MFA to PRD section 8 non-goals.
 - **Q4** The coach sees full data for all assigned users, free and paid. A `coach_visibility` consent is collected at signup.
 - **Q6** Paid Vercel plan before real users. Jobs run from Supabase pg_cron plus Edge Functions every 15 minutes. No Vercel cron.
 - **Q7** Legal documents are exempt from the banned title check. "No dashes" means no em or en dashes.

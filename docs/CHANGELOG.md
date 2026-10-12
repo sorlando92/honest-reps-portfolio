@@ -35,3 +35,5 @@ Deviations and notes:
 - Security advisor fix: RLS helper functions and the signup trigger function moved from `public` to a `private` schema the API does not expose (migration 20261012000003). The one remaining advisor warning (leaked password protection) does not apply, since sign in is passwordless.
 - Hosted keys are kept in the gitignored `.env.hosted`, which Next.js never loads, so local builds and tests cannot reach the hosted database.
 - Still to do by hand in the Supabase dashboard: paste the sign in email template into Magic Link and Confirm signup. Site URL is set during the Vercel step.
+- Descoped: multi-factor authentication for app users (QUESTIONS.md Q31). Owner account two-factor added as owner task 10.
+- Blocker found: Supabase requires custom SMTP before email templates can be edited, so the hosted sign in email has no code until the email sender (owner task 9) is set up.
