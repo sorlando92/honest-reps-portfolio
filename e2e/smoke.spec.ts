@@ -47,9 +47,10 @@ test("a new member signs in with the emailed code and sees the 4 tabs", async ({
   await expect(page.getByRole("heading", { name: "Clients" })).toHaveCount(0)
 })
 
-test("the coach gets the Clients tab", async ({ page }) => {
+test("the coach gets Clients in place of Coach", async ({ page }) => {
   await signInWithCode(page, coachEmail)
   const nav = page.getByRole("navigation", { name: "Main" })
+  await expect(nav.getByRole("link")).toHaveText(["Today", "Progress", "Clients", "Me"])
   await nav.getByRole("link", { name: "Clients" }).click()
   await expect(page.getByRole("heading", { level: 1, name: "Clients" })).toBeVisible()
   await expectNoAxeViolations(page)

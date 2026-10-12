@@ -16,20 +16,33 @@ const isLocal = /^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?/.test(url)
 
 const admin = createClient(url, serviceKey, { auth: { persistSession: false, autoRefreshToken: false } })
 
-// Values come from the PRD and ARCHITECTURE. Anything the specs leave open is
-// left unset and tracked in docs/QUESTIONS.md (Q17 review day, Q29 formula
-// and reminder defaults) instead of guessed here.
+// Defaults from the PRD, ARCHITECTURE "Target formula defaults" and the PM
+// decisions on QUESTIONS.md Q17 and Q29. All editable in Coach settings.
+// Days are 0 = Sunday through 6 = Saturday.
 const APP_CONFIG: Record<string, unknown> = {
   product_name: "Honest Reps",
   consent_versions: { coach_visibility: "2026-10-12" },
   adherence: { calorie_tolerance_pct: 10, protein_hit_pct: 90 },
+  weight_trend: { method: "ewma", alpha: 0.1 },
 }
 
 const COACH_SETTINGS = {
-  checkin_day: 5, // Friday, PRD F5
-  review_day: null,
-  target_defaults: { protein_cap_g: 220 }, // PRD F1
-  reminder_defaults: { evening_nudge: "19:00" }, // PRD F17
+  checkin_day: 5, // Friday
+  review_day: 0, // Sunday
+  weekly_cycle: {
+    checkin_opens_at: "06:00",
+    overdue_after_hours: 24, // Saturday 6:00am
+    review_prep_day: 6, // Saturday
+    review_prep_at: "22:00",
+  },
+  target_defaults: {
+    activity_multipliers: { sedentary: 1.2, light: 1.375, moderate: 1.55, very_active: 1.725, extra_active: 1.9 },
+    goal_calorie_adjustment_pct: { lose_fat: -20, maintain: 0, build_muscle: 10, performance: 5 },
+    protein_g_per_lb_goal_weight: { lose_fat: 1.0, maintain: 0.8, build_muscle: 1.0, performance: 0.9 },
+    protein_cap_g: 220,
+    calorie_floor: "bmr",
+  },
+  reminder_defaults: { evening_nudge: "19:00", checkin_reminder: "08:00", checkin_followup: "19:00" },
 }
 
 async function main() {

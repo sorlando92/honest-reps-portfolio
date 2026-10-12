@@ -43,3 +43,4 @@ Deviations and notes:
 - Repo docs are now the source of truth.
 - Resolved Q8, Q9b, Q10, Q17, Q22, Q27, Q28, Q29, Q31 and COACH_EMAIL; see QUESTIONS.md. Added Q32 (late check-ins after review prep).
 - Domain plan recorded: app.honestreps.app on Vercel, Resend sending from auth@mail.honestreps.app.
+- Code for the PM decisions: coach tab bar is Today, Progress, Clients, Me (Q22). New `coach_settings.weekly_cycle` column (migration 20261012000004). Seed carries the Q17 and Q29 defaults; applied to the hosted project, including a one time update of the existing coach row. Unit, RLS and e2e tests pass.

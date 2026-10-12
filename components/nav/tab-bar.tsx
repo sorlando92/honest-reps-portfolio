@@ -11,8 +11,8 @@ interface Tab {
   icon: LucideIcon
 }
 
-// DESIGN_SYSTEM.md "Navigation": members and clients get 4 tabs; the coach
-// also gets Clients (QUESTIONS.md Q22 asks whether Coach should drop for him).
+// DESIGN_SYSTEM.md "Navigation": members and clients get Coach; the coach
+// gets Clients in its place (QUESTIONS.md Q22).
 const MEMBER_TABS: Tab[] = [
   { href: "/today", label: "Today", icon: Activity },
   { href: "/progress", label: "Progress", icon: ChartLine },
@@ -20,11 +20,13 @@ const MEMBER_TABS: Tab[] = [
   { href: "/me", label: "Me", icon: UserRound },
 ]
 
-const COACH_TAB: Tab = { href: "/clients", label: "Clients", icon: ClipboardList }
+const COACH_TABS: Tab[] = MEMBER_TABS.map((tab) =>
+  tab.href === "/coach" ? { href: "/clients", label: "Clients", icon: ClipboardList } : tab
+)
 
 export function TabBar({ isCoach }: { isCoach: boolean }) {
   const pathname = usePathname()
-  const tabs = isCoach ? [...MEMBER_TABS.slice(0, 3), COACH_TAB, MEMBER_TABS[3]] : MEMBER_TABS
+  const tabs = isCoach ? COACH_TABS : MEMBER_TABS
 
   return (
     <nav
