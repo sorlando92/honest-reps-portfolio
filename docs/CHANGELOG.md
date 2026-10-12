@@ -27,3 +27,11 @@ Deviations and notes:
 - The hosted Supabase project needs the sign in email template pasted into Auth > Email Templates (Magic link and Confirm signup), and Site URL set to the app URL.
 - Seed does not invent defaults the specs leave open (Q17, Q29).
 - `signup_started` approximation (Q30).
+
+### 2026-10-12: hosted Supabase and GitHub
+
+- GitHub: private repo sorlando92/honest-reps. First CI run passed every step (typecheck, lint, unit and RLS tests, e2e at 375px light and dark).
+- Hosted Supabase project `honest-reps` (ref <project-ref>, us-east-1). All 3 migrations applied. Seeded with coach@example.test as the coach. Verified: RLS on for all 6 tables, signup trigger present, settings rows as seeded.
+- Security advisor fix: RLS helper functions and the signup trigger function moved from `public` to a `private` schema the API does not expose (migration 20261012000003). The one remaining advisor warning (leaked password protection) does not apply, since sign in is passwordless.
+- Hosted keys are kept in the gitignored `.env.hosted`, which Next.js never loads, so local builds and tests cannot reach the hosted database.
+- Still to do by hand in the Supabase dashboard: paste the sign in email template into Magic Link and Confirm signup. Site URL is set during the Vercel step.
