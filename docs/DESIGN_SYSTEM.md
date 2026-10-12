@@ -74,7 +74,7 @@ Lucide, 1.75px stroke, 24px default, 20px inline. One set only. Tab icons always
 
 Bottom tab bar, labeled icons:
 - Members and clients: **Today, Progress, Coach, Me**
-- Sean additionally gets a 5th tab: **Clients** (roster, review queue, metrics, settings)
+- Sean (coach role): **Today, Progress, Clients, Me**. Clients (roster, review queue, metrics, settings) replaces the Coach tab.
 
 Stacks for drill-ins, bottom sheets for short tasks (log confirm, weight entry, habit edit).
 
@@ -105,7 +105,7 @@ Stacks for drill-ins, bottom sheets for short tasks (log confirm, weight entry, 
 New user: targets shown, timeline empty, log bar focused with placeholder "2 eggs and toast". No tutorial.
 
 ### Log confirmation
-Bottom sheet over Today. Items, edits, flags, "Log it." Pending offline items show "Pending, will finish when you're online."
+Bottom sheet over Today. Items, edits, flags, "Log it." Pending offline items show "Pending, will finish when you're online." An unconfirmed card (draft) is kept on the device and reopens with the app. Barcode results carry the caption "Food data from Open Food Facts" (`caption` style, links to openfoodfacts.org).
 
 ### Progress
 1. Weight trend chart (smoothed line in `accent-strong`, raw dots in `text-muted` at 40% opacity), 7 and 28 day change
@@ -122,7 +122,7 @@ Single scroll: headline sentence, coach note, 4 to 5 stat cards, trend chart.
 Members see the coach card and upgrade screen here; clients see their message thread and latest report.
 
 ### Me
-Profile, targets (editable for free users), units, reminders (time and toggle per reminder), subscription, privacy and data, delete account.
+Profile, targets (editable for free users), units, reminders (time and toggle per reminder), subscription, privacy and data, About (includes "Food data from Open Food Facts" linking to openfoodfacts.org), delete account.
 
 ### Clients (Sean only)
 Roster with flag badges and filters, Review queue entry point with count, Metrics, Settings.

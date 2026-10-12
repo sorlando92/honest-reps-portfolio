@@ -37,3 +37,9 @@ Deviations and notes:
 - Still to do by hand in the Supabase dashboard: paste the sign in email template into Magic Link and Confirm signup. Site URL is set during the Vercel step.
 - Descoped: multi-factor authentication for app users (QUESTIONS.md Q31). Owner account two-factor added as owner task 10.
 - Blocker found: Supabase requires custom SMTP before email templates can be edited, so the hosted sign in email has no code until the email sender (owner task 9) is set up.
+
+### 2026-10-12: PM decisions applied to docs
+
+- Repo docs are now the source of truth.
+- Resolved Q8, Q9b, Q10, Q17, Q22, Q27, Q28, Q29, Q31 and COACH_EMAIL; see QUESTIONS.md. Added Q32 (late check-ins after review prep).
+- Domain plan recorded: app.honestreps.app on Vercel, Resend sending from auth@mail.honestreps.app.

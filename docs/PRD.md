@@ -94,13 +94,17 @@ Acceptance
 - Text and photo go through the parsing service (AI_PROMPTS.md P1, P2) and return a confirmation card listing each item with name, amount, unit, calories, protein, carbs, fat.
 - Every field on the card is editable. Amount uses a stepper plus typed input. Each item can be swapped from a list of alternatives or removed.
 - Low-confidence items are visibly flagged with alternatives and a manual entry option. Saving is never blocked.
-- Barcode uses Open Food Facts; not found falls back to search or manual entry.
+- Barcode uses Open Food Facts; not found falls back to search or manual entry. Barcode results show the caption "Food data from Open Food Facts" linking to openfoodfacts.org; the same attribution appears in Me, About.
 - Quick add: 5 to 6 chips of the user's most frequent foods for the current time of day, shown when the log bar is focused.
 - Favorites: any entry can be starred.
 - Optional meal tag on an entry (breakfast, lunch, dinner, snack). Not required.
 - Edit and delete any entry (swipe on the timeline).
 - Each entry stores raw input, model output, confidence, method, and timestamps.
 - Offline: quick add, favorites, cached barcodes, and manual entries save locally and sync later. Text and photo parsing queue as "pending" and resolve when back online.
+- Entry states:
+  - **Draft:** an unconfirmed confirmation card. Not saved to `food_entries`. Kept on the device if the app closes and resurfaced on reopen. Never counts toward totals.
+  - **Flagged:** a saved entry with one or more low-confidence items. Counts toward totals. Shows a "Check this" marker until the user edits or confirms it.
+  - **Pending:** a text or photo entry captured offline. Shows on the timeline as pending and does not count. When back online it parses automatically and saves without asking again; low-confidence items become flagged. The user is notified only if something was flagged.
 - Target: a repeat meal logs in under 5 seconds; a new described meal in under 20 seconds.
 
 ### F3. Today (free)
@@ -129,11 +133,11 @@ Stories
 - As a coach, I never chase a check-in.
 
 Acceptance
-- Opens on the configured check-in day (default Friday) and stays open until the review day.
+- Opens on the configured check-in day (default Friday 6:00am, coach's timezone) and stays open until the review day (default Sunday).
 - One question per screen: weight (prefilled from trend, editable), up to 3 progress photos, then the coach-defined questions. Defaults: energy, sleep, hunger (1 to 5 scales), performance note (short text), one open question.
 - Questions are edited in Coach settings and apply to all clients.
-- Reminder the morning of check-in day and one follow-up that evening if not submitted.
-- Marked overdue 24 hours after the check-in day; overdue shows as a coach flag.
+- Reminder the morning of check-in day (default 8:00am) and one follow-up that evening if not submitted (default 7:00pm), at the user's local time.
+- Marked overdue 24 hours after the check-in opens (default Saturday 6:00am); overdue shows as a coach flag. AI review prep runs Saturday 10:00pm by default.
 
 ### F6. Habit tracking (paid)
 Acceptance
@@ -201,7 +205,8 @@ One screen for every configurable value:
 - Check-in day and review day
 - Check-in questions (add, edit, reorder, remove)
 - Habit library
-- Target formula defaults (activity multipliers, goal adjustments, protein per lb)
+- Target formula defaults (activity multipliers, goal adjustments, protein per lb by goal, protein cap); default values are in ARCHITECTURE.md "Target formula defaults"
+- Weekly cycle times (check-in open time, overdue time, review prep time)
 - AI settings (F13)
 - Default reminder times
 
@@ -229,7 +234,7 @@ Acceptance
 
 ## 8. Non-goals for v1
 
-Meal plans, recipes, micronutrients, wearables and Apple Health sync, social features, native App Store apps, smart adaptive targets, progress photo comparison timeline, AI-drafted messages outside the weekly review, multiple coaches, workout delivery, billing migration.
+Meal plans, recipes, micronutrients, wearables and Apple Health sync, social features, native App Store apps, smart adaptive targets, progress photo comparison timeline, AI-drafted messages outside the weekly review, multiple coaches, workout delivery, billing migration, multi-factor authentication (sign in stays passwordless email OTP).
 
 ## 9. Open items
 

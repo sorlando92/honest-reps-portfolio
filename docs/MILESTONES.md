@@ -5,8 +5,8 @@ Each milestone ends with a demo to Sean on a real phone and his sign-off. Order 
 ## M0. Foundation
 - Repo, Next.js, TypeScript strict, Tailwind with design tokens, shadcn/ui, Lucide
 - Supabase project, migrations, RLS scaffolding and test harness
-- Magic link auth, roles, `profiles`, `app_config`, `coach_settings` with seed
-- PWA manifest, service worker shell, light and dark theme, tab bar with 4 (+1 coach) tabs
+- Email OTP auth with a 6-digit code and a link, roles, `profiles`, `app_config`, `coach_settings` with seed
+- PWA manifest, service worker shell, light and dark theme, tab bar with 4 tabs (the coach's Coach tab is replaced by Clients)
 - `events` table and `track()` helper
 - CI: typecheck, lint, test, Playwright smoke at 375px
 - Vercel preview deploys

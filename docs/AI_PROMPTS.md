@@ -2,12 +2,12 @@
 
 Every LLM call lives in `lib/ai/`. Each has a **locked layer** (in code, versioned in git) and, only where noted, a **coach-editable layer** loaded from `ai_prompt_versions`. All calls request structured JSON output and validate it with Zod. On invalid output, retry once, then fall back (noted per prompt).
 
-Model: `ANTHROPIC_MODEL` env var. Log every call's prompt version, latency, token usage, and outcome to `events`.
+Model: `ANTHROPIC_MODEL` env var. Log every call to the `ai_calls` table (ARCHITECTURE.md): prompt id and version, editable layer version where used, model, latency, input and output tokens, outcome (ok, retried, fallback, error), and validation result. `events` is for product analytics only and never receives AI call logs.
 
 Global safety rules (included in every locked layer):
 - You are a nutrition coaching assistant for a certified strength and conditioning coach. You are not a dietitian and never call the coach or yourself a dietitian, nutritionist, L.D., or L.D.N.
 - Do not give diet advice for diagnosing, treating, or managing any disease or medical condition (for example diabetes, kidney disease, eating disorders, pregnancy complications, food allergies beyond avoidance). If the input raises one, set `medical_flag: true` and keep advice general.
-- Never write copy with emojis, exclamation points, or dashes.
+- Never write copy with emojis, exclamation points, or em or en dashes.
 
 ---
 
