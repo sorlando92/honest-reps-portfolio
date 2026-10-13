@@ -5,7 +5,7 @@ import { runP1, type AmountSource, type FoodState, type P1Item } from "../../../
 import type { AiCallRecord } from "../../../lib/ai/client.ts"
 import { curatedSourceId, findCuratedChain, isUncuratedChain, type ChainData } from "../data/chains/index.ts"
 import { DEFAULT_HAND_PORTIONS, handPortionFor, handPortionGrams, type HandPortions } from "./hand.ts"
-import { rank, rankMenu, wantedState } from "./match.ts"
+import { rank, rankMenu, searchText, wantedState } from "./match.ts"
 import { searchUsda, type Per100g, type UsdaFood } from "./usda.ts"
 
 // QUESTIONS.md Q11: starts at 0.5, tuned against the parsing eval. Read from
@@ -229,9 +229,9 @@ function per100(ci: { serving_grams: number | null; kcal: number; protein_g: num
   return { kcal: round(ci.kcal * f, 1), protein_g: round(ci.protein_g * f, 2), carbs_g: round(ci.carbs_g * f, 2), fat_g: round(ci.fat_g * f, 2) }
 }
 
-/** P1's name without the restaurant in parentheses, plus the stated state. */
+/** P1's name made safe for FDC search, plus the stated state. */
 function searchQuery(item: P1Item): string {
-  const name = item.name.replace(/\([^)]*\)/g, " ").replace(/\s+/g, " ").trim()
+  const name = searchText(item.name)
   return item.state && !name.toLowerCase().includes(item.state) ? `${name} ${item.state}` : name
 }
 

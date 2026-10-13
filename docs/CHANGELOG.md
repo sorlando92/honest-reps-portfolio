@@ -123,3 +123,12 @@ M0 signed off by Sean 2026-10-13 (Pixel: sign in by code, install, tabs, light a
 ### 2026-10-13: PM decisions round 4 applied to docs
 
 - Q39 (cans are label), Q40 (local FDC import, cache-first interim), eval v0.4 (p027 expects estimated). MILESTONES M1 build order set; barcode, favorites, quick add and meal tags deferred until after phone testing.
+
+### 2026-10-13: confirmation card
+
+- Today has the log bar (pinned above the tab bar) and a timeline of today's entries in the user's timezone, with "est." and "Check this" markers (Q34).
+- Confirmation card: one signal per row by cause, "Weigh it" focuses the amount and typing a weight makes the item weighed, swapping to an alternative resolves "Check this" (the user's own food name stays), g/oz toggle and stepper, remove, discard, Log it. The draft stays on the device and reopens with the app; falls back to memory when storage is blocked.
+- Saved through `POST /api/entries`; `food_logged` fires on the server.
+- e2e at 375px light and dark: describe, fix and log a meal; draft survives a reload. axe and 44pt checks pass. /api/parse is stubbed in e2e so tests never call the model or USDA.
+- Fixed: FDC rejects any search containing a slash ("93/7 ground beef"), which failed every time. Lean ratios now become "93% lean" and other slashes spaces. Found from the eval's clean run check (failed search logging); the fix is to the search request, not tuning on the holdout's results.
+- Deferred from the card: Raw / Cooked / Dry toggle (state shown as text), "Add item" (comes with manual entry), no-scale hand picker (needs `has_scale`, M2).

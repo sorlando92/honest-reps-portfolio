@@ -2,12 +2,16 @@ import "server-only"
 import type { SupabaseClient } from "@supabase/supabase-js"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { DEFAULT_HAND_PORTIONS, type HandPortions } from "./hand"
-import { DEFAULT_MATCH_THRESHOLD, parseMeal, type ParsedItem } from "./parse-meal"
+import { DEFAULT_MATCH_THRESHOLD, parseMeal, type MatchedFood, type ParsedItem } from "./parse-meal"
+
+/** A food the user can swap to, with its food_items row. */
+export type DraftAlternative = MatchedFood & { foodItemId: string | null }
 
 /** One row of the confirmation card (a draft until the user taps Log it). */
-export interface DraftItem extends ParsedItem {
+export interface DraftItem extends Omit<ParsedItem, "alternatives"> {
   /** food_items row for the match, so the saved item can reference it. */
   foodItemId: string | null
+  alternatives: DraftAlternative[]
 }
 
 export interface DraftResult {
@@ -70,15 +74,19 @@ export async function parseForUser(
     aiCallId: logged?.id ?? null,
     fallback: result.fallback,
     unparsedText: result.unparsedText,
-    items: result.items.map((item) => ({ ...item, foodItemId: item.match ? (ids.get(key(item.match)) ?? null) : null })),
+    items: result.items.map((item) => ({
+      ...item,
+      foodItemId: item.match ? (ids.get(key(item.match)) ?? null) : null,
+      alternatives: item.alternatives.map((a) => ({ ...a, foodItemId: ids.get(key(a)) ?? null })),
+    })),
   }
 }
 
 const key = (m: { source: string; sourceId: string }) => `${m.source}:${m.sourceId}`
 
-/** Upserts matched USDA foods; curated chain items are already seeded. */
+/** Upserts matched USDA foods and their alternatives; curated chain items are already seeded. */
 async function cacheMatches(admin: SupabaseClient, items: ParsedItem[]): Promise<Map<string, string>> {
-  const matches = items.flatMap((i) => (i.match ? [i.match] : []))
+  const matches = items.flatMap((i) => [...(i.match ? [i.match] : []), ...i.alternatives])
   const usda = [...new Map(matches.filter((m) => m.source === "usda").map((m) => [m.sourceId, m])).values()]
   if (usda.length) {
     await admin.from("food_items").upsert(

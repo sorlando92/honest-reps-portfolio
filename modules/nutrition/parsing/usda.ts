@@ -3,6 +3,9 @@ import "server-only"
 // USDA FoodData Central search (ARCHITECTURE.md "Food data").
 const SEARCH_URL = "https://api.nal.usda.gov/fdc/v1/foods/search"
 
+/** Counts for the eval: a run with any failed search is not a clean run. */
+export const usdaStats = { calls: 0, cacheHits: 0, failures: 0, failed: [] as string[] }
+
 export interface Per100g {
   kcal: number
   protein_g: number
@@ -79,7 +82,9 @@ async function cached(params: URLSearchParams, load: () => Promise<SearchRespons
   keyless.delete("api_key")
   const file = `${dir}/${createHash("sha1").update(keyless.toString()).digest("hex")}.json`
   try {
-    return JSON.parse(await readFile(file, "utf8")) as SearchResponse
+    const hit = JSON.parse(await readFile(file, "utf8")) as SearchResponse
+    usdaStats.cacheHits++
+    return hit
   } catch {
     const body = await load()
     await mkdir(dir, { recursive: true })
@@ -94,6 +99,7 @@ const ATTEMPTS = 3
 const TIMEOUT_MS = 8000
 
 async function fetchWithRetry(url: string): Promise<Response> {
+  usdaStats.calls++
   let last = ""
   for (let attempt = 1; attempt <= ATTEMPTS; attempt++) {
     try {
@@ -106,6 +112,10 @@ async function fetchWithRetry(url: string): Promise<Response> {
     }
     if (attempt < ATTEMPTS) await new Promise((r) => setTimeout(r, 250 * attempt))
   }
+  usdaStats.failures++
+  const keyless = new URL(url)
+  keyless.searchParams.delete("api_key")
+  usdaStats.failed.push(`${last} ${keyless.search}`)
   throw new Error(`USDA search failed: ${last}`)
 }
 

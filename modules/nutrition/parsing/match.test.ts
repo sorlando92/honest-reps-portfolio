@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { describedState, rank, rankMenu, wantedState } from "./match"
+import { describedState, rank, rankMenu, searchText, wantedState } from "./match"
 
 const foods = (...descriptions: string[]) =>
   descriptions.map((description, i) => ({ id: String(i), description, dataType: "SR Legacy", brand: null }))
@@ -61,5 +61,14 @@ describe("rankMenu", () => {
     expect(top("chicken nuggets", 12)).toBe("12 ct Nuggets")
     expect(top("grilled nuggets", 8)).toBe("8 ct Grilled Nuggets")
     expect(top("waffle fries, large")).toBe("Large Waffle Potato Fries")
+  })
+})
+
+describe("searchText", () => {
+  it("never sends a slash, which FDC rejects", () => {
+    expect(searchText("ground beef 93/7, cooked")).toBe("ground beef 93% lean, cooked")
+    expect(searchText("90 / 10 beef")).toBe("90% lean beef")
+    expect(searchText("salt/pepper")).toBe("salt pepper")
+    expect(searchText("chicken (Chipotle)")).toBe("chicken")
   })
 })

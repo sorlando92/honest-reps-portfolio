@@ -7,6 +7,7 @@
 
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs"
 import { parseMeal } from "../modules/nutrition/parsing/parse-meal.ts"
+import { usdaStats } from "../modules/nutrition/parsing/usda.ts"
 import {
   addTallies,
   casePassed,
@@ -154,7 +155,10 @@ console.log(
     (results.some((r) => r.fallback) ? ` P1 fallbacks: ${results.filter((r) => r.fallback).length}.` : "")
 )
 
+console.log(`USDA: ${usdaStats.calls} calls, ${usdaStats.cacheHits} cache hits, ${usdaStats.failures} failed searches.${usdaStats.failures ? " NOT A CLEAN RUN: rerun once the quota recovers." : " Clean run."}`)
+for (const f of usdaStats.failed) console.log(`  failed: ${f}`)
+
 mkdirSync(new URL("./results/", import.meta.url), { recursive: true })
 const file = new URL(`./results/parsing-${servedBy}-${new Date().toISOString().replace(/[:.]/g, "-")}.json`, import.meta.url)
-writeFileSync(file, JSON.stringify({ model: servedBy, runs, dev, holdout, results }, null, 2))
+writeFileSync(file, JSON.stringify({ model: servedBy, runs, usda: usdaStats, dev, holdout, results }, null, 2))
 console.log(`Details: ${file.pathname}`)

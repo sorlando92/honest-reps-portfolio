@@ -156,3 +156,17 @@ export function rank<C extends Candidate>(
     .sort((a, b) => b.raw - a.raw)
     .map(({ candidate, raw, state }) => ({ candidate, score: Math.max(0, Math.min(1, raw)), state }))
 }
+
+/**
+ * Text safe to send to FDC search. FDC answers any query containing a slash
+ * with a 400, so a lean ratio ("93/7") becomes USDA's own wording ("93% lean")
+ * and other slashes become spaces. Restaurant names in parentheses go.
+ */
+export function searchText(name: string): string {
+  return name
+    .replace(/\([^)]*\)/g, " ")
+    .replace(/(\d{2})\s*\/\s*\d{1,2}\b/g, "$1% lean")
+    .replace(/\//g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+}
