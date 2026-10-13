@@ -2,9 +2,9 @@
 
 Every LLM call lives in `lib/ai/`. Each has a **locked layer** (in code, versioned in git) and, only where noted, a **coach-editable layer** loaded from `ai_prompt_versions`. All calls request structured JSON output and validate it with Zod. On invalid output, retry once, then fall back (noted per prompt).
 
-Model: `ANTHROPIC_MODEL` env var. Log every call to the `ai_calls` table (ARCHITECTURE.md): prompt id and version, editable layer version where used, model, latency, input and output tokens, outcome (ok, retried, fallback, error), and validation result. `events` is for product analytics only and never receives AI call logs.
+Model: `ANTHROPIC_MODEL` env var. The P1 model is chosen by the parsing eval: the cheapest of Claude Opus 5.5, Sonnet 5.5 and Haiku 5.5 that meets every pass bar on dev and holdout with a P1 median latency of 2.5 s or less. Quick add and favorites never call a model. Log every call to the `ai_calls` table (ARCHITECTURE.md): prompt id and version, editable layer version where used, model, latency, input and output tokens, outcome (ok, retried, fallback, error), and validation result. `events` is for product analytics only and never receives AI call logs.
 
-Global safety rules (included in every locked layer):
+Global safety rules (included in every locked layer; P1 and P2 leave out the `medical_flag` sentence because they only extract foods and their schema has no such field; medical screening happens in P3 and P5):
 - You are a nutrition coaching assistant for a certified strength and conditioning coach. You are not a dietitian and never call the coach or yourself a dietitian, nutritionist, L.D., or L.D.N.
 - Do not give diet advice for diagnosing, treating, or managing any disease or medical condition (for example diabetes, kidney disease, eating disorders, pregnancy complications, food allergies beyond avoidance). If the input raises one, set `medical_flag: true` and keep advice general.
 - Never write copy with emojis, exclamation points, or em or en dashes.
@@ -20,7 +20,7 @@ Locked system prompt:
 You extract foods from a meal description for a nutrition tracker.
 Return every distinct food or drink as a separate item.
 For each item give: a short generic name suited to searching a food database, the quantity as a number, the unit (g, oz, ml, fl_oz, cup, tbsp, tsp, piece, slice, serving), an estimated weight in grams, and your confidence from 0 to 1.
-If the user gives no amount, use a typical single serving for an adult and lower confidence to at most 0.6.
+If the user gives no amount, use the standard serving for a packaged or chain restaurant product (amount_source label), the typical size for a counted item such as an egg, an apple or a can (measured), and otherwise a typical single adult serving with confidence at most 0.6 (estimated).
 If the description includes a brand or restaurant, put it in "brand".
 For each item also return amount_source: weighed when the user gives a weight in g, oz, or lb or says they weighed it; label for a packaged or chain restaurant product with a standard serving; measured for volume, spoons, fluid ounces, or counts with a known size; hand for palm, fist, cupped hand, thumb, or handful; estimated otherwise. Weight ounces and fluid ounces are different: '6 oz chicken' is weighed, '12 oz almond milk' is measured. For weighed items use the exact stated weight. For meat, fish, grains, and pasta return state as raw, cooked, or dry when stated, otherwise null. Never treat a nutrient amount like '42g protein' as a serving weight.
 Do not invent foods that are not described. Ignore non-food text.
@@ -50,7 +50,7 @@ Output schema:
 }
 ```
 
-Post-processing: search `food_items` cache then USDA for each `name` (+ brand). Weighed items keep the exact stated grams. Hand items convert to grams with the coach's hand portion conversions. When `state` is null for meat, fish, grains or pasta, match the cooked entry and expose the Raw / Cooked (/ Dry) toggle. Flag the item when capped confidence < 0.7 or best match score is low. Return top 3 alternatives per flagged item.
+Post-processing: when `brand` names a curated chain (QUESTIONS.md Q36), match that chain's curated `food_items` first. A chain that is not curated gets a generic match with `amount_source: estimated`, flagged. Otherwise search `food_items` cache then USDA for each `name` (+ brand). Weighed items keep the exact stated grams. Hand items convert to grams with the coach's hand portion conversions. When `state` is null for meat, fish, grains or pasta, match the cooked entry and expose the Raw / Cooked (/ Dry) toggle. Flag the item when capped confidence < 0.7 or best match score is low. Return top 3 alternatives per flagged item.
 
 Fallback: on failure, show the manual search sheet prefilled with the raw text.
 

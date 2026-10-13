@@ -91,3 +91,8 @@ M0 signed off by Sean 2026-10-13 (Pixel: sign in by code, install, tabs, light a
 - `pnpm eval:parsing` (evals/run-parsing.mts, scoring per evals/README.md, unit tested). Latest 3 run median: dev and holdout pass every bar except meal calories (dev 71%, holdout 57%, bar 80%). P1 latency median 2.2 s; $0.008 per parse.
 - Holdout note: the first failure dump included holdout cases, and one matcher fix (rice noodles) came from p017. Tuning since uses dev only.
 - Not yet wired: writing `ai_calls` rows and caching matches in `food_items` happen in `/api/parse`, built with the confirmation card (step 2). Hand portion conversions wait on Q33; P1's gram estimate is used meanwhile.
+
+### 2026-10-13: PM decisions round 3 applied to docs
+
+- Resolved Q33, Q34, Q36, Q37, Q38, the P1/P2 medical flag sentence, and the P1 model selection rule. Eval set v0.3 (29 cases; fresh holdout p025 to p029).
+- AI_PROMPTS: Q37 line in P1, curated chain matching, model selection rule. ARCHITECTURE: `nutrition_coach_settings`, `food_items.source_url` and `verified_on`. PRD F2 and DESIGN_SYSTEM: one signal per row (Q34), chain coverage (Q36), quick add never calls a model.

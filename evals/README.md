@@ -1,6 +1,6 @@
-# Parsing eval set (v0.2, synthetic starting point)
+# Parsing eval set (v0.3, synthetic starting point)
 
-`parsing.jsonl` holds 24 synthetic meal descriptions covering how people actually log. It replaces the "Sean supplies 20 real meals" task for M1. Real, anonymized meals from the alpha replace or extend it later.
+`parsing.jsonl` holds 29 synthetic meal descriptions covering how people actually log. It replaces the "Sean supplies 20 real meals" task for M1. Real, anonymized meals from the alpha replace or extend it later.
 
 Product principle behind this set: **precision first.** A food scale is the standard. Measured amounts (cups, spoons, counts) and labels are next. Hand portions are the accepted fallback when there is no scale. Anything else is an estimate, is flagged, and nudges the user to weigh it.
 
@@ -34,7 +34,7 @@ Weight ounces vs fluid ounces: "6 oz chicken" is weighed; "12 oz almond milk" is
 | Negative (no food) | p018 |
 | Beverages, alcohol, zero calorie | p006, p010, p019 |
 
-Split: 17 dev cases for tuning, 7 holdout (p004, p007, p011, p013, p017, p020, p023) never used while tuning.
+Split: 17 dev cases for tuning, 12 holdout (p004, p007, p011, p013, p017, p020, p023, p025 to p029) never used while tuning. p017 was used once for a matcher fix in v0.2; p025 to p029 are fresh and are the trusted holdout until real alpha meals are added.
 
 ## Scoring (per run)
 

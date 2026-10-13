@@ -31,17 +31,18 @@ Blocks: M4.
 **Q32. [F5, F10] Late check-ins after review prep.** Check-ins stay open until Sunday, but AI review prep runs Saturday 10:00pm. A client who submits between Saturday 10:00pm and Sunday gets a review card built without their check-in.
 Recommendation: when a check-in arrives after prep has run, rerun P3 for that client only and replace the card if the coach has not opened it yet. Blocks: M4.
 
-**Q33. [F14, rule 5] Where hand portion conversions live.** They are nutrition-specific, and CLAUDE.md rule 5 keeps nutrition columns off core tables, but `coach_settings` is core. M1 needs them seeded, because parsing converts hand portions to grams (eval case p022).
-Recommendation: a nutrition module table `nutrition_coach_settings` (coach_id, hand_portions jsonb) with the same RLS as `coach_settings`, edited from the same Coach settings screen. Blocks: M1.
-
-**Q34. [F2] "Estimated" and "Check this" on the same row.** The eval set treats every estimated item as flagged (confidence capped at 0.6, under the 0.7 flag line). PRD F2 shows flagged rows with a caution dot and "Check this", and the precision spec adds "Estimated" plus "Weigh it". As written, an estimated row carries both, and every photo entry (always estimated) stays "Check this" until confirmed.
-Recommendation: keep one `flagged` value in data, but show one signal per row by cause. A weak food match shows the caution dot, "Check this" and alternatives. A good match with an estimated amount shows only "Estimated" plus "Weigh it" (or the hand picker), with no caution dot. On the timeline, "est." replaces "Check this" when the amount is the only reason. Blocks: M1 confirmation card.
-
 **Q35. [M1] Real meals versus the synthetic eval set.** `evals/README.md` v0.2 says the synthetic set replaces "Sean supplies 20 real meals" for M1. The PM decisions round 2 say Sean will supply 20 real meals.
 Recommendation: v0.2 is the M1 gate. When Sean's meals arrive they are added as p025 onward (set v0.3), split between dev and holdout, and count toward the 50 case beta target. They do not block M1. Blocks: nothing.
 
-**Q36. [F2, M1] Where chain restaurant nutrition comes from.** Three eval cases are chain meals with published numbers (p003 Chipotle, p004 Chick-fil-A, p012 Domino's). USDA FoodData Central covers generic and packaged branded foods well but has little restaurant menu data, and Open Food Facts is barcode first. Without another source these cases likely fail "meal calories in range" and the label amount source.
-Recommendation: seed a small curated set of `food_items` with `source = custom` for the chains in the eval plus the ones gym members eat most (Sean names 5 to 10), using each chain's published nutrition page, re-verified before each release as `evals/README.md` already requires. A paid restaurant database API would be a stack change and is not recommended for v1. Blocks: the M1 eval pass bars.
+### Resolved by the PM (round 3, 2026-10-13, commit "docs: PM decisions round 3")
+
+- **Q33** Hand portion conversions live in the nutrition module table `nutrition_coach_settings`.
+- **Q34** One signal per row by cause: uncertain food match shows "Check this"; clear food with an estimated amount shows "Estimated" plus "Weigh it". The timeline shows "est." for estimated rows.
+- **Q36** Curated `food_items` from published nutrition pages for Chipotle, Chick-fil-A, Domino's, McDonald's, Starbucks, Taco Bell, Panera, Subway, Raising Cane's, Culver's and Imo's, covering the most common menu items, with source URL and date per item. Other chains: generic match, amount source estimated, flagged.
+- **Q37** Locked P1 line replaced: "If the user gives no amount, use the standard serving for a packaged or chain restaurant product (amount_source label), the typical size for a counted item such as an egg, an apple or a can (measured), and otherwise a typical single adult serving with confidence at most 0.6 (estimated)."
+- **Q38** Eval set v0.3: p019 patty flagged and diet coke label; p010 range 300 to 345; fresh holdout p025 to p029, never tuned on.
+- **Medical flag** dropped from P1's and P2's copy of the global rules. Medical screening stays in P3 and P5.
+- **P1 model** chosen by the eval: the cheapest of Opus 5.5, Sonnet 5.5 and Haiku 5.5 that meets every bar on dev and holdout with P1 median latency at or under 2.5 s. Quick add and favorites never call a model.
 
 ### Resolved by the PM (round 2, 2026-10-13, commit "docs: PM decisions round 2")
 

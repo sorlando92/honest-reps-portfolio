@@ -85,7 +85,7 @@ Stacks for drill-ins, bottom sheets for short tasks (log confirm, weight entry, 
 - **Stat block:** big number + label + thin progress bar.
 - **Confirmation card (bottom sheet):** list of parsed items. Each row: name, amount stepper, macros line, swap and remove. Flagged rows have a `caution` dot and "Check this" label with alternatives. Primary button "Log it." Secondary "Add item."
   - Amount defaults to grams (or oz per units) for scale users, with a quick unit toggle (g or oz, cups, servings, hand).
-  - Estimated row: "Estimated" in `text-muted` plus an inline "Weigh it" text button that focuses the amount field in grams. No-scale users get a hand portion picker in its place. One line, never a modal.
+  - One signal per row, by cause: the `caution` dot and "Check this" only when the food match is uncertain. A clear food with an estimated amount shows "Estimated" in `text-muted` plus an inline "Weigh it" text button that focuses the amount field in grams, with no caution dot. No-scale users get a hand portion picker in its place. One line, never a modal.
   - Hand portion row: small "Hand portion" tag in `text-muted`. Not flagged.
   - Meat, fish, grains and pasta: one-tap segmented toggle Raw / Cooked, plus Dry for grains and pasta. 44pt segments.
 - **Entry row:** time, name, calories, protein. Swipe left for edit and delete. Optional meal tag pill. Estimated entries show "est." in `caption` style, `text-muted`.

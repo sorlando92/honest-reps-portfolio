@@ -100,14 +100,15 @@ Acceptance
 - Every field on the card is editable. Amount uses a stepper plus typed input. Each item can be swapped from a list of alternatives or removed.
 - Every item records an amount source: **weighed** (a weight in g, oz or lb, or "weighed"), **label** (packaged or chain item with a standard serving), **measured** (volume, spoons, fluid ounces, or counts of a known size), **hand** (palm, fist, cupped hand, thumb, handful), or **estimated** (no usable amount). Meat, fish, grains and pasta also record a state: raw, cooked, dry, or none.
 - Scale users: amount defaults to weight (g or oz per units) with a quick toggle to cups, servings or hand portions. Manual entry and search also default to grams.
-- Estimated items show "Estimated" and an inline "Weigh it" action that focuses the amount field in grams. Users without a scale see a hand portion picker instead. One inline line only: no modals, no blocking, no repeated nags.
+- One signal per row, by cause. An uncertain food match shows "Check this" with alternatives. A clear food with an estimated amount shows "Estimated" and an inline "Weigh it" action that focuses the amount field in grams; users without a scale see a hand portion picker instead. One inline line only: no modals, no blocking, no repeated nags. On the timeline, estimated rows show "est.".
+- Chain restaurants: curated menu items from each chain's published nutrition page for Chipotle, Chick-fil-A, Domino's, McDonald's, Starbucks, Taco Bell, Panera, Subway, Raising Cane's, Culver's and Imo's (amount source label). Other chains get a generic match, marked estimated and flagged.
 - Hand portion items show a "Hand portion" tag and are not flagged. Conversions come from Coach settings (F14).
 - Meat, fish, grains and pasta show a one-tap Raw / Cooked toggle, plus Dry for grains and pasta. Default cooked unless stated. Changing it recalculates from the matching database entry.
 - Low-confidence items are visibly flagged with alternatives and a manual entry option. Saving is never blocked.
 - Barcode uses Open Food Facts; not found falls back to search or manual entry. Barcode results show the caption "Food data from Open Food Facts" linking to openfoodfacts.org; the same attribution appears in Me, About.
 - Quick add: 5 to 6 chips of the user's most frequent foods for the current time of day, shown when the log bar is focused.
 - Favorites: any entry can be starred.
-- Quick add and favorites remember the last weighed amount for that food.
+- Quick add and favorites remember the last weighed amount for that food, and never call the AI model.
 - Optional meal tag on an entry (breakfast, lunch, dinner, snack). Not required.
 - Edit and delete any entry (swipe on the timeline).
 - Each entry stores raw input, model output, confidence, method, and timestamps.
