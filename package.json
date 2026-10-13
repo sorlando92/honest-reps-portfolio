@@ -18,12 +18,14 @@
     "db:migrate": "supabase migration up",
     "db:push": "supabase db push",
     "db:seed": "node --env-file-if-exists=.env.local scripts/seed.mts",
-    "env:local": "node scripts/local-env.mts"
+    "env:local": "node scripts/local-env.mts",
+    "eval:parsing": "node --conditions=react-server --env-file-if-exists=.env.local evals/run-parsing.mts"
   },
   "engines": {
     "node": ">=24"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.133.0",
     "@supabase/ssr": "0.12.7",
     "@supabase/supabase-js": "2.117.3",
     "class-variance-authority": "^0.7.1",

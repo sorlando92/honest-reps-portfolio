@@ -49,3 +49,6 @@ next-env.d.ts
 # supabase
 /supabase/.branches/
 /supabase/.temp/
+
+# Parsing eval run outputs
+/evals/results/

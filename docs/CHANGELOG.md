@@ -77,3 +77,17 @@ Tests: 69 unit and RLS (9 new, including a suite for `rate_limits`), 10 e2e at 3
 - The hosted email templates and URL settings are set by hand in the dashboard; `supabase/config.toml` only covers local. If the dashboard template is ever reset, the link breaks (the default link is a PKCE redirect `/auth/confirm` does not handle).
 - Not done: root `honestreps.app` redirect (no DNS record), real app icons (placeholders), Vercel Pro (required before clients).
 - New question Q36 (chain restaurant nutrition data).
+
+## M1 Logging core (in progress)
+
+M0 signed off by Sean 2026-10-13 (Pixel: sign in by code, install, tabs, light and dark). Anthropic and USDA keys verified with one call each.
+
+### 2026-10-13: step 1, parsing pipeline and eval
+
+- Migration 20261014000001 (local only): `ai_calls` (core; coach reads assigned users, server writes) and `food_items` (nutrition; signed in users read, server writes), with RLS suites.
+- `lib/ai/p1.ts`: P1 locked layer verbatim from AI_PROMPTS.md, Zod structured output, one retry, confidence caps, server-side refusal fallback (`fallbacks: "default"`). Model `ANTHROPIC_MODEL`, default `claude-opus-5-5`, effort low.
+- `modules/nutrition/parsing/`: USDA search, re-ranking (state default cooked for meat, fish, grains, pasta, beans; penalties for a different leading food and for breaded, fried, dried and similar variants), flags per PRD F2 (hand portions never flagged for amount).
+- USDA FDC finding: a multi-value `dataType` filter, or "Survey (FNDDS)" alone, gets a bare 400 on most requests. Searches now run Foundation and SR Legacy filtered plus one unfiltered search keeping FNDDS, with retries. 0 failures in 48 concurrent calls.
+- `pnpm eval:parsing` (evals/run-parsing.mts, scoring per evals/README.md, unit tested). Latest 3 run median: dev and holdout pass every bar except meal calories (dev 71%, holdout 57%, bar 80%). P1 latency median 2.2 s; $0.008 per parse.
+- Holdout note: the first failure dump included holdout cases, and one matcher fix (rice noodles) came from p017. Tuning since uses dev only.
+- Not yet wired: writing `ai_calls` rows and caching matches in `food_items` happen in `/api/parse`, built with the confirmation card (step 2). Hand portion conversions wait on Q33; P1's gram estimate is used meanwhile.
