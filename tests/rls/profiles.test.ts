@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest"
-import { createCast, deleteCast, PERMISSION_DENIED, type Cast } from "./fixtures"
+import { CHECK_VIOLATION, createCast, deleteCast, PERMISSION_DENIED, type Cast } from "./fixtures"
 
 let cast: Cast
 beforeAll(async () => {
@@ -55,6 +55,16 @@ describe("profiles RLS", () => {
       .select("display_name, units, timezone")
     expect(error).toBeNull()
     expect(data).toEqual([{ display_name: "A", units: "metric", timezone: "America/Chicago" }])
+  })
+
+  it("a user cannot set an unknown timezone", async () => {
+    const { error } = await cast.a.client.from("profiles").update({ timezone: "Mars/Olympus" }).eq("id", cast.a.id)
+    expect(error?.code).toBe("22023")
+  })
+
+  it("role is only member or coach; client is not a stored role", async () => {
+    const { error } = await cast.admin.from("profiles").update({ role: "client" }).eq("id", cast.a.id)
+    expect(error?.code).toBe(CHECK_VIOLATION)
   })
 
   it("a user cannot update someone else's profile", async () => {

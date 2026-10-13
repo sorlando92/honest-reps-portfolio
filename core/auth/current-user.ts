@@ -3,7 +3,8 @@ import { cache } from "react"
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 
-export type Role = "member" | "client" | "coach"
+// A "client" is a member with tier paid (QUESTIONS.md Q3), not a role.
+export type Role = "member" | "coach"
 
 export interface CurrentUser {
   id: string

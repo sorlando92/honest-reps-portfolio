@@ -75,3 +75,6 @@ export async function deleteCast(cast: Cast) {
 
 /** Postgres "insufficient_privilege": blocked by a column or table grant. */
 export const PERMISSION_DENIED = "42501"
+
+/** Postgres "check_violation": a check constraint refused the row. */
+export const CHECK_VIOLATION = "23514"

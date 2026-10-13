@@ -7,8 +7,8 @@ export default function AppLayout({ children }: LayoutProps<"/">) {
   return (
     <div className="pt-[env(safe-area-inset-top)] pb-[calc(var(--tab-bar-height)+env(safe-area-inset-bottom))]">
       <div className="mx-auto w-full max-w-[720px] px-4">{children}</div>
-      {/* The session read streams in; until then show the 4 member tabs. */}
-      <Suspense fallback={<TabBar isCoach={false} />}>
+      {/* The session read streams in; until then the role-specific tab is an empty slot. */}
+      <Suspense fallback={<TabBar isCoach={null} />}>
         <RoleAwareTabBar />
       </Suspense>
     </div>

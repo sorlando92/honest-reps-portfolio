@@ -1,5 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest"
-import { createCast, deleteCast, PERMISSION_DENIED, type Cast } from "./fixtures"
+import { CHECK_VIOLATION, createCast, deleteCast, PERMISSION_DENIED, type Cast } from "./fixtures"
+import { EVENT_NAMES, SERVER_ONLY_EVENTS } from "../../core/events/names"
 
 let cast: Cast
 beforeAll(async () => {
@@ -91,6 +92,38 @@ describe("events RLS", () => {
   it("anonymous visitors cannot insert events directly", async () => {
     const { error } = await cast.anon.from("events").insert({ user_id: null, name: "signup_started" })
     expect(error?.code).toBe(PERMISSION_DENIED)
+  })
+
+  it("users cannot write server only events", async () => {
+    for (const name of SERVER_ONLY_EVENTS) {
+      const { error } = await cast.a.client.from("events").insert({ user_id: cast.a.id, name })
+      expect(error?.code, name).toBe(PERMISSION_DENIED)
+    }
+  })
+
+  it("the database accepts exactly the PRD event names in core/events/names.ts", async () => {
+    const known = await cast.admin
+      .from("events")
+      .insert(EVENT_NAMES.map((name) => ({ user_id: null, name, props: { test: "names" } })))
+      .select("id")
+    expect(known.error).toBeNull()
+    await cast.admin.from("events").delete().in("id", known.data?.map((r) => r.id) ?? [])
+
+    const unknown = await cast.admin.from("events").insert({ user_id: null, name: "page_view" })
+    expect(unknown.error?.code).toBe(CHECK_VIOLATION)
+  })
+
+  it("deleting an account keeps its events without the user id", async () => {
+    const { data } = await cast.admin.auth.admin.createUser({ email: `rls-deleted-${Date.now()}@example.test` })
+    const userId = data.user!.id
+    const marker = `deleted-${userId}`
+    await cast.admin.from("events").insert({ user_id: userId, name: "weight_logged", props: { marker } })
+
+    await cast.admin.auth.admin.deleteUser(userId)
+    const { data: kept } = await cast.admin.from("events").select("id, user_id").eq("props->>marker", marker)
+    expect(kept).toHaveLength(1)
+    expect(kept?.[0].user_id).toBeNull()
+    await cast.admin.from("events").delete().eq("id", kept![0].id)
   })
 
   it("events cannot be edited or deleted", async () => {

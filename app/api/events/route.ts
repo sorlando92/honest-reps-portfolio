@@ -17,5 +17,6 @@ export async function POST(request: Request) {
   }
 
   const result = await track(parsed.data.name as EventName, parsed.data.props)
-  return NextResponse.json({ result }, { status: result === "recorded" ? 202 : 403 })
+  const status = { recorded: 202, rejected: 403, limited: 429 }[result]
+  return NextResponse.json({ result }, { status })
 }

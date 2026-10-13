@@ -1,11 +1,17 @@
 import { describe, expect, it } from "vitest"
 import { trackRequestSchema } from "./schema"
-import { EVENT_NAMES, PRE_AUTH_EVENTS, isPreAuthEvent } from "./names"
+import { EVENT_NAMES, PRE_AUTH_EVENTS, SERVER_ONLY_EVENTS, isPreAuthEvent, isServerOnlyEvent } from "./names"
 
 describe("trackRequestSchema", () => {
-  it("accepts every PRD event name", () => {
-    for (const name of EVENT_NAMES) {
-      expect(trackRequestSchema.safeParse({ name, props: {} }).success).toBe(true)
+  it("accepts every PRD event name a client may send", () => {
+    for (const name of EVENT_NAMES.filter((n) => !isServerOnlyEvent(n))) {
+      expect(trackRequestSchema.safeParse({ name, props: {} }).success, name).toBe(true)
+    }
+  })
+
+  it("rejects server only events", () => {
+    for (const name of SERVER_ONLY_EVENTS) {
+      expect(trackRequestSchema.safeParse({ name, props: {} }).success, name).toBe(false)
     }
   })
 

@@ -24,9 +24,14 @@ const COACH_TABS: Tab[] = MEMBER_TABS.map((tab) =>
   tab.href === "/coach" ? { href: "/clients", label: "Clients", icon: ClipboardList } : tab
 )
 
-export function TabBar({ isCoach }: { isCoach: boolean }) {
+/**
+ * `isCoach` is null while the role is still loading: the tabs both roles
+ * share render, and the one that differs is an empty slot, so the coach never
+ * sees the member tab flash before Clients.
+ */
+export function TabBar({ isCoach }: { isCoach: boolean | null }) {
   const pathname = usePathname()
-  const tabs = isCoach ? COACH_TABS : MEMBER_TABS
+  const tabs = isCoach === null ? null : isCoach ? COACH_TABS : MEMBER_TABS
 
   return (
     <nav
@@ -34,7 +39,8 @@ export function TabBar({ isCoach }: { isCoach: boolean }) {
       className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-bg pb-[env(safe-area-inset-bottom)]"
     >
       <ul className="mx-auto flex max-w-[720px]">
-        {tabs.map(({ href, label, icon: Icon }) => {
+        {(tabs ?? MEMBER_TABS).map(({ href, label, icon: Icon }) => {
+          if (!tabs && href === "/coach") return <li key={href} aria-hidden className="h-16 flex-1" />
           const active = pathname === href || pathname.startsWith(`${href}/`)
           return (
             <li key={href} className="flex-1">

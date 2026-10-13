@@ -53,3 +53,19 @@ Deviations and notes:
 - AI_PROMPTS P3 now matches the Q21 resolution (editable layer not filtered); the old "strip" wording was left over.
 - New questions: Q33 (where hand portion conversions live), Q34 ("Estimated" and "Check this" on one row), Q35 (real meals versus the synthetic set). Owner task 11 added for the M1 API keys.
 - Deferred to M2: the privacy policy template that states the F16 deletion terms (no template exists yet).
+
+### 2026-10-13: M0 review fixes and round 2 schema
+
+Migration 20261013000001 (local only; pushed to the hosted project with the Vercel setup):
+- Q3: `profiles.role` is `member` or `coach`; any `client` rows become `member`.
+- Q26: `coach_settings.price_cents` dropped.
+- Finding 3: `events.user_id` is `on delete set null`.
+- Finding 1: a check limits `events.name` to the PRD list (now with `onboarding_completed`). RLS refuses `signup_completed`, `upgrade_completed`, `subscription_canceled` and `review_reply_sent` from clients, and `/api/events` rejects them.
+- Finding 2: events before sign in are rate limited to 60 per hour per hashed IP (`private.rate_limits`, `hit_rate_limit()` callable by the service role only). Over the limit returns 429.
+- Finding 5: a trigger rejects unknown timezones on `profiles`.
+
+App:
+- Finding 6: while the role loads, the tab bar shows the shared tabs and an empty slot instead of the member Coach tab.
+- Finding 7: the coach is redirected from `/coach` to `/clients`.
+
+Tests: 69 unit and RLS (9 new, including a suite for `rate_limits`), 10 e2e at 375px light and dark, all passing.

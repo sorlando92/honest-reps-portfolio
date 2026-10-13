@@ -54,6 +54,9 @@ test("the coach gets Clients in place of Coach", async ({ page }) => {
   await nav.getByRole("link", { name: "Clients" }).click()
   await expect(page.getByRole("heading", { level: 1, name: "Clients" })).toBeVisible()
   await expectNoAxeViolations(page)
+
+  await page.goto("/coach")
+  await expect(page).toHaveURL(/\/clients$/)
 })
 
 test("signing out returns to sign in", async ({ page }, info) => {

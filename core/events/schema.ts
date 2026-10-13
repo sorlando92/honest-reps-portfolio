@@ -1,10 +1,14 @@
 import { z } from "zod"
-import { isEventName } from "./names"
+import { isEventName, isServerOnlyEvent } from "./names"
 
 const propValue = z.union([z.string().max(500), z.number(), z.boolean(), z.null()])
 
+/** Body of POST /api/events: events a browser may report. */
 export const trackRequestSchema = z.object({
-  name: z.string().refine(isEventName, { message: "Unknown event name" }),
+  name: z
+    .string()
+    .refine(isEventName, { message: "Unknown event name" })
+    .refine((name) => !isServerOnlyEvent(name), { message: "Server only event" }),
   props: z
     .record(z.string().max(64), propValue)
     .refine((p) => Object.keys(p).length <= 20, { message: "Too many props" })
