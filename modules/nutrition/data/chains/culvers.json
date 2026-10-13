@@ -1,0 +1,1916 @@
+{
+ "chain": "Culver's",
+ "aliases": [
+  "culver's",
+  "culvers"
+ ],
+ "source_url": "https://cdn.culvers.com/page-content/menu/nutrition-guide.pdf",
+ "verified_on": "2026-10-13",
+ "note": "Nutrition and Allergen Guide PDF linked from culvers.com. Soups are listed in oz without saying weight or fluid, so they are left out.",
+ "items": [
+  {
+   "name": "ButterBurger \"The Original\", Single",
+   "serving_grams": 136,
+   "kcal": 390,
+   "protein_g": 20,
+   "carbs_g": 39,
+   "fat_g": 19
+  },
+  {
+   "name": "ButterBurger \"The Original\", Double",
+   "serving_grams": 193,
+   "kcal": 560,
+   "protein_g": 34,
+   "carbs_g": 39,
+   "fat_g": 32
+  },
+  {
+   "name": "ButterBurger \"The Original\", Triple",
+   "serving_grams": 250,
+   "kcal": 730,
+   "protein_g": 48,
+   "carbs_g": 39,
+   "fat_g": 45
+  },
+  {
+   "name": "ButterBurger Cheese, Single",
+   "serving_grams": 155,
+   "kcal": 460,
+   "protein_g": 23,
+   "carbs_g": 40,
+   "fat_g": 25
+  },
+  {
+   "name": "ButterBurger Cheese, Double",
+   "serving_grams": 231,
+   "kcal": 700,
+   "protein_g": 40,
+   "carbs_g": 41,
+   "fat_g": 44
+  },
+  {
+   "name": "ButterBurger Cheese, Triple",
+   "serving_grams": 307,
+   "kcal": 940,
+   "protein_g": 57,
+   "carbs_g": 42,
+   "fat_g": 63
+  },
+  {
+   "name": "Cheddar ButterBurger, Single",
+   "serving_grams": 157,
+   "kcal": 470,
+   "protein_g": 25,
+   "carbs_g": 39,
+   "fat_g": 26
+  },
+  {
+   "name": "Cheddar ButterBurger, Double",
+   "serving_grams": 235,
+   "kcal": 720,
+   "protein_g": 44,
+   "carbs_g": 39,
+   "fat_g": 46
+  },
+  {
+   "name": "Cheddar ButterBurger, Triple",
+   "serving_grams": 313,
+   "kcal": 970,
+   "protein_g": 63,
+   "carbs_g": 39,
+   "fat_g": 66
+  },
+  {
+   "name": "Cheddar ButterBurger with Bacon, Single",
+   "serving_grams": 166,
+   "kcal": 510,
+   "protein_g": 29,
+   "carbs_g": 39,
+   "fat_g": 29
+  },
+  {
+   "name": "Cheddar ButterBurger with Bacon, Double",
+   "serving_grams": 244,
+   "kcal": 760,
+   "protein_g": 48,
+   "carbs_g": 39,
+   "fat_g": 49
+  },
+  {
+   "name": "Cheddar ButterBurger with Bacon, Triple",
+   "serving_grams": 322,
+   "kcal": 1010,
+   "protein_g": 67,
+   "carbs_g": 39,
+   "fat_g": 69
+  },
+  {
+   "name": "Mushroom & Swiss, Single",
+   "serving_grams": 171,
+   "kcal": 490,
+   "protein_g": 26,
+   "carbs_g": 40,
+   "fat_g": 27
+  },
+  {
+   "name": "Mushroom & Swiss, Double",
+   "serving_grams": 263,
+   "kcal": 760,
+   "protein_g": 46,
+   "carbs_g": 41,
+   "fat_g": 48
+  },
+  {
+   "name": "Mushroom & Swiss, Triple",
+   "serving_grams": 355,
+   "kcal": 1030,
+   "protein_g": 66,
+   "carbs_g": 42,
+   "fat_g": 69
+  },
+  {
+   "name": "Sourdough Melt, Single",
+   "serving_grams": 162,
+   "kcal": 460,
+   "protein_g": 25,
+   "carbs_g": 36,
+   "fat_g": 26
+  },
+  {
+   "name": "Sourdough Melt, Double",
+   "serving_grams": 240,
+   "kcal": 710,
+   "protein_g": 44,
+   "carbs_g": 36,
+   "fat_g": 46
+  },
+  {
+   "name": "Sourdough Melt, Triple",
+   "serving_grams": 348,
+   "kcal": 970,
+   "protein_g": 63,
+   "carbs_g": 36,
+   "fat_g": 66
+  },
+  {
+   "name": "Swiss ButterBurger, Single",
+   "serving_grams": 157,
+   "kcal": 470,
+   "protein_g": 26,
+   "carbs_g": 39,
+   "fat_g": 25
+  },
+  {
+   "name": "Swiss ButterBurger, Double",
+   "serving_grams": 235,
+   "kcal": 720,
+   "protein_g": 46,
+   "carbs_g": 39,
+   "fat_g": 44
+  },
+  {
+   "name": "Swiss ButterBurger, Triple",
+   "serving_grams": 313,
+   "kcal": 970,
+   "protein_g": 66,
+   "carbs_g": 39,
+   "fat_g": 63
+  },
+  {
+   "name": "The Culver's Deluxe, Single",
+   "serving_grams": 216,
+   "kcal": 570,
+   "protein_g": 23,
+   "carbs_g": 42,
+   "fat_g": 36
+  },
+  {
+   "name": "The Culver's Deluxe, Double",
+   "serving_grams": 292,
+   "kcal": 810,
+   "protein_g": 40,
+   "carbs_g": 43,
+   "fat_g": 55
+  },
+  {
+   "name": "The Culver's Deluxe, Triple",
+   "serving_grams": 368,
+   "kcal": 1050,
+   "protein_g": 57,
+   "carbs_g": 44,
+   "fat_g": 74
+  },
+  {
+   "name": "The Culver's Bacon Deluxe, Single",
+   "serving_grams": 225,
+   "kcal": 610,
+   "protein_g": 27,
+   "carbs_g": 42,
+   "fat_g": 39
+  },
+  {
+   "name": "The Culver's Bacon Deluxe, Double",
+   "serving_grams": 301,
+   "kcal": 850,
+   "protein_g": 44,
+   "carbs_g": 43,
+   "fat_g": 58
+  },
+  {
+   "name": "The Culver's Bacon Deluxe, Triple",
+   "serving_grams": 377,
+   "kcal": 1090,
+   "protein_g": 61,
+   "carbs_g": 44,
+   "fat_g": 77
+  },
+  {
+   "name": "Wisconsin Swiss Melt, Single",
+   "serving_grams": 162,
+   "kcal": 480,
+   "protein_g": 26,
+   "carbs_g": 38,
+   "fat_g": 24
+  },
+  {
+   "name": "Wisconsin Swiss Melt, Double",
+   "serving_grams": 240,
+   "kcal": 730,
+   "protein_g": 46,
+   "carbs_g": 38,
+   "fat_g": 44
+  },
+  {
+   "name": "Wisconsin Swiss Melt, Triple",
+   "serving_grams": 348,
+   "kcal": 990,
+   "protein_g": 66,
+   "carbs_g": 38,
+   "fat_g": 62
+  },
+  {
+   "name": "Beef Pot Roast Sandwich",
+   "serving_grams": 188,
+   "kcal": 410,
+   "protein_g": 31,
+   "carbs_g": 41,
+   "fat_g": 16
+  },
+  {
+   "name": "Buffalo Chicken Tenders - 4 Piece",
+   "serving_grams": 206,
+   "kcal": 460,
+   "protein_g": 35,
+   "carbs_g": 32,
+   "fat_g": 21
+  },
+  {
+   "name": "Chicken Tenders - 4 Piece",
+   "serving_grams": 228,
+   "kcal": 540,
+   "protein_g": 40,
+   "carbs_g": 42,
+   "fat_g": 24
+  },
+  {
+   "name": "Crispy Chicken Sandwich",
+   "serving_grams": 194,
+   "kcal": 460,
+   "protein_g": 25,
+   "carbs_g": 57,
+   "fat_g": 16
+  },
+  {
+   "name": "Grilled Chicken Sandwich",
+   "serving_grams": 244,
+   "kcal": 390,
+   "protein_g": 41,
+   "carbs_g": 39,
+   "fat_g": 8
+  },
+  {
+   "name": "Grilled Reuben Melt",
+   "serving_grams": 304,
+   "kcal": 670,
+   "protein_g": 37,
+   "carbs_g": 49,
+   "fat_g": 34
+  },
+  {
+   "name": "North Atlantic Cod Filet Sandwich",
+   "serving_grams": 211,
+   "kcal": 599,
+   "protein_g": 27,
+   "carbs_g": 48,
+   "fat_g": 34
+  },
+  {
+   "name": "Pork Tenderloin Sandwich",
+   "serving_grams": 217,
+   "kcal": 630,
+   "protein_g": 18,
+   "carbs_g": 73,
+   "fat_g": 27
+  },
+  {
+   "name": "Shaved Prime Rib Sandwich",
+   "serving_grams": 222,
+   "kcal": 620,
+   "protein_g": 28,
+   "carbs_g": 41,
+   "fat_g": 37
+  },
+  {
+   "name": "Hoagie Bun",
+   "serving_grams": 79,
+   "kcal": 210,
+   "protein_g": 7,
+   "carbs_g": 39,
+   "fat_g": 3
+  },
+  {
+   "name": "Rye Bread, 2 Slices",
+   "serving_grams": 74,
+   "kcal": 200,
+   "protein_g": 6,
+   "carbs_g": 38,
+   "fat_g": 2
+  },
+  {
+   "name": "Sourdough Bread, 2 Slices",
+   "serving_grams": 74,
+   "kcal": 180,
+   "protein_g": 6,
+   "carbs_g": 36,
+   "fat_g": 2
+  },
+  {
+   "name": "Authentic Pub Bun",
+   "serving_grams": 88,
+   "kcal": 230,
+   "protein_g": 8,
+   "carbs_g": 43,
+   "fat_g": 4
+  },
+  {
+   "name": "Gluten Free Bun",
+   "serving_grams": 90,
+   "kcal": 230,
+   "protein_g": 6,
+   "carbs_g": 39,
+   "fat_g": 6
+  },
+  {
+   "name": "Beef Pot Roast Dinner",
+   "serving_grams": 586,
+   "kcal": 750,
+   "protein_g": 37,
+   "carbs_g": 80,
+   "fat_g": 32
+  },
+  {
+   "name": "Butterfly Jumbo Shrimp Dinner - 6 Piece",
+   "serving_grams": 466,
+   "kcal": 1090,
+   "protein_g": 22,
+   "carbs_g": 130,
+   "fat_g": 55
+  },
+  {
+   "name": "Butterfly Jumbo Shrimp Dinner - 10 Piece",
+   "serving_grams": 550,
+   "kcal": 1310,
+   "protein_g": 30,
+   "carbs_g": 150,
+   "fat_g": 67
+  },
+  {
+   "name": "Fresh Fried Chicken Value Basket - 2 Piece",
+   "serving_grams": 392,
+   "kcal": 840,
+   "protein_g": 75,
+   "carbs_g": 57,
+   "fat_g": 35
+  },
+  {
+   "name": "Chopped Steak Dinner",
+   "serving_grams": 565,
+   "kcal": 810,
+   "protein_g": 37,
+   "carbs_g": 62,
+   "fat_g": 47
+  },
+  {
+   "name": "Fresh Fried Chicken Dinner - 2 Piece (Leg, Thigh)",
+   "serving_grams": 559,
+   "kcal": 770,
+   "protein_g": 49,
+   "carbs_g": 60,
+   "fat_g": 38
+  },
+  {
+   "name": "Fresh Fried Chicken Dinner - 2 Piece (Breast, Wing)",
+   "serving_grams": 637,
+   "kcal": 890,
+   "protein_g": 78,
+   "carbs_g": 60,
+   "fat_g": 38
+  },
+  {
+   "name": "Fresh Fried Chicken Dinner - 4 Piece",
+   "serving_grams": 813,
+   "kcal": 1250,
+   "protein_g": 118,
+   "carbs_g": 64,
+   "fat_g": 59
+  },
+  {
+   "name": "North Atlantic Cod - 2 Piece",
+   "serving_grams": 538,
+   "kcal": 1480,
+   "protein_g": 42,
+   "carbs_g": 107,
+   "fat_g": 100
+  },
+  {
+   "name": "North Atlantic Cod - 3 Piece",
+   "serving_grams": 628,
+   "kcal": 1680,
+   "protein_g": 57,
+   "carbs_g": 114,
+   "fat_g": 112
+  },
+  {
+   "name": "Chili Cheddar Fries",
+   "serving_grams": 305,
+   "kcal": 670,
+   "protein_g": 20,
+   "carbs_g": 77,
+   "fat_g": 31
+  },
+  {
+   "name": "Cole Slaw",
+   "serving_grams": 114,
+   "kcal": 210,
+   "protein_g": 0,
+   "carbs_g": 15,
+   "fat_g": 17
+  },
+  {
+   "name": "Crinkle Cut Fries, Small",
+   "serving_grams": 92,
+   "kcal": 240,
+   "protein_g": 4,
+   "carbs_g": 35,
+   "fat_g": 9
+  },
+  {
+   "name": "Crinkle Cut Fries, Regular",
+   "serving_grams": 140,
+   "kcal": 360,
+   "protein_g": 6,
+   "carbs_g": 53,
+   "fat_g": 14
+  },
+  {
+   "name": "Crinkle Cut Fries, Large",
+   "serving_grams": 180,
+   "kcal": 460,
+   "protein_g": 7,
+   "carbs_g": 68,
+   "fat_g": 18
+  },
+  {
+   "name": "Dinner Roll",
+   "serving_grams": 45,
+   "kcal": 140,
+   "protein_g": 3,
+   "carbs_g": 20,
+   "fat_g": 6
+  },
+  {
+   "name": "Green Beans",
+   "serving_grams": 140,
+   "kcal": 130,
+   "protein_g": 2,
+   "carbs_g": 12,
+   "fat_g": 9
+  },
+  {
+   "name": "Mashed Potatoes",
+   "serving_grams": 168,
+   "kcal": 120,
+   "protein_g": 4,
+   "carbs_g": 23,
+   "fat_g": 1
+  },
+  {
+   "name": "Mashed Potatoes & Gravy",
+   "serving_grams": 198,
+   "kcal": 140,
+   "protein_g": 4,
+   "carbs_g": 25,
+   "fat_g": 2
+  },
+  {
+   "name": "Onion Rings",
+   "serving_grams": 118,
+   "kcal": 400,
+   "protein_g": 6,
+   "carbs_g": 44,
+   "fat_g": 22
+  },
+  {
+   "name": "Wisconsin Cheese Curds",
+   "serving_grams": 150,
+   "kcal": 510,
+   "protein_g": 20,
+   "carbs_g": 51,
+   "fat_g": 25
+  },
+  {
+   "name": "American Cheese, Slice",
+   "serving_grams": 19,
+   "kcal": 70,
+   "protein_g": 3,
+   "carbs_g": 1,
+   "fat_g": 6
+  },
+  {
+   "name": "Bacon, 2 Slices",
+   "serving_grams": 9,
+   "kcal": 40,
+   "protein_g": 4,
+   "carbs_g": 0,
+   "fat_g": 3
+  },
+  {
+   "name": "BBQ Sauce",
+   "serving_grams": 54,
+   "kcal": 100,
+   "protein_g": 0,
+   "carbs_g": 25,
+   "fat_g": 0
+  },
+  {
+   "name": "Dill Pickles, Sliced",
+   "serving_grams": 6,
+   "kcal": 0,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 0
+  },
+  {
+   "name": "Honey Mustard",
+   "serving_grams": 54,
+   "kcal": 130,
+   "protein_g": 0,
+   "carbs_g": 20,
+   "fat_g": 6
+  },
+  {
+   "name": "Horseradish Sauce",
+   "serving_grams": 12,
+   "kcal": 60,
+   "protein_g": 0,
+   "carbs_g": 2,
+   "fat_g": 6
+  },
+  {
+   "name": "Ketchup",
+   "serving_grams": 17,
+   "kcal": 20,
+   "protein_g": 0,
+   "carbs_g": 5,
+   "fat_g": 0
+  },
+  {
+   "name": "Malt Vinegar",
+   "serving_grams": 9,
+   "kcal": 0,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 0
+  },
+  {
+   "name": "Mayonnaise",
+   "serving_grams": 12,
+   "kcal": 80,
+   "protein_g": 0,
+   "carbs_g": 1,
+   "fat_g": 8
+  },
+  {
+   "name": "Mustard, Mild",
+   "serving_grams": 11,
+   "kcal": 0,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 0
+  },
+  {
+   "name": "Mustard, Spicy Brown",
+   "serving_grams": 10,
+   "kcal": 0,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 0
+  },
+  {
+   "name": "Picante Sauce, Mild and Medium",
+   "serving_grams": 32,
+   "kcal": 10,
+   "protein_g": 0,
+   "carbs_g": 2,
+   "fat_g": 0
+  },
+  {
+   "name": "Shrimp Cocktail Sauce",
+   "serving_grams": 42,
+   "kcal": 50,
+   "protein_g": 1,
+   "carbs_g": 12,
+   "fat_g": 0
+  },
+  {
+   "name": "Steak Sauce",
+   "serving_grams": 12,
+   "kcal": 10,
+   "protein_g": 0,
+   "carbs_g": 2,
+   "fat_g": 0
+  },
+  {
+   "name": "Sweet & Sour Dipping Sauce",
+   "serving_grams": 54,
+   "kcal": 90,
+   "protein_g": 0,
+   "carbs_g": 23,
+   "fat_g": 0
+  },
+  {
+   "name": "Tartar Sauce",
+   "serving_grams": 57,
+   "kcal": 360,
+   "protein_g": 1,
+   "carbs_g": 3,
+   "fat_g": 39
+  },
+  {
+   "name": "Chicken Cashew with Grilled Chicken",
+   "serving_grams": 340,
+   "kcal": 460,
+   "protein_g": 47,
+   "carbs_g": 18,
+   "fat_g": 24
+  },
+  {
+   "name": "Cranberry Bacon Bleu Salad with Grilled Chicken",
+   "serving_grams": 329,
+   "kcal": 360,
+   "protein_g": 46,
+   "carbs_g": 17,
+   "fat_g": 14
+  },
+  {
+   "name": "Garden Fresco",
+   "serving_grams": 200,
+   "kcal": 200,
+   "protein_g": 11,
+   "carbs_g": 19,
+   "fat_g": 11
+  },
+  {
+   "name": "Garden Fresco with Grilled Chicken",
+   "serving_grams": 326,
+   "kcal": 360,
+   "protein_g": 45,
+   "carbs_g": 19,
+   "fat_g": 14
+  },
+  {
+   "name": "Side Salad",
+   "serving_grams": 61,
+   "kcal": 55,
+   "protein_g": 3,
+   "carbs_g": 5,
+   "fat_g": 3
+  },
+  {
+   "name": "Chunky Bleu Cheese Dressing",
+   "serving_grams": 50,
+   "kcal": 310,
+   "protein_g": 1,
+   "carbs_g": 2,
+   "fat_g": 33
+  },
+  {
+   "name": "French Dressing",
+   "serving_grams": 50,
+   "kcal": 190,
+   "protein_g": 0,
+   "carbs_g": 19,
+   "fat_g": 13
+  },
+  {
+   "name": "Ranch Dressing",
+   "serving_grams": 50,
+   "kcal": 180,
+   "protein_g": 1,
+   "carbs_g": 2,
+   "fat_g": 19
+  },
+  {
+   "name": "Raspberry Vinaigrette Dressing",
+   "serving_grams": 54,
+   "kcal": 45,
+   "protein_g": 0,
+   "carbs_g": 11,
+   "fat_g": 0
+  },
+  {
+   "name": "Sesame Ginger Dressing",
+   "serving_grams": 54,
+   "kcal": 70,
+   "protein_g": 1,
+   "carbs_g": 16,
+   "fat_g": 0
+  },
+  {
+   "name": "Thousand Island Dressing",
+   "serving_grams": 60,
+   "kcal": 220,
+   "protein_g": 0,
+   "carbs_g": 14,
+   "fat_g": 18
+  },
+  {
+   "name": "Banana Split, 2 Scoop",
+   "serving_grams": 485,
+   "kcal": 1060,
+   "protein_g": 16,
+   "carbs_g": 121,
+   "fat_g": 60
+  },
+  {
+   "name": "Banana Split, 3 Scoop",
+   "serving_grams": 612,
+   "kcal": 1350,
+   "protein_g": 20,
+   "carbs_g": 165,
+   "fat_g": 71
+  },
+  {
+   "name": "Caramel Cashew, 1 Scoop",
+   "serving_grams": 212,
+   "kcal": 600,
+   "protein_g": 11,
+   "carbs_g": 68,
+   "fat_g": 33
+  },
+  {
+   "name": "Caramel Cashew, 2 Scoop",
+   "serving_grams": 377,
+   "kcal": 1000,
+   "protein_g": 17,
+   "carbs_g": 122,
+   "fat_g": 51
+  },
+  {
+   "name": "Caramel Cashew, 3 Scoop",
+   "serving_grams": 446,
+   "kcal": 1150,
+   "protein_g": 19,
+   "carbs_g": 137,
+   "fat_g": 60
+  },
+  {
+   "name": "Fudge Pecan Sundae, 1 Scoop",
+   "serving_grams": 212,
+   "kcal": 640,
+   "protein_g": 10,
+   "carbs_g": 58,
+   "fat_g": 43
+  },
+  {
+   "name": "Fudge Pecan Sundae, 2 Scoop",
+   "serving_grams": 377,
+   "kcal": 1040,
+   "protein_g": 17,
+   "carbs_g": 107,
+   "fat_g": 64
+  },
+  {
+   "name": "Fudge Pecan Sundae, 3 Scoop",
+   "serving_grams": 446,
+   "kcal": 1190,
+   "protein_g": 20,
+   "carbs_g": 122,
+   "fat_g": 73
+  },
+  {
+   "name": "Turtle Sundae, 1 Scoop",
+   "serving_grams": 212,
+   "kcal": 640,
+   "protein_g": 10,
+   "carbs_g": 61,
+   "fat_g": 42
+  },
+  {
+   "name": "Turtle Sundae, 2 Scoop",
+   "serving_grams": 377,
+   "kcal": 1040,
+   "protein_g": 16,
+   "carbs_g": 112,
+   "fat_g": 62
+  },
+  {
+   "name": "Turtle Sundae, 3 Scoop",
+   "serving_grams": 446,
+   "kcal": 1190,
+   "protein_g": 19,
+   "carbs_g": 127,
+   "fat_g": 70
+  },
+  {
+   "name": "Chocolate Cake Cone, 1 Scoop",
+   "serving_grams": 144,
+   "kcal": 300,
+   "protein_g": 6,
+   "carbs_g": 39,
+   "fat_g": 14
+  },
+  {
+   "name": "Chocolate Cake Cone, 2 Scoop",
+   "serving_grams": 274,
+   "kcal": 560,
+   "protein_g": 11,
+   "carbs_g": 72,
+   "fat_g": 27
+  },
+  {
+   "name": "Chocolate Cake Cone, 3 Scoop",
+   "serving_grams": 344,
+   "kcal": 700,
+   "protein_g": 14,
+   "carbs_g": 89,
+   "fat_g": 34
+  },
+  {
+   "name": "Chocolate, Dish, 1 Scoop",
+   "serving_grams": 140,
+   "kcal": 280,
+   "protein_g": 6,
+   "carbs_g": 35,
+   "fat_g": 14
+  },
+  {
+   "name": "Chocolate, Dish, 2 Scoop",
+   "serving_grams": 270,
+   "kcal": 540,
+   "protein_g": 11,
+   "carbs_g": 68,
+   "fat_g": 27
+  },
+  {
+   "name": "Chocolate, Dish, 3 Scoop",
+   "serving_grams": 340,
+   "kcal": 680,
+   "protein_g": 14,
+   "carbs_g": 85,
+   "fat_g": 34
+  },
+  {
+   "name": "Chocolate, Waffle Cone, 1 Scoop",
+   "serving_grams": 183,
+   "kcal": 380,
+   "protein_g": 7,
+   "carbs_g": 53,
+   "fat_g": 16
+  },
+  {
+   "name": "Chocolate, Waffle Cone, 2 Scoop",
+   "serving_grams": 313,
+   "kcal": 640,
+   "protein_g": 12,
+   "carbs_g": 86,
+   "fat_g": 30
+  },
+  {
+   "name": "Chocolate, Waffle Cone, 3 Scoop",
+   "serving_grams": 383,
+   "kcal": 780,
+   "protein_g": 15,
+   "carbs_g": 103,
+   "fat_g": 36
+  },
+  {
+   "name": "Mini Scoop Chocolate Cake Cone",
+   "serving_grams": 94,
+   "kcal": 200,
+   "protein_g": 4,
+   "carbs_g": 27,
+   "fat_g": 9
+  },
+  {
+   "name": "Mini Scoop Vanilla Cake Cone",
+   "serving_grams": 90,
+   "kcal": 210,
+   "protein_g": 3,
+   "carbs_g": 23,
+   "fat_g": 11
+  },
+  {
+   "name": "Vanilla Cake Cone, 1 Scoop",
+   "serving_grams": 145,
+   "kcal": 330,
+   "protein_g": 6,
+   "carbs_g": 35,
+   "fat_g": 18
+  },
+  {
+   "name": "Vanilla Cake Cone, 2 Scoop",
+   "serving_grams": 272,
+   "kcal": 610,
+   "protein_g": 11,
+   "carbs_g": 64,
+   "fat_g": 35
+  },
+  {
+   "name": "Vanilla Cake Cone, 3 Scoop",
+   "serving_grams": 340,
+   "kcal": 760,
+   "protein_g": 13,
+   "carbs_g": 78,
+   "fat_g": 43
+  },
+  {
+   "name": "Vanilla, Dish, 1 Scoop",
+   "serving_grams": 141,
+   "kcal": 310,
+   "protein_g": 6,
+   "carbs_g": 31,
+   "fat_g": 18
+  },
+  {
+   "name": "Vanilla, Dish, 2 Scoop",
+   "serving_grams": 268,
+   "kcal": 590,
+   "protein_g": 11,
+   "carbs_g": 59,
+   "fat_g": 35
+  },
+  {
+   "name": "Vanilla, Dish, 3 Scoop",
+   "serving_grams": 336,
+   "kcal": 740,
+   "protein_g": 13,
+   "carbs_g": 74,
+   "fat_g": 44
+  },
+  {
+   "name": "Vanilla, Waffle Cone, 1 Scoop",
+   "serving_grams": 184,
+   "kcal": 410,
+   "protein_g": 7,
+   "carbs_g": 49,
+   "fat_g": 21
+  },
+  {
+   "name": "Vanilla, Waffle Cone, 2 Scoop",
+   "serving_grams": 311,
+   "kcal": 690,
+   "protein_g": 12,
+   "carbs_g": 77,
+   "fat_g": 37
+  },
+  {
+   "name": "Vanilla, Waffle Cone, 3 Scoop",
+   "serving_grams": 380,
+   "kcal": 840,
+   "protein_g": 14,
+   "carbs_g": 92,
+   "fat_g": 46
+  },
+  {
+   "name": "Chocolate Malt, Short",
+   "serving_grams": 307,
+   "kcal": 650,
+   "protein_g": 11,
+   "carbs_g": 81,
+   "fat_g": 32
+  },
+  {
+   "name": "Chocolate Malt, Medium",
+   "serving_grams": 394,
+   "kcal": 860,
+   "protein_g": 13,
+   "carbs_g": 118,
+   "fat_g": 38
+  },
+  {
+   "name": "Chocolate Malt, Tall",
+   "serving_grams": 531,
+   "kcal": 1170,
+   "protein_g": 18,
+   "carbs_g": 165,
+   "fat_g": 50
+  },
+  {
+   "name": "Chocolate Shake, Short",
+   "serving_grams": 300,
+   "kcal": 620,
+   "protein_g": 11,
+   "carbs_g": 75,
+   "fat_g": 32
+  },
+  {
+   "name": "Chocolate Shake, Medium",
+   "serving_grams": 380,
+   "kcal": 800,
+   "protein_g": 12,
+   "carbs_g": 106,
+   "fat_g": 37
+  },
+  {
+   "name": "Chocolate Shake, Tall",
+   "serving_grams": 510,
+   "kcal": 1080,
+   "protein_g": 16,
+   "carbs_g": 147,
+   "fat_g": 49
+  },
+  {
+   "name": "Culver's Root Beer Float, Short",
+   "serving_grams": 129,
+   "kcal": 360,
+   "protein_g": 5,
+   "carbs_g": 52,
+   "fat_g": 16
+  },
+  {
+   "name": "Culver's Root Beer Float, Medium",
+   "serving_grams": 150,
+   "kcal": 440,
+   "protein_g": 6,
+   "carbs_g": 66,
+   "fat_g": 18
+  },
+  {
+   "name": "Culver's Root Beer Float, Tall",
+   "serving_grams": 157,
+   "kcal": 530,
+   "protein_g": 6,
+   "carbs_g": 91,
+   "fat_g": 18
+  },
+  {
+   "name": "Strawberry Malt, Short",
+   "serving_grams": 316,
+   "kcal": 610,
+   "protein_g": 11,
+   "carbs_g": 70,
+   "fat_g": 32
+  },
+  {
+   "name": "Strawberry Malt, Medium",
+   "serving_grams": 408,
+   "kcal": 770,
+   "protein_g": 13,
+   "carbs_g": 96,
+   "fat_g": 38
+  },
+  {
+   "name": "Strawberry Malt, Tall",
+   "serving_grams": 554,
+   "kcal": 1040,
+   "protein_g": 18,
+   "carbs_g": 132,
+   "fat_g": 50
+  },
+  {
+   "name": "Strawberry Shake, Short",
+   "serving_grams": 310,
+   "kcal": 580,
+   "protein_g": 11,
+   "carbs_g": 64,
+   "fat_g": 32
+  },
+  {
+   "name": "Strawberry Shake, Medium",
+   "serving_grams": 394,
+   "kcal": 710,
+   "protein_g": 12,
+   "carbs_g": 84,
+   "fat_g": 37
+  },
+  {
+   "name": "Strawberry Shake, Tall",
+   "serving_grams": 534,
+   "kcal": 950,
+   "protein_g": 16,
+   "carbs_g": 114,
+   "fat_g": 49
+  },
+  {
+   "name": "Vanilla Malt, Short",
+   "serving_grams": 297,
+   "kcal": 610,
+   "protein_g": 12,
+   "carbs_g": 64,
+   "fat_g": 35
+  },
+  {
+   "name": "Vanilla Malt, Medium",
+   "serving_grams": 379,
+   "kcal": 790,
+   "protein_g": 16,
+   "carbs_g": 85,
+   "fat_g": 44
+  },
+  {
+   "name": "Vanilla Malt, Tall",
+   "serving_grams": 511,
+   "kcal": 1070,
+   "protein_g": 21,
+   "carbs_g": 116,
+   "fat_g": 60
+  },
+  {
+   "name": "Vanilla Shake, Short",
+   "serving_grams": 290,
+   "kcal": 580,
+   "protein_g": 12,
+   "carbs_g": 58,
+   "fat_g": 35
+  },
+  {
+   "name": "Vanilla Shake, Medium",
+   "serving_grams": 365,
+   "kcal": 730,
+   "protein_g": 15,
+   "carbs_g": 73,
+   "fat_g": 44
+  },
+  {
+   "name": "Vanilla Shake, Tall",
+   "serving_grams": 490,
+   "kcal": 980,
+   "protein_g": 20,
+   "carbs_g": 98,
+   "fat_g": 59
+  },
+  {
+   "name": "Cookie Dough Concrete Mixer, Mini",
+   "serving_grams": 196,
+   "kcal": 490,
+   "protein_g": 8,
+   "carbs_g": 55,
+   "fat_g": 27
+  },
+  {
+   "name": "Cookie Dough Concrete Mixer, Short",
+   "serving_grams": 324,
+   "kcal": 770,
+   "protein_g": 13,
+   "carbs_g": 83,
+   "fat_g": 43
+  },
+  {
+   "name": "Cookie Dough Concrete Mixer, Medium",
+   "serving_grams": 406,
+   "kcal": 1010,
+   "protein_g": 16,
+   "carbs_g": 113,
+   "fat_g": 56
+  },
+  {
+   "name": "Cookie Dough Concrete Mixer, Tall",
+   "serving_grams": 584,
+   "kcal": 1460,
+   "protein_g": 23,
+   "carbs_g": 164,
+   "fat_g": 80
+  },
+  {
+   "name": "Crazy for Cookie Dough Concrete Mixer, Mini",
+   "serving_grams": 220,
+   "kcal": 550,
+   "protein_g": 9,
+   "carbs_g": 69,
+   "fat_g": 27
+  },
+  {
+   "name": "Crazy for Cookie Dough Concrete Mixer, Short",
+   "serving_grams": 362,
+   "kcal": 890,
+   "protein_g": 14,
+   "carbs_g": 106,
+   "fat_g": 46
+  },
+  {
+   "name": "Crazy for Cookie Dough Concrete Mixer, Medium",
+   "serving_grams": 454,
+   "kcal": 1130,
+   "protein_g": 18,
+   "carbs_g": 141,
+   "fat_g": 56
+  },
+  {
+   "name": "Crazy for Cookie Dough Concrete Mixer, Tall",
+   "serving_grams": 670,
+   "kcal": 1700,
+   "protein_g": 26,
+   "carbs_g": 215,
+   "fat_g": 83
+  },
+  {
+   "name": "M&M Chocolate Concrete Mixer, Mini",
+   "serving_grams": 198,
+   "kcal": 480,
+   "protein_g": 8,
+   "carbs_g": 62,
+   "fat_g": 23
+  },
+  {
+   "name": "M&M Chocolate Concrete Mixer, Short",
+   "serving_grams": 323,
+   "kcal": 730,
+   "protein_g": 13,
+   "carbs_g": 94,
+   "fat_g": 35
+  },
+  {
+   "name": "M&M Chocolate Concrete Mixer, Medium",
+   "serving_grams": 406,
+   "kcal": 980,
+   "protein_g": 17,
+   "carbs_g": 128,
+   "fat_g": 46
+  },
+  {
+   "name": "M&M Chocolate Concrete Mixer, Tall",
+   "serving_grams": 584,
+   "kcal": 1420,
+   "protein_g": 24,
+   "carbs_g": 185,
+   "fat_g": 67
+  },
+  {
+   "name": "M&M Vanilla Concrete Mixer, Mini",
+   "serving_grams": 196,
+   "kcal": 510,
+   "protein_g": 8,
+   "carbs_g": 57,
+   "fat_g": 27
+  },
+  {
+   "name": "M&M Vanilla Concrete Mixer, Short",
+   "serving_grams": 324,
+   "kcal": 790,
+   "protein_g": 13,
+   "carbs_g": 85,
+   "fat_g": 44
+  },
+  {
+   "name": "M&M Vanilla Concrete Mixer, Medium",
+   "serving_grams": 406,
+   "kcal": 1050,
+   "protein_g": 17,
+   "carbs_g": 117,
+   "fat_g": 57
+  },
+  {
+   "name": "M&M Vanilla Concrete Mixer, Tall",
+   "serving_grams": 584,
+   "kcal": 1520,
+   "protein_g": 24,
+   "carbs_g": 170,
+   "fat_g": 82
+  },
+  {
+   "name": "Mint Oreo Concrete Mixer, Mini",
+   "serving_grams": 199,
+   "kcal": 470,
+   "protein_g": 7,
+   "carbs_g": 57,
+   "fat_g": 24
+  },
+  {
+   "name": "Mint Oreo Concrete Mixer, Short",
+   "serving_grams": 322,
+   "kcal": 740,
+   "protein_g": 12,
+   "carbs_g": 84,
+   "fat_g": 40
+  },
+  {
+   "name": "Mint Oreo Concrete Mixer, Medium",
+   "serving_grams": 407,
+   "kcal": 960,
+   "protein_g": 15,
+   "carbs_g": 116,
+   "fat_g": 50
+  },
+  {
+   "name": "Mint Oreo Concrete Mixer, Tall",
+   "serving_grams": 586,
+   "kcal": 1385,
+   "protein_g": 22,
+   "carbs_g": 168,
+   "fat_g": 71
+  },
+  {
+   "name": "Oreo Chocolate Concrete Mixer, Mini",
+   "serving_grams": 189,
+   "kcal": 430,
+   "protein_g": 8,
+   "carbs_g": 56,
+   "fat_g": 21
+  },
+  {
+   "name": "Oreo Chocolate Concrete Mixer, Short",
+   "serving_grams": 314,
+   "kcal": 680,
+   "protein_g": 13,
+   "carbs_g": 88,
+   "fat_g": 34
+  },
+  {
+   "name": "Oreo Chocolate Concrete Mixer, Medium",
+   "serving_grams": 388,
+   "kcal": 880,
+   "protein_g": 16,
+   "carbs_g": 116,
+   "fat_g": 43
+  },
+  {
+   "name": "Oreo Chocolate Concrete Mixer, Tall",
+   "serving_grams": 557,
+   "kcal": 1270,
+   "protein_g": 23,
+   "carbs_g": 167,
+   "fat_g": 62
+  },
+  {
+   "name": "Reese's Chocolate Concrete Mixer, Mini",
+   "serving_grams": 198,
+   "kcal": 480,
+   "protein_g": 10,
+   "carbs_g": 58,
+   "fat_g": 25
+  },
+  {
+   "name": "Reese's Chocolate Concrete Mixer, Short",
+   "serving_grams": 323,
+   "kcal": 730,
+   "protein_g": 15,
+   "carbs_g": 90,
+   "fat_g": 38
+  },
+  {
+   "name": "Reese's Chocolate Concrete Mixer, Medium",
+   "serving_grams": 406,
+   "kcal": 980,
+   "protein_g": 20,
+   "carbs_g": 120,
+   "fat_g": 51
+  },
+  {
+   "name": "Reese'sChocolate Concrete Mixer, Tall",
+   "serving_grams": 584,
+   "kcal": 1420,
+   "protein_g": 29,
+   "carbs_g": 173,
+   "fat_g": 74
+  },
+  {
+   "name": "Reese's Vanilla Concrete Mini Mixer",
+   "serving_grams": 196,
+   "kcal": 510,
+   "protein_g": 10,
+   "carbs_g": 53,
+   "fat_g": 30
+  },
+  {
+   "name": "Reese's Vanilla Concrete Mixer, Short",
+   "serving_grams": 324,
+   "kcal": 790,
+   "protein_g": 15,
+   "carbs_g": 81,
+   "fat_g": 46
+  },
+  {
+   "name": "Reese's Vanilla Concrete Mixer, Medium",
+   "serving_grams": 406,
+   "kcal": 1050,
+   "protein_g": 20,
+   "carbs_g": 109,
+   "fat_g": 62
+  },
+  {
+   "name": "Reese's Vanilla Concrete Mixer, Tall",
+   "serving_grams": 584,
+   "kcal": 1520,
+   "protein_g": 29,
+   "carbs_g": 158,
+   "fat_g": 89
+  },
+  {
+   "name": "Snickers Chocolate Concrete Mixer, Mini",
+   "serving_grams": 198,
+   "kcal": 470,
+   "protein_g": 9,
+   "carbs_g": 60,
+   "fat_g": 23
+  },
+  {
+   "name": "Snickers Chocolate Concrete Mixer, Short",
+   "serving_grams": 323,
+   "kcal": 720,
+   "protein_g": 14,
+   "carbs_g": 91,
+   "fat_g": 36
+  },
+  {
+   "name": "Snickers Chocolate Concrete Mixer, Medium",
+   "serving_grams": 406,
+   "kcal": 960,
+   "protein_g": 18,
+   "carbs_g": 122,
+   "fat_g": 47
+  },
+  {
+   "name": "Snickers Chocolate Concrete Mixer, Tall",
+   "serving_grams": 584,
+   "kcal": 1390,
+   "protein_g": 26,
+   "carbs_g": 176,
+   "fat_g": 68
+  },
+  {
+   "name": "Snickers Vanilla Concrete Mixer, Mini",
+   "serving_grams": 196,
+   "kcal": 500,
+   "protein_g": 9,
+   "carbs_g": 54,
+   "fat_g": 28
+  },
+  {
+   "name": "Snickers Vanilla Concrete Mixer, Short",
+   "serving_grams": 324,
+   "kcal": 780,
+   "protein_g": 14,
+   "carbs_g": 82,
+   "fat_g": 44
+  },
+  {
+   "name": "Snickers Vanilla Concrete Mixer, Medium",
+   "serving_grams": 406,
+   "kcal": 1030,
+   "protein_g": 18,
+   "carbs_g": 111,
+   "fat_g": 58
+  },
+  {
+   "name": "Snickers Vanilla Concrete Mixer, Tall",
+   "serving_grams": 584,
+   "kcal": 1490,
+   "protein_g": 26,
+   "carbs_g": 161,
+   "fat_g": 83
+  },
+  {
+   "name": "Strawberry Concrete Mixer, Mini",
+   "serving_grams": 212,
+   "kcal": 420,
+   "protein_g": 7,
+   "carbs_g": 49,
+   "fat_g": 22
+  },
+  {
+   "name": "Strawberry Concrete Mixer, Short",
+   "serving_grams": 340,
+   "kcal": 700,
+   "protein_g": 12,
+   "carbs_g": 77,
+   "fat_g": 39
+  },
+  {
+   "name": "Strawberry Concrete Mixer, Medium",
+   "serving_grams": 434,
+   "kcal": 860,
+   "protein_g": 14,
+   "carbs_g": 99,
+   "fat_g": 46
+  },
+  {
+   "name": "Strawberry Concrete Mixer, Tall",
+   "serving_grams": 626,
+   "kcal": 1235,
+   "protein_g": 20,
+   "carbs_g": 143,
+   "fat_g": 65
+  },
+  {
+   "name": "Lemon Ice, 1 Scoop",
+   "serving_grams": 174,
+   "kcal": 200,
+   "protein_g": 0,
+   "carbs_g": 49,
+   "fat_g": 0
+  },
+  {
+   "name": "Lemon Ice, 2 Scoop",
+   "serving_grams": 261,
+   "kcal": 300,
+   "protein_g": 0,
+   "carbs_g": 73,
+   "fat_g": 0
+  },
+  {
+   "name": "Lemon Ice, 3 Scoop",
+   "serving_grams": 313,
+   "kcal": 360,
+   "protein_g": 0,
+   "carbs_g": 88,
+   "fat_g": 0
+  },
+  {
+   "name": "Lemon Ice Cooler, Short",
+   "serving_grams": 261,
+   "kcal": 320,
+   "protein_g": 0,
+   "carbs_g": 79,
+   "fat_g": 0
+  },
+  {
+   "name": "Lemon Ice Cooler, Medium",
+   "serving_grams": 331,
+   "kcal": 420,
+   "protein_g": 0,
+   "carbs_g": 105,
+   "fat_g": 0
+  },
+  {
+   "name": "Lemon Ice Cooler, Tall",
+   "serving_grams": 505,
+   "kcal": 640,
+   "protein_g": 0,
+   "carbs_g": 160,
+   "fat_g": 0
+  },
+  {
+   "name": "Lemon Ice Smoothie, Short",
+   "serving_grams": 352,
+   "kcal": 520,
+   "protein_g": 6,
+   "carbs_g": 86,
+   "fat_g": 17
+  },
+  {
+   "name": "Lemon Ice Smoothie, Medium",
+   "serving_grams": 449,
+   "kcal": 650,
+   "protein_g": 7,
+   "carbs_g": 111,
+   "fat_g": 20
+  },
+  {
+   "name": "Lemon Ice Smoothie, Tall",
+   "serving_grams": 686,
+   "kcal": 990,
+   "protein_g": 10,
+   "carbs_g": 170,
+   "fat_g": 30
+  },
+  {
+   "name": "Almond",
+   "serving_grams": 28,
+   "kcal": 170,
+   "protein_g": 6,
+   "carbs_g": 5,
+   "fat_g": 15
+  },
+  {
+   "name": "Andes Creme De Menthe Thins",
+   "serving_grams": 28,
+   "kcal": 150,
+   "protein_g": 1,
+   "carbs_g": 15,
+   "fat_g": 9
+  },
+  {
+   "name": "Banana",
+   "serving_grams": 60,
+   "kcal": 50,
+   "protein_g": 1,
+   "carbs_g": 13,
+   "fat_g": 0
+  },
+  {
+   "name": "Blackberry",
+   "serving_grams": 33,
+   "kcal": 40,
+   "protein_g": 0,
+   "carbs_g": 10,
+   "fat_g": 0
+  },
+  {
+   "name": "Blueberry",
+   "serving_grams": 33,
+   "kcal": 30,
+   "protein_g": 0,
+   "carbs_g": 7,
+   "fat_g": 0
+  },
+  {
+   "name": "Brownie Pieces",
+   "serving_grams": 28,
+   "kcal": 110,
+   "protein_g": 2,
+   "carbs_g": 17,
+   "fat_g": 5
+  },
+  {
+   "name": "Butterfinger",
+   "serving_grams": 28,
+   "kcal": 130,
+   "protein_g": 1,
+   "carbs_g": 20,
+   "fat_g": 5
+  },
+  {
+   "name": "Butterscotch",
+   "serving_grams": 38,
+   "kcal": 110,
+   "protein_g": 0,
+   "carbs_g": 25,
+   "fat_g": 1
+  },
+  {
+   "name": "Cashew",
+   "serving_grams": 28,
+   "kcal": 160,
+   "protein_g": 4,
+   "carbs_g": 9,
+   "fat_g": 13
+  },
+  {
+   "name": "Cheesecake Pieces",
+   "serving_grams": 30,
+   "kcal": 110,
+   "protein_g": 2,
+   "carbs_g": 10,
+   "fat_g": 7
+  },
+  {
+   "name": "Cherry, Red Topping",
+   "serving_grams": 33,
+   "kcal": 40,
+   "protein_g": 0,
+   "carbs_g": 10,
+   "fat_g": 0
+  },
+  {
+   "name": "Chocolate Chip Cookie Dough",
+   "serving_grams": 28,
+   "kcal": 120,
+   "protein_g": 1,
+   "carbs_g": 18,
+   "fat_g": 5
+  },
+  {
+   "name": "Chocolate Flake",
+   "serving_grams": 22,
+   "kcal": 110,
+   "protein_g": 1,
+   "carbs_g": 13,
+   "fat_g": 7
+  },
+  {
+   "name": "Creme De Menthe",
+   "serving_grams": 38,
+   "kcal": 100,
+   "protein_g": 0,
+   "carbs_g": 25,
+   "fat_g": 0
+  },
+  {
+   "name": "Culver's Chocolate Syrup",
+   "serving_grams": 35,
+   "kcal": 90,
+   "protein_g": 0,
+   "carbs_g": 22,
+   "fat_g": 0
+  },
+  {
+   "name": "Culver's Hot Caramel",
+   "serving_grams": 38,
+   "kcal": 120,
+   "protein_g": 1,
+   "carbs_g": 26,
+   "fat_g": 2
+  },
+  {
+   "name": "Culver's Hot Fudge",
+   "serving_grams": 38,
+   "kcal": 120,
+   "protein_g": 2,
+   "carbs_g": 21,
+   "fat_g": 4
+  },
+  {
+   "name": "Heath Toffee Chunks",
+   "serving_grams": 28,
+   "kcal": 150,
+   "protein_g": 1,
+   "carbs_g": 17,
+   "fat_g": 9
+  },
+  {
+   "name": "Kit Kat",
+   "serving_grams": 24,
+   "kcal": 120,
+   "protein_g": 1,
+   "carbs_g": 16,
+   "fat_g": 6
+  },
+  {
+   "name": "M&M Minis",
+   "serving_grams": 28,
+   "kcal": 140,
+   "protein_g": 2,
+   "carbs_g": 20,
+   "fat_g": 6
+  },
+  {
+   "name": "Mango Fruit Infusion",
+   "serving_grams": 35,
+   "kcal": 60,
+   "protein_g": 0,
+   "carbs_g": 16,
+   "fat_g": 0
+  },
+  {
+   "name": "Maraschino Cherry",
+   "serving_grams": 5,
+   "kcal": 10,
+   "protein_g": 0,
+   "carbs_g": 2,
+   "fat_g": 0
+  },
+  {
+   "name": "Marshmallow Creme",
+   "serving_grams": 38,
+   "kcal": 110,
+   "protein_g": 0,
+   "carbs_g": 27,
+   "fat_g": 0
+  },
+  {
+   "name": "Nerds",
+   "serving_grams": 28,
+   "kcal": 100,
+   "protein_g": 0,
+   "carbs_g": 25,
+   "fat_g": 0
+  },
+  {
+   "name": "Nestle Crunch",
+   "serving_grams": 28,
+   "kcal": 140,
+   "protein_g": 1,
+   "carbs_g": 19,
+   "fat_g": 7
+  },
+  {
+   "name": "Novelty Coating",
+   "serving_grams": 28,
+   "kcal": 170,
+   "protein_g": 2,
+   "carbs_g": 12,
+   "fat_g": 13
+  },
+  {
+   "name": "Oreo Cookie Crumbs",
+   "serving_grams": 19,
+   "kcal": 90,
+   "protein_g": 1,
+   "carbs_g": 14,
+   "fat_g": 4
+  },
+  {
+   "name": "Peach",
+   "serving_grams": 33,
+   "kcal": 35,
+   "protein_g": 0,
+   "carbs_g": 9,
+   "fat_g": 0
+  },
+  {
+   "name": "Peanut Butter",
+   "serving_grams": 34,
+   "kcal": 200,
+   "protein_g": 7,
+   "carbs_g": 7,
+   "fat_g": 18
+  },
+  {
+   "name": "Peanuts, Dry Roast Seasoned",
+   "serving_grams": 28,
+   "kcal": 160,
+   "protein_g": 6,
+   "carbs_g": 6,
+   "fat_g": 13
+  },
+  {
+   "name": "Pecan Halves",
+   "serving_grams": 28,
+   "kcal": 200,
+   "protein_g": 2,
+   "carbs_g": 4,
+   "fat_g": 21
+  },
+  {
+   "name": "Pie Crust Pieces",
+   "serving_grams": 28,
+   "kcal": 140,
+   "protein_g": 2,
+   "carbs_g": 19,
+   "fat_g": 6
+  },
+  {
+   "name": "Raspberry",
+   "serving_grams": 28,
+   "kcal": 30,
+   "protein_g": 0,
+   "carbs_g": 7,
+   "fat_g": 0
+  },
+  {
+   "name": "Reese’s Pieces Minis",
+   "serving_grams": 28,
+   "kcal": 130,
+   "protein_g": 3,
+   "carbs_g": 18,
+   "fat_g": 6
+  },
+  {
+   "name": "Reese’s Peanut Butter Cups",
+   "serving_grams": 28,
+   "kcal": 140,
+   "protein_g": 3,
+   "carbs_g": 16,
+   "fat_g": 8
+  },
+  {
+   "name": "Salted Caramel Topping",
+   "serving_grams": 38,
+   "kcal": 120,
+   "protein_g": 1,
+   "carbs_g": 25,
+   "fat_g": 2
+  },
+  {
+   "name": "Snickers Candy Bar Pieces",
+   "serving_grams": 28,
+   "kcal": 130,
+   "protein_g": 2,
+   "carbs_g": 17,
+   "fat_g": 6
+  },
+  {
+   "name": "Sprinkles, Blue and White",
+   "serving_grams": 28,
+   "kcal": 120,
+   "protein_g": 0,
+   "carbs_g": 26,
+   "fat_g": 2
+  },
+  {
+   "name": "Strawberry, Sliced",
+   "serving_grams": 42,
+   "kcal": 45,
+   "protein_g": 0,
+   "carbs_g": 11,
+   "fat_g": 0
+  },
+  {
+   "name": "Twix",
+   "serving_grams": 28,
+   "kcal": 140,
+   "protein_g": 1,
+   "carbs_g": 18,
+   "fat_g": 6
+  },
+  {
+   "name": "Whipped Topping, Extra Creamy",
+   "serving_grams": 5,
+   "kcal": 15,
+   "protein_g": 0,
+   "carbs_g": 1,
+   "fat_g": 1
+  }
+ ]
+}

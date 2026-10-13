@@ -107,3 +107,11 @@ M0 signed off by Sean 2026-10-13 (Pixel: sign in by code, install, tabs, light a
 - Eval: `--model` flag; USDA responses cached on disk during eval runs (`USDA_CACHE_DIR`).
 - Found: the USDA key's 3,600 requests an hour ran out during the three model comparison, so the Opus comparison run is invalid and the comparison is not finished.
 - Blocked: Docker Desktop fails to start, so the three new migrations and their RLS suites have not run, and the card UI cannot be checked at 375px.
+
+### 2026-10-13: database back, more curated chains
+
+- Docker restored: all migrations applied locally; 100 of 100 unit and RLS tests pass, including the new suites for `ai_calls`, `food_items`, `nutrition_coach_settings`, `food_entries` and `food_entry_items`.
+- Curated chains now 6 of 11 (1,549 items), each from the chain's own published document: Chick-fil-A (official page), Chipotle (US nutrition facts PDF, March 2025), Culver's (Nutrition and Allergen Guide PDF), Domino's (Nutrition Guide PDF, August 2026), Panera (Nutrition Guide PDF, effective 9/2/2026), Subway (U.S. Nutrition Information PDF, January 2026).
+- Serving only items: Panera publishes portions ("1 Bagel", "1/2 Sandwich", "Cup") without weights. Those items count servings from P1's quantity and keep P1's gram estimate; their nutrition is still the chain's (amount source label).
+- Not curated yet: McDonald's, Starbucks, Taco Bell and Raising Cane's (pages block automated access or render nutrition only in a browser; Taco Bell item pages show calories without macros), and Imo's (only document is May 2018, per whole pizza, no weights or slice counts). See QUESTIONS.md Q41.
+- Model comparison still waiting on the USDA hourly quota.

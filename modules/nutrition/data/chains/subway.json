@@ -1,0 +1,1948 @@
+{
+ "chain": "Subway",
+ "aliases": [
+  "subway"
+ ],
+ "source_url": "https://media.subway.com/dam/urn:aaid:aem:2278372c-147b-42f2-8edc-7d8d94d1f07e/original/as/us-nutrition-en.pdf",
+ "verified_on": "2026-10-13",
+ "note": "U.S. Nutrition Information, January 2026 (linked from subway.com). What each value includes (bread, cheese, vegetables, dressing) is stated per section in the guide. Footlongs are twice the 6 inch values, as the guide instructs.",
+ "items": [
+  {
+   "name": "Steak Philly, 6 inch",
+   "serving_grams": 192,
+   "kcal": 510,
+   "protein_g": 28,
+   "carbs_g": 43,
+   "fat_g": 25
+  },
+  {
+   "name": "Steak Philly, footlong",
+   "serving_grams": 384,
+   "kcal": 1020,
+   "protein_g": 56,
+   "carbs_g": 86,
+   "fat_g": 50,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "Chipotle Philly, 6 inch",
+   "serving_grams": 198,
+   "kcal": 490,
+   "protein_g": 30,
+   "carbs_g": 44,
+   "fat_g": 22
+  },
+  {
+   "name": "Chipotle Philly, footlong",
+   "serving_grams": 396,
+   "kcal": 980,
+   "protein_g": 60,
+   "carbs_g": 88,
+   "fat_g": 44,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "Cheesy Garlic Steak, 6 inch",
+   "serving_grams": 199,
+   "kcal": 510,
+   "protein_g": 26,
+   "carbs_g": 49,
+   "fat_g": 23
+  },
+  {
+   "name": "Cheesy Garlic Steak, footlong",
+   "serving_grams": 398,
+   "kcal": 1020,
+   "protein_g": 52,
+   "carbs_g": 98,
+   "fat_g": 46,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "Grilled Chicken, 6 inch",
+   "serving_grams": 247,
+   "kcal": 510,
+   "protein_g": 31,
+   "carbs_g": 43,
+   "fat_g": 24
+  },
+  {
+   "name": "Grilled Chicken, footlong",
+   "serving_grams": 494,
+   "kcal": 1020,
+   "protein_g": 62,
+   "carbs_g": 86,
+   "fat_g": 48,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "Chicken & Bacon Ranch, 6 inch",
+   "serving_grams": 262,
+   "kcal": 580,
+   "protein_g": 35,
+   "carbs_g": 44,
+   "fat_g": 29
+  },
+  {
+   "name": "Chicken & Bacon Ranch, footlong",
+   "serving_grams": 524,
+   "kcal": 1160,
+   "protein_g": 70,
+   "carbs_g": 88,
+   "fat_g": 58,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "Spicy Nacho Chicken, 6 inch",
+   "serving_grams": 203,
+   "kcal": 440,
+   "protein_g": 24,
+   "carbs_g": 49,
+   "fat_g": 17
+  },
+  {
+   "name": "Spicy Nacho Chicken, footlong",
+   "serving_grams": 406,
+   "kcal": 880,
+   "protein_g": 48,
+   "carbs_g": 98,
+   "fat_g": 34,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "Honey Mustard BBQ Chicken, 6 inch",
+   "serving_grams": 273,
+   "kcal": 510,
+   "protein_g": 30,
+   "carbs_g": 53,
+   "fat_g": 20
+  },
+  {
+   "name": "Honey Mustard BBQ Chicken, footlong",
+   "serving_grams": 546,
+   "kcal": 1020,
+   "protein_g": 60,
+   "carbs_g": 106,
+   "fat_g": 40,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "Sweet Onion Teriyaki Chicken, 6 inch",
+   "serving_grams": 256,
+   "kcal": 430,
+   "protein_g": 29,
+   "carbs_g": 55,
+   "fat_g": 11
+  },
+  {
+   "name": "Sweet Onion Teriyaki Chicken, footlong",
+   "serving_grams": 512,
+   "kcal": 860,
+   "protein_g": 58,
+   "carbs_g": 110,
+   "fat_g": 22,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "B.M.T., 6 inch",
+   "serving_grams": 240,
+   "kcal": 610,
+   "protein_g": 27,
+   "carbs_g": 44,
+   "fat_g": 36
+  },
+  {
+   "name": "B.M.T., footlong",
+   "serving_grams": 480,
+   "kcal": 1220,
+   "protein_g": 54,
+   "carbs_g": 88,
+   "fat_g": 72,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "Spicy Italian, 6 inch",
+   "serving_grams": 239,
+   "kcal": 680,
+   "protein_g": 27,
+   "carbs_g": 44,
+   "fat_g": 44
+  },
+  {
+   "name": "Spicy Italian, footlong",
+   "serving_grams": 478,
+   "kcal": 1360,
+   "protein_g": 54,
+   "carbs_g": 88,
+   "fat_g": 88,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "5 Meat Italian, 6 inch",
+   "serving_grams": 303,
+   "kcal": 680,
+   "protein_g": 40,
+   "carbs_g": 46,
+   "fat_g": 37
+  },
+  {
+   "name": "5 Meat Italian, footlong",
+   "serving_grams": 606,
+   "kcal": 1360,
+   "protein_g": 80,
+   "carbs_g": 92,
+   "fat_g": 74,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "Meatball Marinara, 6 inch",
+   "serving_grams": 239,
+   "kcal": 570,
+   "protein_g": 27,
+   "carbs_g": 53,
+   "fat_g": 28
+  },
+  {
+   "name": "Meatball Marinara, footlong",
+   "serving_grams": 478,
+   "kcal": 1140,
+   "protein_g": 54,
+   "carbs_g": 106,
+   "fat_g": 56,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "Meatball Pepperoni, 6 inch",
+   "serving_grams": 268,
+   "kcal": 690,
+   "protein_g": 33,
+   "carbs_g": 56,
+   "fat_g": 38
+  },
+  {
+   "name": "Meatball Pepperoni, footlong",
+   "serving_grams": 536,
+   "kcal": 1380,
+   "protein_g": 66,
+   "carbs_g": 112,
+   "fat_g": 76,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "Oven-Roasted Turkey, 6 inch",
+   "serving_grams": 233,
+   "kcal": 480,
+   "protein_g": 26,
+   "carbs_g": 42,
+   "fat_g": 23
+  },
+  {
+   "name": "Oven-Roasted Turkey, footlong",
+   "serving_grams": 466,
+   "kcal": 960,
+   "protein_g": 52,
+   "carbs_g": 84,
+   "fat_g": 46,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "Black Forest Ham, 6 inch",
+   "serving_grams": 233,
+   "kcal": 490,
+   "protein_g": 25,
+   "carbs_g": 44,
+   "fat_g": 23
+  },
+  {
+   "name": "Black Forest Ham, footlong",
+   "serving_grams": 466,
+   "kcal": 980,
+   "protein_g": 50,
+   "carbs_g": 88,
+   "fat_g": 46,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "Roast Beef, 6 inch",
+   "serving_grams": 247,
+   "kcal": 500,
+   "protein_g": 31,
+   "carbs_g": 44,
+   "fat_g": 23
+  },
+  {
+   "name": "Roast Beef, footlong",
+   "serving_grams": 494,
+   "kcal": 1000,
+   "protein_g": 62,
+   "carbs_g": 88,
+   "fat_g": 46,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "Cold Cut Combo, 6 inch",
+   "serving_grams": 240,
+   "kcal": 530,
+   "protein_g": 25,
+   "carbs_g": 43,
+   "fat_g": 29
+  },
+  {
+   "name": "Cold Cut Combo, footlong",
+   "serving_grams": 480,
+   "kcal": 1060,
+   "protein_g": 50,
+   "carbs_g": 86,
+   "fat_g": 58,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "Tuna, 6 inch",
+   "serving_grams": 236,
+   "kcal": 570,
+   "protein_g": 27,
+   "carbs_g": 42,
+   "fat_g": 33
+  },
+  {
+   "name": "Tuna, footlong",
+   "serving_grams": 472,
+   "kcal": 1140,
+   "protein_g": 54,
+   "carbs_g": 84,
+   "fat_g": 66,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "Veggie Delite, 6 inch",
+   "serving_grams": 191,
+   "kcal": 320,
+   "protein_g": 17,
+   "carbs_g": 41,
+   "fat_g": 10
+  },
+  {
+   "name": "Veggie Delite, footlong",
+   "serving_grams": 382,
+   "kcal": 640,
+   "protein_g": 34,
+   "carbs_g": 82,
+   "fat_g": 20,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "All American Club, 6 inch",
+   "serving_grams": 242,
+   "kcal": 540,
+   "protein_g": 27,
+   "carbs_g": 45,
+   "fat_g": 28
+  },
+  {
+   "name": "All American Club, footlong",
+   "serving_grams": 484,
+   "kcal": 1080,
+   "protein_g": 54,
+   "carbs_g": 90,
+   "fat_g": 56,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "Subway Club, 6 inch",
+   "serving_grams": 263,
+   "kcal": 500,
+   "protein_g": 31,
+   "carbs_g": 43,
+   "fat_g": 24
+  },
+  {
+   "name": "Subway Club, footlong",
+   "serving_grams": 526,
+   "kcal": 1000,
+   "protein_g": 62,
+   "carbs_g": 86,
+   "fat_g": 48,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "Big Hot Pastrami, 6 inch",
+   "serving_grams": 232,
+   "kcal": 550,
+   "protein_g": 30,
+   "carbs_g": 44,
+   "fat_g": 30
+  },
+  {
+   "name": "Big Hot Pastrami, footlong",
+   "serving_grams": 464,
+   "kcal": 1100,
+   "protein_g": 60,
+   "carbs_g": 88,
+   "fat_g": 60,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "B.L.T., 6 inch",
+   "serving_grams": 171,
+   "kcal": 480,
+   "protein_g": 18,
+   "carbs_g": 42,
+   "fat_g": 26
+  },
+  {
+   "name": "B.L.T., footlong",
+   "serving_grams": 342,
+   "kcal": 960,
+   "protein_g": 36,
+   "carbs_g": 84,
+   "fat_g": 52,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "Buffalo Chicken, 6 inch",
+   "serving_grams": 288,
+   "kcal": 510,
+   "protein_g": 31,
+   "carbs_g": 55,
+   "fat_g": 19
+  },
+  {
+   "name": "Buffalo Chicken, footlong",
+   "serving_grams": 576,
+   "kcal": 1020,
+   "protein_g": 62,
+   "carbs_g": 110,
+   "fat_g": 38,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "Oven-Roasted Turkey & Ham, 6 inch",
+   "serving_grams": 233,
+   "kcal": 480,
+   "protein_g": 27,
+   "carbs_g": 41,
+   "fat_g": 23
+  },
+  {
+   "name": "Oven-Roasted Turkey & Ham, footlong",
+   "serving_grams": 466,
+   "kcal": 960,
+   "protein_g": 54,
+   "carbs_g": 82,
+   "fat_g": 46,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "Pizza Sub, 6 inch",
+   "serving_grams": 177,
+   "kcal": 490,
+   "protein_g": 22,
+   "carbs_g": 45,
+   "fat_g": 25
+  },
+  {
+   "name": "Pizza Sub, footlong",
+   "serving_grams": 354,
+   "kcal": 980,
+   "protein_g": 44,
+   "carbs_g": 90,
+   "fat_g": 50,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "Veggie Patty, 6 inch",
+   "serving_grams": 263,
+   "kcal": 470,
+   "protein_g": 19,
+   "carbs_g": 58,
+   "fat_g": 19
+  },
+  {
+   "name": "Veggie Patty, footlong",
+   "serving_grams": 526,
+   "kcal": 940,
+   "protein_g": 38,
+   "carbs_g": 116,
+   "fat_g": 38,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "Grilled Chicken & Smashed Avocado, 6 inch",
+   "serving_grams": 311,
+   "kcal": 470,
+   "protein_g": 35,
+   "carbs_g": 44,
+   "fat_g": 19
+  },
+  {
+   "name": "Grilled Chicken & Smashed Avocado, footlong",
+   "serving_grams": 622,
+   "kcal": 940,
+   "protein_g": 70,
+   "carbs_g": 88,
+   "fat_g": 38,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "Grilled Chicken & Fresh Avocado, 6 inch",
+   "serving_grams": 304,
+   "kcal": 450,
+   "protein_g": 35,
+   "carbs_g": 44,
+   "fat_g": 16
+  },
+  {
+   "name": "Grilled Chicken & Fresh Avocado, footlong",
+   "serving_grams": 608,
+   "kcal": 900,
+   "protein_g": 70,
+   "carbs_g": 88,
+   "fat_g": 32,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "Ham & Turkey Stacker, 6 inch",
+   "serving_grams": 226,
+   "kcal": 290,
+   "protein_g": 20,
+   "carbs_g": 42,
+   "fat_g": 5
+  },
+  {
+   "name": "Ham & Turkey Stacker, footlong",
+   "serving_grams": 452,
+   "kcal": 580,
+   "protein_g": 40,
+   "carbs_g": 84,
+   "fat_g": 10,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "Turkey & Ranch Delite, 6 inch",
+   "serving_grams": 254,
+   "kcal": 380,
+   "protein_g": 26,
+   "carbs_g": 41,
+   "fat_g": 13
+  },
+  {
+   "name": "Turkey & Ranch Delite, footlong",
+   "serving_grams": 508,
+   "kcal": 760,
+   "protein_g": 52,
+   "carbs_g": 82,
+   "fat_g": 26,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "Seasoned Steak & Smashed Avocado, 6 inch",
+   "serving_grams": 297,
+   "kcal": 460,
+   "protein_g": 35,
+   "carbs_g": 45,
+   "fat_g": 16
+  },
+  {
+   "name": "Seasoned Steak & Smashed Avocado, footlong",
+   "serving_grams": 594,
+   "kcal": 920,
+   "protein_g": 70,
+   "carbs_g": 90,
+   "fat_g": 32,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "Seasoned Steak & Fresh Avocado, 6 inch",
+   "serving_grams": 290,
+   "kcal": 430,
+   "protein_g": 35,
+   "carbs_g": 45,
+   "fat_g": 14
+  },
+  {
+   "name": "Seasoned Steak & Fresh Avocado, footlong",
+   "serving_grams": 580,
+   "kcal": 860,
+   "protein_g": 70,
+   "carbs_g": 90,
+   "fat_g": 28,
+   "note": "Twice the 6 inch values, as the guide instructs"
+  },
+  {
+   "name": "Kids' Mini Sub, Veggie Delite",
+   "serving_grams": 108,
+   "kcal": 140,
+   "protein_g": 6,
+   "carbs_g": 27,
+   "fat_g": 2
+  },
+  {
+   "name": "Kids' Mini Sub, Black Forest Ham",
+   "serving_grams": 137,
+   "kcal": 180,
+   "protein_g": 11,
+   "carbs_g": 28,
+   "fat_g": 3
+  },
+  {
+   "name": "Kids' Mini Sub, Oven Roasted Turkey",
+   "serving_grams": 137,
+   "kcal": 170,
+   "protein_g": 12,
+   "carbs_g": 27,
+   "fat_g": 3
+  },
+  {
+   "name": "Steak Philly Wrap",
+   "serving_grams": 295,
+   "kcal": 710,
+   "protein_g": 46,
+   "carbs_g": 56,
+   "fat_g": 35
+  },
+  {
+   "name": "Chipotle Philly Wrap",
+   "serving_grams": 300,
+   "kcal": 700,
+   "protein_g": 47,
+   "carbs_g": 56,
+   "fat_g": 32
+  },
+  {
+   "name": "Cheesy Garlic Steak Wrap",
+   "serving_grams": 302,
+   "kcal": 710,
+   "protein_g": 43,
+   "carbs_g": 62,
+   "fat_g": 33
+  },
+  {
+   "name": "Grilled Chicken Wrap",
+   "serving_grams": 349,
+   "kcal": 680,
+   "protein_g": 48,
+   "carbs_g": 55,
+   "fat_g": 31
+  },
+  {
+   "name": "Chicken & Bacon Ranch Wrap",
+   "serving_grams": 367,
+   "kcal": 830,
+   "protein_g": 56,
+   "carbs_g": 56,
+   "fat_g": 42
+  },
+  {
+   "name": "Spicy Nacho Chicken Wrap",
+   "serving_grams": 294,
+   "kcal": 610,
+   "protein_g": 40,
+   "carbs_g": 59,
+   "fat_g": 24
+  },
+  {
+   "name": "Honey Mustard BBQ Chicken Wrap",
+   "serving_grams": 363,
+   "kcal": 680,
+   "protein_g": 46,
+   "carbs_g": 63,
+   "fat_g": 27
+  },
+  {
+   "name": "Sweet Onion Teriyaki Chicken Wrap",
+   "serving_grams": 360,
+   "kcal": 620,
+   "protein_g": 45,
+   "carbs_g": 76,
+   "fat_g": 16
+  },
+  {
+   "name": "B.M.T. Wrap",
+   "serving_grams": 240,
+   "kcal": 610,
+   "protein_g": 27,
+   "carbs_g": 44,
+   "fat_g": 36
+  },
+  {
+   "name": "Spicy Italian Wrap",
+   "serving_grams": 318,
+   "kcal": 1010,
+   "protein_g": 39,
+   "carbs_g": 57,
+   "fat_g": 69
+  },
+  {
+   "name": "5 Meat Italian Wrap",
+   "serving_grams": 450,
+   "kcal": 1000,
+   "protein_g": 66,
+   "carbs_g": 60,
+   "fat_g": 56
+  },
+  {
+   "name": "Meatball Marinara Wrap",
+   "serving_grams": 397,
+   "kcal": 890,
+   "protein_g": 40,
+   "carbs_g": 76,
+   "fat_g": 49
+  },
+  {
+   "name": "Meatball Pepperoni Wrap",
+   "serving_grams": 433,
+   "kcal": 1050,
+   "protein_g": 47,
+   "carbs_g": 77,
+   "fat_g": 63
+  },
+  {
+   "name": "Oven-Roasted Turkey Wrap",
+   "serving_grams": 309,
+   "kcal": 610,
+   "protein_g": 38,
+   "carbs_g": 53,
+   "fat_g": 27
+  },
+  {
+   "name": "Black Forest Ham Wrap",
+   "serving_grams": 309,
+   "kcal": 630,
+   "protein_g": 36,
+   "carbs_g": 57,
+   "fat_g": 28
+  },
+  {
+   "name": "Roast Beef Wrap",
+   "serving_grams": 337,
+   "kcal": 660,
+   "protein_g": 48,
+   "carbs_g": 57,
+   "fat_g": 27
+  },
+  {
+   "name": "Cold Cut Combo Wrap",
+   "serving_grams": 323,
+   "kcal": 720,
+   "protein_g": 35,
+   "carbs_g": 54,
+   "fat_g": 40
+  },
+  {
+   "name": "Tuna Wrap",
+   "serving_grams": 330,
+   "kcal": 900,
+   "protein_g": 41,
+   "carbs_g": 52,
+   "fat_g": 59
+  },
+  {
+   "name": "Veggie Delite Wrap",
+   "serving_grams": 210,
+   "kcal": 400,
+   "protein_g": 17,
+   "carbs_g": 53,
+   "fat_g": 13
+  },
+  {
+   "name": "All American Club Wrap",
+   "serving_grams": 333,
+   "kcal": 760,
+   "protein_g": 44,
+   "carbs_g": 57,
+   "fat_g": 39
+  },
+  {
+   "name": "Subway Club Wrap",
+   "serving_grams": 374,
+   "kcal": 690,
+   "protein_g": 48,
+   "carbs_g": 58,
+   "fat_g": 30
+  },
+  {
+   "name": "Big Hot Pastrami Wrap",
+   "serving_grams": 365,
+   "kcal": 890,
+   "protein_g": 49,
+   "carbs_g": 56,
+   "fat_g": 54
+  },
+  {
+   "name": "B.L.T. Wrap",
+   "serving_grams": 220,
+   "kcal": 710,
+   "protein_g": 30,
+   "carbs_g": 53,
+   "fat_g": 42
+  },
+  {
+   "name": "Turkey & Ham Wrap",
+   "serving_grams": 309,
+   "kcal": 620,
+   "protein_g": 37,
+   "carbs_g": 55,
+   "fat_g": 28
+  },
+  {
+   "name": "Pizza Sub Wrap",
+   "serving_grams": 232,
+   "kcal": 730,
+   "protein_g": 30,
+   "carbs_g": 56,
+   "fat_g": 42
+  },
+  {
+   "name": "Veggie Patty Wrap",
+   "serving_grams": 367,
+   "kcal": 720,
+   "protein_g": 25,
+   "carbs_g": 87,
+   "fat_g": 30
+  },
+  {
+   "name": "Baja Chicken Protein Pocket",
+   "serving_grams": 184,
+   "kcal": 330,
+   "protein_g": 24,
+   "carbs_g": 30,
+   "fat_g": 13
+  },
+  {
+   "name": "Italian Trio Protein Pocket",
+   "serving_grams": 192,
+   "kcal": 480,
+   "protein_g": 22,
+   "carbs_g": 32,
+   "fat_g": 29
+  },
+  {
+   "name": "Peppercorn Ranch Chicken Protein Pocket",
+   "serving_grams": 190,
+   "kcal": 330,
+   "protein_g": 24,
+   "carbs_g": 30,
+   "fat_g": 13
+  },
+  {
+   "name": "Turkey & Ham Protein Pocket",
+   "serving_grams": 193,
+   "kcal": 320,
+   "protein_g": 21,
+   "carbs_g": 32,
+   "fat_g": 11
+  },
+  {
+   "name": "Steak Philly Salad",
+   "serving_grams": 409,
+   "kcal": 450,
+   "protein_g": 24,
+   "carbs_g": 13,
+   "fat_g": 35
+  },
+  {
+   "name": "Chipotle Philly Salad",
+   "serving_grams": 415,
+   "kcal": 400,
+   "protein_g": 25,
+   "carbs_g": 15,
+   "fat_g": 28
+  },
+  {
+   "name": "Cheesy Garlic Steak Salad",
+   "serving_grams": 434,
+   "kcal": 460,
+   "protein_g": 23,
+   "carbs_g": 21,
+   "fat_g": 32
+  },
+  {
+   "name": "Grilled Chicken Salad",
+   "serving_grams": 415,
+   "kcal": 440,
+   "protein_g": 26,
+   "carbs_g": 12,
+   "fat_g": 34
+  },
+  {
+   "name": "Chicken & Bacon Ranch Salad",
+   "serving_grams": 430,
+   "kcal": 490,
+   "protein_g": 30,
+   "carbs_g": 14,
+   "fat_g": 36
+  },
+  {
+   "name": "Spicy Nacho Chicken Salad",
+   "serving_grams": 420,
+   "kcal": 320,
+   "protein_g": 20,
+   "carbs_g": 20,
+   "fat_g": 19
+  },
+  {
+   "name": "Honey Mustard BBQ Chicken Salad",
+   "serving_grams": 454,
+   "kcal": 420,
+   "protein_g": 25,
+   "carbs_g": 31,
+   "fat_g": 24
+  },
+  {
+   "name": "Sweet Onion Teriyaki Chicken Salad",
+   "serving_grams": 423,
+   "kcal": 300,
+   "protein_g": 23,
+   "carbs_g": 33,
+   "fat_g": 10
+  },
+  {
+   "name": "B.M.T. Salad",
+   "serving_grams": 407,
+   "kcal": 540,
+   "protein_g": 22,
+   "carbs_g": 13,
+   "fat_g": 46
+  },
+  {
+   "name": "Spicy Italian Salad",
+   "serving_grams": 407,
+   "kcal": 610,
+   "protein_g": 22,
+   "carbs_g": 13,
+   "fat_g": 54
+  },
+  {
+   "name": "5 Meat Italian Salad",
+   "serving_grams": 471,
+   "kcal": 610,
+   "protein_g": 35,
+   "carbs_g": 14,
+   "fat_g": 47
+  },
+  {
+   "name": "Meatball Marinara with MVP Parmesan Vinaigrette Salad",
+   "serving_grams": 484,
+   "kcal": 530,
+   "protein_g": 23,
+   "carbs_g": 25,
+   "fat_g": 39
+  },
+  {
+   "name": "Meatball Pepperoni with MVP Parmesan Vinaigrette Salad",
+   "serving_grams": 502,
+   "kcal": 610,
+   "protein_g": 26,
+   "carbs_g": 26,
+   "fat_g": 47
+  },
+  {
+   "name": "Oven-Roasted Turkey Salad",
+   "serving_grams": 400,
+   "kcal": 410,
+   "protein_g": 21,
+   "carbs_g": 11,
+   "fat_g": 33
+  },
+  {
+   "name": "Black Forest Ham Salad",
+   "serving_grams": 400,
+   "kcal": 420,
+   "protein_g": 20,
+   "carbs_g": 13,
+   "fat_g": 33
+  },
+  {
+   "name": "Roast Beef Salad",
+   "serving_grams": 415,
+   "kcal": 440,
+   "protein_g": 26,
+   "carbs_g": 13,
+   "fat_g": 33
+  },
+  {
+   "name": "Cold Cut Combo Salad",
+   "serving_grams": 408,
+   "kcal": 470,
+   "protein_g": 20,
+   "carbs_g": 11,
+   "fat_g": 39
+  },
+  {
+   "name": "Tuna Salad",
+   "serving_grams": 390,
+   "kcal": 410,
+   "protein_g": 22,
+   "carbs_g": 10,
+   "fat_g": 32
+  },
+  {
+   "name": "Veggie Delite Salad",
+   "serving_grams": 316,
+   "kcal": 150,
+   "protein_g": 10,
+   "carbs_g": 10,
+   "fat_g": 9
+  },
+  {
+   "name": "All American Club Salad",
+   "serving_grams": 410,
+   "kcal": 480,
+   "protein_g": 22,
+   "carbs_g": 13,
+   "fat_g": 39
+  },
+  {
+   "name": "Subway Club Salad",
+   "serving_grams": 430,
+   "kcal": 440,
+   "protein_g": 24,
+   "carbs_g": 14,
+   "fat_g": 34
+  },
+  {
+   "name": "Big Hot Pastrami Salad",
+   "serving_grams": 463,
+   "kcal": 410,
+   "protein_g": 26,
+   "carbs_g": 15,
+   "fat_g": 30
+  },
+  {
+   "name": "B.L.T. Salad",
+   "serving_grams": 345,
+   "kcal": 420,
+   "protein_g": 13,
+   "carbs_g": 11,
+   "fat_g": 36
+  },
+  {
+   "name": "Turkey & Ham Salad",
+   "serving_grams": 400,
+   "kcal": 420,
+   "protein_g": 21,
+   "carbs_g": 12,
+   "fat_g": 33
+  },
+  {
+   "name": "Pizza Sub Salad",
+   "serving_grams": 380,
+   "kcal": 330,
+   "protein_g": 17,
+   "carbs_g": 15,
+   "fat_g": 24
+  },
+  {
+   "name": "Veggie Patty Salad",
+   "serving_grams": 395,
+   "kcal": 300,
+   "protein_g": 13,
+   "carbs_g": 28,
+   "fat_g": 17
+  },
+  {
+   "name": "Steak Philly Protein Bowl",
+   "serving_grams": 403,
+   "kcal": 630,
+   "protein_g": 43,
+   "carbs_g": 14,
+   "fat_g": 46
+  },
+  {
+   "name": "Chipotle Philly Protein Bowl",
+   "serving_grams": 415,
+   "kcal": 600,
+   "protein_g": 46,
+   "carbs_g": 16,
+   "fat_g": 41
+  },
+  {
+   "name": "Cheesy Garlic Steak Protein Bowl",
+   "serving_grams": 417,
+   "kcal": 630,
+   "protein_g": 39,
+   "carbs_g": 27,
+   "fat_g": 42
+  },
+  {
+   "name": "Grilled Chicken Protein Bowl",
+   "serving_grams": 415,
+   "kcal": 620,
+   "protein_g": 48,
+   "carbs_g": 12,
+   "fat_g": 44
+  },
+  {
+   "name": "Chicken & Bacon Ranch Protein Bowl",
+   "serving_grams": 445,
+   "kcal": 760,
+   "protein_g": 55,
+   "carbs_g": 14,
+   "fat_g": 55
+  },
+  {
+   "name": "Spicy Nacho Chicken Protein Bowl",
+   "serving_grams": 425,
+   "kcal": 510,
+   "protein_g": 35,
+   "carbs_g": 26,
+   "fat_g": 30
+  },
+  {
+   "name": "Honey Mustard BBQ Chicken Protein Bowl",
+   "serving_grams": 466,
+   "kcal": 620,
+   "protein_g": 45,
+   "carbs_g": 31,
+   "fat_g": 36
+  },
+  {
+   "name": "Sweet Onion Teriyaki Chicken Protein Bowl",
+   "serving_grams": 432,
+   "kcal": 470,
+   "protein_g": 42,
+   "carbs_g": 41,
+   "fat_g": 18
+  },
+  {
+   "name": "B.M.T. Protein Bowl",
+   "serving_grams": 401,
+   "kcal": 820,
+   "protein_g": 40,
+   "carbs_g": 14,
+   "fat_g": 68
+  },
+  {
+   "name": "Spicy Italian Protein Bowl",
+   "serving_grams": 396,
+   "kcal": 960,
+   "protein_g": 39,
+   "carbs_g": 14,
+   "fat_g": 84
+  },
+  {
+   "name": "5 Meat Italian Protein Bowl",
+   "serving_grams": 528,
+   "kcal": 960,
+   "protein_g": 66,
+   "carbs_g": 17,
+   "fat_g": 70
+  },
+  {
+   "name": "Meatball Marinara with MVP Parmesan Vinaigrette Protein Bowl",
+   "serving_grams": 553,
+   "kcal": 880,
+   "protein_g": 42,
+   "carbs_g": 37,
+   "fat_g": 65
+  },
+  {
+   "name": "Meatball Pepperoni with MVP Parmesan Vinaigrette Protein Bowl",
+   "serving_grams": 589,
+   "kcal": 1040,
+   "protein_g": 48,
+   "carbs_g": 38,
+   "fat_g": 79
+  },
+  {
+   "name": "Oven-Roasted Turkey Protein Bowl",
+   "serving_grams": 386,
+   "kcal": 560,
+   "protein_g": 38,
+   "carbs_g": 10,
+   "fat_g": 42
+  },
+  {
+   "name": "Black Forest Ham Protein Bowl",
+   "serving_grams": 386,
+   "kcal": 580,
+   "protein_g": 36,
+   "carbs_g": 14,
+   "fat_g": 43
+  },
+  {
+   "name": "Roast Beef Protein Bowl",
+   "serving_grams": 415,
+   "kcal": 610,
+   "protein_g": 48,
+   "carbs_g": 14,
+   "fat_g": 42
+  },
+  {
+   "name": "Cold Cut Combo Protein Bowl",
+   "serving_grams": 401,
+   "kcal": 670,
+   "protein_g": 35,
+   "carbs_g": 11,
+   "fat_g": 55
+  },
+  {
+   "name": "Tuna Protein Bowl",
+   "serving_grams": 394,
+   "kcal": 750,
+   "protein_g": 41,
+   "carbs_g": 9,
+   "fat_g": 62
+  },
+  {
+   "name": "All American Club Protein Bowl",
+   "serving_grams": 405,
+   "kcal": 690,
+   "protein_g": 40,
+   "carbs_g": 15,
+   "fat_g": 53
+  },
+  {
+   "name": "Subway Club Protein Bowl",
+   "serving_grams": 418,
+   "kcal": 410,
+   "protein_g": 44,
+   "carbs_g": 16,
+   "fat_g": 21
+  },
+  {
+   "name": "Big Hot Pastrami Protein Bowl",
+   "serving_grams": 512,
+   "kcal": 740,
+   "protein_g": 46,
+   "carbs_g": 17,
+   "fat_g": 57
+  },
+  {
+   "name": "B.L.T. Protein Bowl",
+   "serving_grams": 276,
+   "kcal": 560,
+   "protein_g": 22,
+   "carbs_g": 10,
+   "fat_g": 49
+  },
+  {
+   "name": "Turkey & Ham Protein Bowl",
+   "serving_grams": 386,
+   "kcal": 570,
+   "protein_g": 37,
+   "carbs_g": 12,
+   "fat_g": 42
+  },
+  {
+   "name": "Pizza Sub Protein Bowl",
+   "serving_grams": 372,
+   "kcal": 600,
+   "protein_g": 31,
+   "carbs_g": 18,
+   "fat_g": 46
+  },
+  {
+   "name": "Veggie Patty Protein Bowl",
+   "serving_grams": 404,
+   "kcal": 540,
+   "protein_g": 22,
+   "carbs_g": 44,
+   "fat_g": 33
+  },
+  {
+   "name": "Bacon, Egg & Cheese",
+   "serving_grams": 193,
+   "kcal": 550,
+   "protein_g": 26,
+   "carbs_g": 43,
+   "fat_g": 30
+  },
+  {
+   "name": "Black Forest Ham, Egg & Cheese",
+   "serving_grams": 207,
+   "kcal": 500,
+   "protein_g": 26,
+   "carbs_g": 43,
+   "fat_g": 25
+  },
+  {
+   "name": "Egg & Cheese",
+   "serving_grams": 178,
+   "kcal": 470,
+   "protein_g": 21,
+   "carbs_g": 42,
+   "fat_g": 24
+  },
+  {
+   "name": "Steak, Egg & Cheese",
+   "serving_grams": 221,
+   "kcal": 540,
+   "protein_g": 31,
+   "carbs_g": 43,
+   "fat_g": 26
+  },
+  {
+   "name": "Cheese",
+   "serving_grams": 293,
+   "kcal": 700,
+   "protein_g": 29,
+   "carbs_g": 95,
+   "fat_g": 22
+  },
+  {
+   "name": "Bacon",
+   "serving_grams": 308,
+   "kcal": 780,
+   "protein_g": 34,
+   "carbs_g": 96,
+   "fat_g": 28
+  },
+  {
+   "name": "Meatball",
+   "serving_grams": 330,
+   "kcal": 810,
+   "protein_g": 35,
+   "carbs_g": 98,
+   "fat_g": 31
+  },
+  {
+   "name": "Pepperoni",
+   "serving_grams": 311,
+   "kcal": 780,
+   "protein_g": 33,
+   "carbs_g": 96,
+   "fat_g": 29
+  },
+  {
+   "name": "Ham & Jack (includes Pepper Jack Cheese)",
+   "serving_grams": 71,
+   "kcal": 160,
+   "protein_g": 10,
+   "carbs_g": 21,
+   "fat_g": 4
+  },
+  {
+   "name": "Italian Spice (includes American Cheese and MVP Parmesan Vinaigrette)",
+   "serving_grams": 72,
+   "kcal": 250,
+   "protein_g": 9,
+   "carbs_g": 21,
+   "fat_g": 15
+  },
+  {
+   "name": "Little Cheesesteak (includes American Cheese and Baja Chipotle Sauce)",
+   "serving_grams": 71,
+   "kcal": 180,
+   "protein_g": 8,
+   "carbs_g": 21,
+   "fat_g": 7
+  },
+  {
+   "name": "Turkey (includes Pepper Jack Cheese and Mayonnaise)",
+   "serving_grams": 88,
+   "kcal": 230,
+   "protein_g": 12,
+   "carbs_g": 20,
+   "fat_g": 12
+  },
+  {
+   "name": "Bread: Artisan Italian Bread",
+   "serving_grams": 71,
+   "kcal": 210,
+   "protein_g": 8,
+   "carbs_g": 39,
+   "fat_g": 2
+  },
+  {
+   "name": "Bread: Hearty Multigrain Bread",
+   "serving_grams": 71,
+   "kcal": 200,
+   "protein_g": 9,
+   "carbs_g": 36,
+   "fat_g": 3
+  },
+  {
+   "name": "Bread: Jalapeño Cheddar Bread",
+   "serving_grams": 82,
+   "kcal": 240,
+   "protein_g": 9,
+   "carbs_g": 39,
+   "fat_g": 5
+  },
+  {
+   "name": "Bread: Artisan Flatbread",
+   "serving_grams": 78,
+   "kcal": 220,
+   "protein_g": 7,
+   "carbs_g": 40,
+   "fat_g": 4
+  },
+  {
+   "name": "Bread: 12\" Wrap",
+   "serving_grams": 102,
+   "kcal": 300,
+   "protein_g": 8,
+   "carbs_g": 50,
+   "fat_g": 8
+  },
+  {
+   "name": "Bread: 9\" Wrap (Pocket)",
+   "serving_grams": 52,
+   "kcal": 150,
+   "protein_g": 4,
+   "carbs_g": 26,
+   "fat_g": 3
+  },
+  {
+   "name": "Bread: Mini Artisan Italian Bread",
+   "serving_grams": 47,
+   "kcal": 140,
+   "protein_g": 5,
+   "carbs_g": 26,
+   "fat_g": 2
+  },
+  {
+   "name": "Bread: Mini Hearty Multigrain Bread",
+   "serving_grams": 47,
+   "kcal": 130,
+   "protein_g": 6,
+   "carbs_g": 24,
+   "fat_g": 2
+  },
+  {
+   "name": "Bread: Baja Chipotle",
+   "serving_grams": 14,
+   "kcal": 70,
+   "protein_g": 0,
+   "carbs_g": 1,
+   "fat_g": 7
+  },
+  {
+   "name": "Bread: BBQ Sauce",
+   "serving_grams": 14,
+   "kcal": 25,
+   "protein_g": 0,
+   "carbs_g": 6,
+   "fat_g": 0
+  },
+  {
+   "name": "Bread: Cheddar Cheese Sauce",
+   "serving_grams": 18,
+   "kcal": 30,
+   "protein_g": 1,
+   "carbs_g": 1,
+   "fat_g": 3
+  },
+  {
+   "name": "Bread: Creamy Sriracha",
+   "serving_grams": 14,
+   "kcal": 40,
+   "protein_g": 0,
+   "carbs_g": 2,
+   "fat_g": 4
+  },
+  {
+   "name": "Bread: Buffalo Sauce",
+   "serving_grams": 14,
+   "kcal": 0,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 0
+  },
+  {
+   "name": "Bread: Giardiniera",
+   "serving_grams": 28,
+   "kcal": 80,
+   "protein_g": 0,
+   "carbs_g": 1,
+   "fat_g": 9
+  },
+  {
+   "name": "Bread: Honey Mustard",
+   "serving_grams": 14,
+   "kcal": 60,
+   "protein_g": 0,
+   "carbs_g": 3,
+   "fat_g": 5
+  },
+  {
+   "name": "Bread: Hot Honey Sauce",
+   "serving_grams": 14,
+   "kcal": 30,
+   "protein_g": 0,
+   "carbs_g": 8,
+   "fat_g": 0
+  },
+  {
+   "name": "Bread: Mayonnaise",
+   "serving_grams": 14,
+   "kcal": 100,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 11
+  },
+  {
+   "name": "Bread: Mustard, Yellow",
+   "serving_grams": 14,
+   "kcal": 10,
+   "protein_g": 0,
+   "carbs_g": 1,
+   "fat_g": 1
+  },
+  {
+   "name": "Bread: Olive Oil Blend",
+   "serving_grams": 5,
+   "kcal": 45,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 5
+  },
+  {
+   "name": "Bread: Olive Oil Blend & Vinegar",
+   "serving_grams": 9,
+   "kcal": 45,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 5
+  },
+  {
+   "name": "Bread: MVP Parmesan Vinaigrette",
+   "serving_grams": 14,
+   "kcal": 60,
+   "protein_g": 0,
+   "carbs_g": 1,
+   "fat_g": 6
+  },
+  {
+   "name": "Bread: Peppercorn Ranch",
+   "serving_grams": 14,
+   "kcal": 80,
+   "protein_g": 0,
+   "carbs_g": 1,
+   "fat_g": 8
+  },
+  {
+   "name": "Bread: Red Wine Vinegar",
+   "serving_grams": 4,
+   "kcal": 0,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 0
+  },
+  {
+   "name": "Bread: Roasted Garlic Aioli",
+   "serving_grams": 14,
+   "kcal": 80,
+   "protein_g": 0,
+   "carbs_g": 1,
+   "fat_g": 9
+  },
+  {
+   "name": "Bread: Subkrunch",
+   "serving_grams": 11,
+   "kcal": 70,
+   "protein_g": 1,
+   "carbs_g": 6,
+   "fat_g": 5
+  },
+  {
+   "name": "Bread: Sweet Onion Teriyaki",
+   "serving_grams": 14,
+   "kcal": 30,
+   "protein_g": 0,
+   "carbs_g": 7,
+   "fat_g": 0
+  },
+  {
+   "name": "Bread: Pepper, Black",
+   "serving_grams": 0,
+   "kcal": 0,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 0
+  },
+  {
+   "name": "Bread: Oregano",
+   "serving_grams": 0,
+   "kcal": 0,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 0
+  },
+  {
+   "name": "Bread: Salt",
+   "serving_grams": 0,
+   "kcal": 0,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 0
+  },
+  {
+   "name": "Vegetable: Avocado, Sliced",
+   "serving_grams": 28,
+   "kcal": 45,
+   "protein_g": 1,
+   "carbs_g": 2,
+   "fat_g": 4
+  },
+  {
+   "name": "Vegetable: Avocado, Smashed",
+   "serving_grams": 35,
+   "kcal": 70,
+   "protein_g": 1,
+   "carbs_g": 3,
+   "fat_g": 6
+  },
+  {
+   "name": "Vegetable: Banana Peppers (3 rings)",
+   "serving_grams": 4,
+   "kcal": 0,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 0
+  },
+  {
+   "name": "Vegetable: Cucumbers (3 slices)",
+   "serving_grams": 14,
+   "kcal": 0,
+   "protein_g": 0,
+   "carbs_g": 1,
+   "fat_g": 0
+  },
+  {
+   "name": "Vegetable: Green Chiles",
+   "serving_grams": 14,
+   "kcal": 5,
+   "protein_g": 0,
+   "carbs_g": 1,
+   "fat_g": 0
+  },
+  {
+   "name": "Vegetable: Green Peppers (3 strips)",
+   "serving_grams": 7,
+   "kcal": 0,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 0
+  },
+  {
+   "name": "Vegetable: Jalapeno Peppers (3 rings)",
+   "serving_grams": 4,
+   "kcal": 0,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 0
+  },
+  {
+   "name": "Vegetable: Lettuce",
+   "serving_grams": 21,
+   "kcal": 0,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 0
+  },
+  {
+   "name": "Vegetable: Olives, Black (3 rings)",
+   "serving_grams": 3,
+   "kcal": 0,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 0
+  },
+  {
+   "name": "Vegetable: Onions",
+   "serving_grams": 7,
+   "kcal": 0,
+   "protein_g": 0,
+   "carbs_g": 1,
+   "fat_g": 0
+  },
+  {
+   "name": "Vegetable: Pickles, Crinkle (3 chips)",
+   "serving_grams": 12,
+   "kcal": 0,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 0
+  },
+  {
+   "name": "Vegetable: Spinach, Baby",
+   "serving_grams": 7,
+   "kcal": 0,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 0
+  },
+  {
+   "name": "Vegetable: Tomatoes (3 wheels)",
+   "serving_grams": 35,
+   "kcal": 5,
+   "protein_g": 0,
+   "carbs_g": 1,
+   "fat_g": 0
+  },
+  {
+   "name": "Cheese: American",
+   "serving_grams": 23,
+   "kcal": 80,
+   "protein_g": 4,
+   "carbs_g": 1,
+   "fat_g": 7
+  },
+  {
+   "name": "Cheese: Monterey Cheddar, Shredded",
+   "serving_grams": 28,
+   "kcal": 110,
+   "protein_g": 7,
+   "carbs_g": 1,
+   "fat_g": 9
+  },
+  {
+   "name": "Cheese: Parmesan Grated",
+   "serving_grams": 1,
+   "kcal": 5,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 0
+  },
+  {
+   "name": "Cheese: Pepper Jack",
+   "serving_grams": 28,
+   "kcal": 100,
+   "protein_g": 5,
+   "carbs_g": 1,
+   "fat_g": 8
+  },
+  {
+   "name": "Cheese: Provolone",
+   "serving_grams": 25,
+   "kcal": 90,
+   "protein_g": 6,
+   "carbs_g": 1,
+   "fat_g": 7
+  },
+  {
+   "name": "Protein: All-American Club Meats (Ham, Turkey, Bacon)",
+   "serving_grams": 72,
+   "kcal": 140,
+   "protein_g": 15,
+   "carbs_g": 2,
+   "fat_g": 8
+  },
+  {
+   "name": "Protein: Bacon (2 strips)",
+   "serving_grams": 15,
+   "kcal": 80,
+   "protein_g": 5,
+   "carbs_g": 1,
+   "fat_g": 6
+  },
+  {
+   "name": "Protein: Black Forest Ham",
+   "serving_grams": 57,
+   "kcal": 70,
+   "protein_g": 10,
+   "carbs_g": 2,
+   "fat_g": 2
+  },
+  {
+   "name": "Protein: Cold Cut Combo Meats",
+   "serving_grams": 64,
+   "kcal": 110,
+   "protein_g": 9,
+   "carbs_g": 1,
+   "fat_g": 8
+  },
+  {
+   "name": "Protein: Egg Patty",
+   "serving_grams": 85,
+   "kcal": 180,
+   "protein_g": 10,
+   "carbs_g": 2,
+   "fat_g": 15
+  },
+  {
+   "name": "Protein: Genoa Salami (3 slices)",
+   "serving_grams": 18,
+   "kcal": 70,
+   "protein_g": 3,
+   "carbs_g": 1,
+   "fat_g": 6
+  },
+  {
+   "name": "Protein: Grilled Chicken",
+   "serving_grams": 71,
+   "kcal": 80,
+   "protein_g": 16,
+   "carbs_g": 1,
+   "fat_g": 2
+  },
+  {
+   "name": "Protein: Grilled Chicken, Sweet Onion Teriyaki Glazed",
+   "serving_grams": 85,
+   "kcal": 110,
+   "protein_g": 16,
+   "carbs_g": 9,
+   "fat_g": 2
+  },
+  {
+   "name": "Protein: Meatballs",
+   "serving_grams": 139,
+   "kcal": 250,
+   "protein_g": 12,
+   "carbs_g": 13,
+   "fat_g": 18
+  },
+  {
+   "name": "Protein: Oven-Roasted Turkey",
+   "serving_grams": 57,
+   "kcal": 60,
+   "protein_g": 11,
+   "carbs_g": 0,
+   "fat_g": 2
+  },
+  {
+   "name": "Protein: Pastrami",
+   "serving_grams": 57,
+   "kcal": 130,
+   "protein_g": 9,
+   "carbs_g": 1,
+   "fat_g": 10
+  },
+  {
+   "name": "Protein: Roast Beef",
+   "serving_grams": 18,
+   "kcal": 80,
+   "protein_g": 3,
+   "carbs_g": 1,
+   "fat_g": 7
+  },
+  {
+   "name": "Protein: Rotisserie-Style Chicken",
+   "serving_grams": 71,
+   "kcal": 90,
+   "protein_g": 15,
+   "carbs_g": 0,
+   "fat_g": 4
+  },
+  {
+   "name": "Protein: Steak (no cheese)",
+   "serving_grams": 71,
+   "kcal": 110,
+   "protein_g": 17,
+   "carbs_g": 2,
+   "fat_g": 5
+  },
+  {
+   "name": "Protein: Subway Club Meats (Turkey, Ham, Roast Beef)",
+   "serving_grams": 92,
+   "kcal": 110,
+   "protein_g": 17,
+   "carbs_g": 3,
+   "fat_g": 3
+  },
+  {
+   "name": "Protein: Tuna",
+   "serving_grams": 74,
+   "kcal": 250,
+   "protein_g": 12,
+   "carbs_g": 0,
+   "fat_g": 23
+  },
+  {
+   "name": "Protein: Veggie Patty",
+   "serving_grams": 85,
+   "kcal": 170,
+   "protein_g": 6,
+   "carbs_g": 17,
+   "fat_g": 9
+  },
+  {
+   "name": "Cookies & Sides",
+   "serving_grams": 71,
+   "kcal": 80,
+   "protein_g": 15,
+   "carbs_g": 2,
+   "fat_g": 2
+  },
+  {
+   "name": "Chocolate Chip Cookie",
+   "serving_grams": 45,
+   "kcal": 210,
+   "protein_g": 2,
+   "carbs_g": 30,
+   "fat_g": 10
+  },
+  {
+   "name": "Double Chocolate Cookie",
+   "serving_grams": 45,
+   "kcal": 210,
+   "protein_g": 2,
+   "carbs_g": 29,
+   "fat_g": 9
+  },
+  {
+   "name": "Oatmeal Raisin Cookie",
+   "serving_grams": 45,
+   "kcal": 200,
+   "protein_g": 3,
+   "carbs_g": 30,
+   "fat_g": 8
+  },
+  {
+   "name": "Naturally Flavored Raspberry Cheesecake Cookie",
+   "serving_grams": 45,
+   "kcal": 210,
+   "protein_g": 2,
+   "carbs_g": 29,
+   "fat_g": 9
+  },
+  {
+   "name": "White Chip Macadamia Nut Cookie",
+   "serving_grams": 45,
+   "kcal": 210,
+   "protein_g": 2,
+   "carbs_g": 28,
+   "fat_g": 10
+  },
+  {
+   "name": "Applesauce",
+   "serving_grams": 90,
+   "kcal": 70,
+   "protein_g": 0,
+   "carbs_g": 16,
+   "fat_g": 0
+  },
+  {
+   "name": "Hash Browns",
+   "serving_grams": 108,
+   "kcal": 190,
+   "protein_g": 3,
+   "carbs_g": 24,
+   "fat_g": 9
+  },
+  {
+   "name": "Cookie, Footlong Chocolate Chip",
+   "serving_grams": 285,
+   "kcal": 1330,
+   "protein_g": 14,
+   "carbs_g": 181,
+   "fat_g": 61
+  },
+  {
+   "name": "Broccoli Cheddar",
+   "serving_grams": 227,
+   "kcal": 200,
+   "protein_g": 9,
+   "carbs_g": 16,
+   "fat_g": 13
+  },
+  {
+   "name": "Chicken Noodle",
+   "serving_grams": 227,
+   "kcal": 70,
+   "protein_g": 7,
+   "carbs_g": 6,
+   "fat_g": 3
+  },
+  {
+   "name": "Loaded Baked Potato with Bacon",
+   "serving_grams": 227,
+   "kcal": 200,
+   "protein_g": 9,
+   "carbs_g": 17,
+   "fat_g": 14
+  }
+ ]
+}

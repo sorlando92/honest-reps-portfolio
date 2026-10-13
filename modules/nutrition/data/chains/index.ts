@@ -3,11 +3,18 @@
 // copies them into food_items. Add a chain by adding its file here.
 
 import chickFilA from "./chick-fil-a.json" with { type: "json" }
+import chipotle from "./chipotle.json" with { type: "json" }
+import culvers from "./culvers.json" with { type: "json" }
 import dominos from "./dominos.json" with { type: "json" }
+import panera from "./panera.json" with { type: "json" }
+import subway from "./subway.json" with { type: "json" }
 
 export interface ChainItem {
   name: string
-  serving_grams: number
+  /** Null when the chain publishes the serving without a weight (Panera, for example). */
+  serving_grams: number | null
+  /** The published serving, when it is not a weight ("1 Bagel", "1/2 Sandwich"). */
+  serving_label?: string
   kcal: number
   protein_g: number
   carbs_g: number
@@ -23,12 +30,12 @@ export interface ChainData {
   items: ChainItem[]
 }
 
-export const CURATED_CHAINS: ChainData[] = [chickFilA, dominos]
+export const CURATED_CHAINS: ChainData[] = [chickFilA, chipotle, culvers, dominos, panera, subway]
 
 // PRD F2: well-known chains without curated data yet. Their items get a
 // generic match, marked estimated and flagged.
 const UNCURATED_CHAINS = [
-  "chipotle", "mcdonalds", "starbucks", "taco bell", "panera", "subway", "raising canes", "culvers", "imos",
+  "mcdonalds", "starbucks", "taco bell", "raising canes", "imos",
   "wendys", "burger king", "five guys", "chilis", "olive garden", "panda express", "jimmy johns", "jersey mikes",
   "wingstop", "sonic", "arbys", "kfc", "popeyes", "dunkin", "pizza hut", "papa johns", "little caesars", "qdoba",
   "sweetgreen", "cava", "in n out", "shake shack", "whataburger", "applebees", "buffalo wild wings", "zaxbys",

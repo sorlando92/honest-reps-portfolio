@@ -1,0 +1,354 @@
+{
+ "chain": "Chipotle",
+ "aliases": [
+  "chipotle",
+  "chipotle mexican grill"
+ ],
+ "source_url": "https://www.chipotle.com/content/dam/chipotle/menu/nutrition/US-Nutrition-Facts-Paper-Menu-3-2025.pdf",
+ "verified_on": "2026-10-13",
+ "note": "US nutrition facts paper menu, March 2025. Portions are published in oz (converted at 28.35 g) and fl oz (converted at 29.57 ml, taken as grams). Tortillas are listed per piece with no weight and are left out.",
+ "items": [
+  {
+   "name": "Chicken",
+   "serving_grams": 113.4,
+   "kcal": 180,
+   "protein_g": 32,
+   "carbs_g": 0,
+   "fat_g": 7,
+   "note": "4 oz as published"
+  },
+  {
+   "name": "Steak",
+   "serving_grams": 113.4,
+   "kcal": 150,
+   "protein_g": 21,
+   "carbs_g": 1,
+   "fat_g": 6,
+   "note": "4 oz as published"
+  },
+  {
+   "name": "Barbacoa",
+   "serving_grams": 113.4,
+   "kcal": 170,
+   "protein_g": 24,
+   "carbs_g": 2,
+   "fat_g": 7,
+   "note": "4 oz as published"
+  },
+  {
+   "name": "Carnitas",
+   "serving_grams": 113.4,
+   "kcal": 210,
+   "protein_g": 23,
+   "carbs_g": 0,
+   "fat_g": 12,
+   "note": "4 oz as published"
+  },
+  {
+   "name": "Sofritas",
+   "serving_grams": 113.4,
+   "kcal": 150,
+   "protein_g": 8,
+   "carbs_g": 9,
+   "fat_g": 10,
+   "note": "4 oz as published"
+  },
+  {
+   "name": "Cilantro-Lime White Rice",
+   "serving_grams": 113.4,
+   "kcal": 210,
+   "protein_g": 4,
+   "carbs_g": 40,
+   "fat_g": 4,
+   "note": "4 oz as published"
+  },
+  {
+   "name": "Cilantro-Lime Brown Rice",
+   "serving_grams": 113.4,
+   "kcal": 210,
+   "protein_g": 4,
+   "carbs_g": 36,
+   "fat_g": 6,
+   "note": "4 oz as published"
+  },
+  {
+   "name": "Black Beans",
+   "serving_grams": 113.4,
+   "kcal": 130,
+   "protein_g": 8,
+   "carbs_g": 22,
+   "fat_g": 1.5,
+   "note": "4 oz as published"
+  },
+  {
+   "name": "Pinto Beans",
+   "serving_grams": 113.4,
+   "kcal": 130,
+   "protein_g": 8,
+   "carbs_g": 21,
+   "fat_g": 1.5,
+   "note": "4 oz as published"
+  },
+  {
+   "name": "Fajita Vegetables",
+   "serving_grams": 56.7,
+   "kcal": 20,
+   "protein_g": 1,
+   "carbs_g": 5,
+   "fat_g": 0,
+   "note": "2 oz as published"
+  },
+  {
+   "name": "Fresh Tomato Salsa",
+   "serving_grams": 113.4,
+   "kcal": 25,
+   "protein_g": 0,
+   "carbs_g": 4,
+   "fat_g": 0,
+   "note": "4 oz as published"
+  },
+  {
+   "name": "Roasted Chili-Corn Salsa",
+   "serving_grams": 113.4,
+   "kcal": 80,
+   "protein_g": 3,
+   "carbs_g": 16,
+   "fat_g": 1.5,
+   "note": "4 oz as published"
+  },
+  {
+   "name": "Tomatillo-Green Chili Salsa",
+   "serving_grams": 59.1,
+   "kcal": 15,
+   "protein_g": 0,
+   "carbs_g": 4,
+   "fat_g": 0,
+   "note": "2 fl oz as published"
+  },
+  {
+   "name": "Tomatillo-Red Chili Salsa",
+   "serving_grams": 59.1,
+   "kcal": 30,
+   "protein_g": 0,
+   "carbs_g": 4,
+   "fat_g": 0,
+   "note": "2 fl oz as published"
+  },
+  {
+   "name": "Cheese",
+   "serving_grams": 28.4,
+   "kcal": 110,
+   "protein_g": 6,
+   "carbs_g": 1,
+   "fat_g": 8,
+   "note": "1 oz as published"
+  },
+  {
+   "name": "Sour Cream",
+   "serving_grams": 56.7,
+   "kcal": 110,
+   "protein_g": 2,
+   "carbs_g": 2,
+   "fat_g": 9,
+   "note": "2 oz as published"
+  },
+  {
+   "name": "Guacamole",
+   "serving_grams": 113.4,
+   "kcal": 230,
+   "protein_g": 2,
+   "carbs_g": 8,
+   "fat_g": 22,
+   "note": "4 oz as published"
+  },
+  {
+   "name": "Guacamole, large",
+   "serving_grams": 226.8,
+   "kcal": 460,
+   "protein_g": 4,
+   "carbs_g": 16,
+   "fat_g": 44,
+   "note": "8 oz as published"
+  },
+  {
+   "name": "Queso Blanco, entree",
+   "serving_grams": 56.7,
+   "kcal": 120,
+   "protein_g": 5,
+   "carbs_g": 4,
+   "fat_g": 9,
+   "note": "2 oz as published"
+  },
+  {
+   "name": "Queso Blanco, side",
+   "serving_grams": 113.4,
+   "kcal": 240,
+   "protein_g": 10,
+   "carbs_g": 7,
+   "fat_g": 18,
+   "note": "4 oz as published"
+  },
+  {
+   "name": "Queso Blanco, large",
+   "serving_grams": 226.8,
+   "kcal": 480,
+   "protein_g": 20,
+   "carbs_g": 14,
+   "fat_g": 37,
+   "note": "8 oz as published"
+  },
+  {
+   "name": "Supergreens Salad Mix",
+   "serving_grams": 85.1,
+   "kcal": 15,
+   "protein_g": 1,
+   "carbs_g": 3,
+   "fat_g": 0,
+   "note": "3 oz as published"
+  },
+  {
+   "name": "Romaine Lettuce",
+   "serving_grams": 28.4,
+   "kcal": 5,
+   "protein_g": 0,
+   "carbs_g": 1,
+   "fat_g": 0,
+   "note": "1 oz as published"
+  },
+  {
+   "name": "Chips, regular",
+   "serving_grams": 113.4,
+   "kcal": 540,
+   "protein_g": 7,
+   "carbs_g": 73,
+   "fat_g": 25,
+   "note": "4 oz as published"
+  },
+  {
+   "name": "Chips, large",
+   "serving_grams": 170.1,
+   "kcal": 810,
+   "protein_g": 11,
+   "carbs_g": 110,
+   "fat_g": 38,
+   "note": "6 oz as published"
+  },
+  {
+   "name": "Chipotle-Honey Vinaigrette",
+   "serving_grams": 59.1,
+   "kcal": 220,
+   "protein_g": 1,
+   "carbs_g": 18,
+   "fat_g": 16,
+   "note": "2 fl oz as published"
+  },
+  {
+   "name": "Coca-Cola, regular 22 fl oz",
+   "serving_grams": 650.5,
+   "kcal": 260,
+   "protein_g": 0,
+   "carbs_g": 70,
+   "fat_g": 0,
+   "note": "22 fl oz as published"
+  },
+  {
+   "name": "Coca-Cola, large 32 fl oz",
+   "serving_grams": 946.2,
+   "kcal": 380,
+   "protein_g": 0,
+   "carbs_g": 105,
+   "fat_g": 0,
+   "note": "32 fl oz as published"
+  },
+  {
+   "name": "Diet Coke, regular 22 fl oz",
+   "serving_grams": 650.5,
+   "kcal": 0,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 0,
+   "note": "22 fl oz as published"
+  },
+  {
+   "name": "Diet Coke, large 32 fl oz",
+   "serving_grams": 946.2,
+   "kcal": 0,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 0,
+   "note": "32 fl oz as published"
+  },
+  {
+   "name": "Coca-Cola Zero, regular 22 fl oz",
+   "serving_grams": 650.5,
+   "kcal": 0,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 0,
+   "note": "22 fl oz as published"
+  },
+  {
+   "name": "Sprite, regular 22 fl oz",
+   "serving_grams": 650.5,
+   "kcal": 260,
+   "protein_g": 0,
+   "carbs_g": 70,
+   "fat_g": 0,
+   "note": "22 fl oz as published"
+  },
+  {
+   "name": "Sprite, large 32 fl oz",
+   "serving_grams": 946.2,
+   "kcal": 380,
+   "protein_g": 0,
+   "carbs_g": 105,
+   "fat_g": 0,
+   "note": "32 fl oz as published"
+  },
+  {
+   "name": "Iced Tea, regular 22 fl oz",
+   "serving_grams": 650.5,
+   "kcal": 10,
+   "protein_g": 0,
+   "carbs_g": 3,
+   "fat_g": 0,
+   "note": "22 fl oz as published"
+  },
+  {
+   "name": "Sweet Iced Tea, regular 22 fl oz",
+   "serving_grams": 650.5,
+   "kcal": 150,
+   "protein_g": 0,
+   "carbs_g": 45,
+   "fat_g": 0,
+   "note": "22 fl oz as published"
+  },
+  {
+   "name": "Sweet Iced Tea, large 32 fl oz",
+   "serving_grams": 946.2,
+   "kcal": 220,
+   "protein_g": 0,
+   "carbs_g": 65,
+   "fat_g": 0,
+   "note": "32 fl oz as published"
+  },
+  {
+   "name": "Tractor Lemonade, regular 22 fl oz",
+   "serving_grams": 650.5,
+   "kcal": 170,
+   "protein_g": 0,
+   "carbs_g": 43,
+   "fat_g": 0,
+   "note": "22 fl oz as published"
+  },
+  {
+   "name": "Tractor Lemonade, large 32 fl oz",
+   "serving_grams": 946.2,
+   "kcal": 250,
+   "protein_g": 0,
+   "carbs_g": 62,
+   "fat_g": 0,
+   "note": "32 fl oz as published"
+  }
+ ]
+}

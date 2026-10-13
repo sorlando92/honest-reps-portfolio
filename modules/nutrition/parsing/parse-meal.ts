@@ -129,18 +129,22 @@ function matchCurated(item: P1Item, chain: ChainData, ctx: MatchContext): Parsed
     brand: chain.chain,
     dataType: "Curated",
     state: null,
-    per100g: per100(r.item.ci),
+    per100g: per100(r.item.ci, item.grams),
   })
   const ci = best.item.ci
   // Whole servings: "double chicken" or "2 slices" is the serving times two.
-  const servings = Math.max(1, Math.round(item.grams / ci.serving_grams))
+  // A serving published without a weight is counted from P1's quantity, and
+  // the grams stay P1's estimate (the nutrition still comes from the chain).
+  const servings = ci.serving_grams
+    ? Math.max(1, Math.round(item.grams / ci.serving_grams))
+    : WEIGHT_UNITS.has(item.unit) ? 1 : Math.max(1, Math.round(item.quantity))
   const confidence = Math.max(item.confidence, 0.9)
   return {
     name: item.name,
     brand: chain.chain,
     quantity: item.quantity,
     unit: item.unit,
-    grams: round(ci.serving_grams * servings, 1),
+    grams: ci.serving_grams ? round(ci.serving_grams * servings, 1) : item.grams,
     amountSource: "label",
     state: null,
     confidence,
@@ -217,8 +221,11 @@ function flags(
   return { flagged: false, flagReason: null }
 }
 
-function per100(ci: { serving_grams: number; kcal: number; protein_g: number; carbs_g: number; fat_g: number }): Per100g {
-  const f = 100 / ci.serving_grams
+const WEIGHT_UNITS = new Set(["g", "oz", "lb", "ml", "fl_oz", "cup"])
+
+/** Per 100 g of a curated item; a serving without a weight uses the estimated grams. */
+function per100(ci: { serving_grams: number | null; kcal: number; protein_g: number; carbs_g: number; fat_g: number }, estimatedGrams: number): Per100g {
+  const f = 100 / (ci.serving_grams ?? Math.max(estimatedGrams, 1))
   return { kcal: round(ci.kcal * f, 1), protein_g: round(ci.protein_g * f, 2), carbs_g: round(ci.carbs_g * f, 2), fat_g: round(ci.fat_g * f, 2) }
 }
 

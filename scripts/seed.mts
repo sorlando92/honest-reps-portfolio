@@ -75,15 +75,16 @@ async function main() {
   // these rows are replaced on every seed.
   for (const chain of CURATED_CHAINS) {
     const rows = chain.items.map((item) => {
-      const f = 100 / item.serving_grams
+      const f = item.serving_grams ? 100 / item.serving_grams : null
       return {
         source: "custom",
         source_id: curatedSourceId(chain, item),
         name: item.name,
         brand: chain.chain,
         data_type: "Curated",
-        per_100g: { kcal: item.kcal * f, protein_g: item.protein_g * f, carbs_g: item.carbs_g * f, fat_g: item.fat_g * f },
-        serving: { label: "1 serving", grams: item.serving_grams, kcal: item.kcal, protein_g: item.protein_g, carbs_g: item.carbs_g, fat_g: item.fat_g },
+        // Servings published without a weight have no per 100 g values.
+        per_100g: f ? { kcal: item.kcal * f, protein_g: item.protein_g * f, carbs_g: item.carbs_g * f, fat_g: item.fat_g * f } : {},
+        serving: { label: item.serving_label ?? "1 serving", grams: item.serving_grams, kcal: item.kcal, protein_g: item.protein_g, carbs_g: item.carbs_g, fat_g: item.fat_g },
         source_url: chain.source_url,
         verified_on: chain.verified_on,
       }
