@@ -115,3 +115,7 @@ M0 signed off by Sean 2026-10-13 (Pixel: sign in by code, install, tabs, light a
 - Serving only items: Panera publishes portions ("1 Bagel", "1/2 Sandwich", "Cup") without weights. Those items count servings from P1's quantity and keep P1's gram estimate; their nutrition is still the chain's (amount source label).
 - Not curated yet: McDonald's, Starbucks, Taco Bell and Raising Cane's (pages block automated access or render nutrition only in a browser; Taco Bell item pages show calories without macros), and Imo's (only document is May 2018, per whole pizza, no weights or slice counts). See QUESTIONS.md Q41.
 - Model comparison still waiting on the USDA hourly quota.
+
+### 2026-10-13: chain data descoped
+
+- Sean descoped further chain PDFs (Q41). Six chains curated; the other five stay uncovered for now. Eval cases p004 (Chick-fil-A, covered) and p027 (McDonald's, uncovered) are affected accordingly.

@@ -34,8 +34,9 @@ Recommendation: when a check-in arrives after prep has run, rerun P3 for that cl
 **Q35. [M1] Real meals versus the synthetic eval set.** `evals/README.md` v0.2 says the synthetic set replaces "Sean supplies 20 real meals" for M1. The PM decisions round 2 say Sean will supply 20 real meals.
 Recommendation: v0.2 is the M1 gate. When Sean's meals arrive they are added as p025 onward (set v0.3), split between dev and holdout, and count toward the 50 case beta target. They do not block M1. Blocks: nothing.
 
-**Q41. [F2, Q36] The last five chains.** McDonald's, Starbucks, Taco Bell and Raising Cane's block automated access or show nutrition only in a browser (Taco Bell item pages give calories without macros). Imo's only published document is from May 2018 and lists whole pizzas with no weights or slice counts, so "2 squares" cannot be logged from it.
-Recommendation: Sean downloads Raising Cane's nutrition PDF from raisingcanes.com/menu, and either turns on Claude in Chrome so engineering can read McDonald's, Starbucks and Taco Bell pages in his browser, or those three stay uncovered (generic match, estimated, flagged) for M1. Imo's stays uncovered until current data with slice counts exists. Blocks: p027 (McDonald's) in the holdout.
+### Resolved by Sean (2026-10-13)
+
+- **Q41** Chain data descoped for now. Six chains stay curated (Chick-fil-A, Chipotle, Culver's, Domino's, Panera, Subway). McDonald's, Starbucks, Taco Bell, Raising Cane's and Imo's stay uncovered (generic match, estimated, flagged) until revisited.
 
 ### Resolved by the PM (round 3, 2026-10-13, commit "docs: PM decisions round 3")
 
