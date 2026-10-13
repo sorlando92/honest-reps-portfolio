@@ -7,15 +7,15 @@
 | App | Next.js App Router, TypeScript strict | Installable PWA (manifest, service worker) |
 | UI | Tailwind CSS, shadcn/ui, Lucide | Theme from DESIGN_SYSTEM.md tokens as CSS variables |
 | Data | Supabase Postgres | RLS on every table |
-| Auth | Supabase email OTP with a 6-digit code and a link in the same email | Roles: member, client, coach. Coach reads all data for users assigned to him (free and paid). No MFA in v1. |
+| Auth | Supabase email OTP with a 6-digit code and a link in the same email | Roles: member, coach. "Client" is UI language for a member with tier paid, never a stored role. Coach reads all data for users assigned to him (free and paid). No MFA in v1. |
 | Files | Supabase Storage | Private buckets, signed URLs |
 | Jobs | Supabase pg_cron + Edge Functions | Runs every 15 minutes. Reminders fire at each user's local time; the check-in window and review prep run on the coach's timezone. Not Vercel cron. |
 | Push | Web Push (VAPID) | iOS requires home screen install |
 | Offline | Service worker + IndexedDB queue | Sync on reconnect |
 | AI | Anthropic API | Model ID in env `ANTHROPIC_MODEL`; prompts in `lib/ai/`; every call logged to `ai_calls` |
 | Food data | USDA FoodData Central, Open Food Facts | Cache lookups in `food_items` |
-| Billing | Stripe Checkout + Billing + webhooks | Price ID from coach settings |
-| Analytics | `events` table (first party) | Product analytics only; feeds the metrics page. LLM call logs go to `ai_calls`. |
+| Billing | Stripe Checkout + Billing + webhooks | Stripe is the source of truth for price. `coach_settings` stores only `stripe_price_id`; the display amount is read from Stripe and cached. |
+| Analytics | `events` table (first party) | Product analytics only; feeds the metrics page. LLM call logs go to `ai_calls`. A database check limits names to the PRD list. Server-only events are written with the service role. Events before sign in are rate limited per IP (hashed, never stored raw). |
 | Hosting | Vercel (paid plan before any real users; the free plan does not allow commercial use) | Preview deploy per PR. Production at `app.honestreps.app` (see Domains and email). |
 | Email | Resend as Supabase Auth SMTP | Sender `auth@mail.honestreps.app`, name "Honest Reps". Required: Supabase only allows custom email templates with custom SMTP. |
 
@@ -42,11 +42,11 @@ Core never imports from a module. Modules register: their check-in metrics, thei
 ## Data model (initial)
 
 Core
-- `profiles` (id, role, coach_id, display_name, units, timezone, tier: free|paid, billing_source: stripe|comped|external, medical_flag, date_of_birth, created_at). Date of birth lives in core because the 18+ age gate is core; all other onboarding body data is in `nutrition_profiles`.
+- `profiles` (id, role: member|coach, coach_id, display_name, units, timezone, tier: free|paid, billing_source: stripe|comped|external, medical_flag, date_of_birth, created_at). Date of birth lives in core because the 18+ age gate is core; all other onboarding body data is in `nutrition_profiles`.
 - `app_config` (key, value jsonb) — product name, consent versions, adherence thresholds, weight trend smoothing, default coach
-- `coach_settings` (coach_id, price_cents, stripe_price_id, checkin_day, review_day, weekly_cycle jsonb, target_defaults jsonb, reminder_defaults jsonb, disclosure_text, ai_editable_layer_version_id)
-- `ai_prompt_versions` (id, coach_id, voice, focus, phrases_use, phrases_avoid, examples jsonb, created_at)
-- `checkin_questions` (id, coach_id, position, type: scale|text|number, prompt, active)
+- `coach_settings` (coach_id, stripe_price_id, checkin_day, review_day, weekly_cycle jsonb, target_defaults jsonb, reminder_defaults jsonb, disclosure_text, ai_editable_layer_version_id)
+- `ai_prompt_versions` (id, coach_id, voice, focus, phrases_use, phrases_avoid, examples jsonb, created_at). Limits enforced in the database and the form: voice and focus 600 characters each, each phrases field 400, up to 20 examples of up to 1,200 characters.
+- `checkin_questions` (id, coach_id, position, type: scale|text|number, prompt, report_tag: energy|sleep|hunger|performance|null, active)
 - `checkins` (id, user_id, week_start, submitted_at, weight, answers jsonb, on_time)
 - `checkin_photos` (id, checkin_id, storage_path)
 - `habit_library` (id, coach_id, name, archived)
@@ -58,16 +58,17 @@ Core
 - `notification_prefs` (user_id, kind, enabled, local_time)
 - `push_subscriptions` (user_id, endpoint, keys)
 - `subscriptions` (user_id, stripe_customer_id, stripe_subscription_id, status)
-- `consents` (user_id, kind: terms|privacy|disclaimer|coach_visibility|mo_disclosure, version, accepted_at)
-- `events` (id, user_id, name, props jsonb, created_at) — product analytics only (PRD section 5)
+- `consents` (user_id, kind: terms|privacy|disclaimer|coach_visibility|mo_disclosure, version, accepted_at, email_hash). On account deletion `user_id` is set to null and `email_hash` is filled; rows are purged 3 years after deletion.
+- `events` (id, user_id, name, props jsonb, created_at) — product analytics only (PRD section 5). `user_id` is set to null on account deletion.
 - `ai_calls` (id, user_id, prompt_id: P1..P5, prompt_version, editable_layer_version_id, model, latency_ms, input_tokens, output_tokens, outcome: ok|retried|fallback|error, validation: passed|failed_then_passed|failed, error, created_at) — one row per LLM call. Readable by the coach and the server only. Created in M1 with the first LLM call.
 
 Nutrition module
-- `nutrition_profiles` (user_id, goal: lose_fat|maintain|build_muscle|performance, sex, height_cm, activity_level, goal_weight_kg, updated_at) — onboarding body data. Current weight comes from `weights`.
-- `targets` (user_id, calories, protein_g, carbs_g, fat_g, set_by: formula|user|coach, effective_from)
+- `nutrition_profiles` (user_id, goal: lose_fat|maintain|build_muscle|performance, sex, height_cm, activity_level, goal_weight_kg, has_scale, updated_at) — onboarding body data. Current weight comes from `weights`.
+- `targets` (user_id, calories, protein_g, carbs_g, fat_g, set_by: formula|user|coach, effective_from). The coach confirming targets saves the current values as a new row with `set_by = coach`. A paid user whose latest row is not `set_by = coach` raises the "targets not reviewed" flag.
 - `food_items` (id, source: usda|off|custom, source_id, name, brand, serving jsonb, per_100g jsonb, barcode)
 - `food_entries` (id, user_id, logged_at, meal_tag, method, raw_input, raw_photo_path, model_output jsonb, confidence, status: final|pending, client_uuid for offline dedupe). Entry states per PRD F2: a draft (unconfirmed card) is never saved here, it lives on the device; a flagged entry is a `final` entry with one or more items where `flagged` is true; `pending` is captured offline and not yet parsed.
-- `food_entry_items` (id, entry_id, food_item_id, name, amount, unit, grams, calories, protein_g, carbs_g, fat_g, flagged)
+- `food_entry_items` (id, entry_id, food_item_id, name, amount, unit, grams, amount_source: weighed|label|measured|hand|estimated, state: raw|cooked|dry|null, calories, protein_g, carbs_g, fat_g, flagged)
+- Hand portion conversions (coach-editable, PRD F14): storage location pending QUESTIONS.md Q33.
 - `favorites` (user_id, food_item_id or entry template)
 - `weights` (user_id, date, weight_kg)
 
@@ -75,7 +76,7 @@ Store everything in metric; convert at the edge.
 
 ## Key flows
 
-**Text logging:** client → `/api/parse` → P1 extraction → match each item to `food_items` (cache first, then USDA search) → compute macros → return draft card → user confirms → save entry and items.
+**Text logging:** client → `/api/parse` → P1 extraction → match each item to `food_items` (cache first, then USDA search) → compute macros → return draft card → user confirms → save entry and items. Weighed items keep the exact stated grams. Hand items convert to grams with the coach's hand portion conversions. Meat, fish, grains and pasta with no stated state match the cooked entry and expose the toggle.
 
 **Photo logging (paid):** upload to private bucket → P2 vision extraction → same matching path.
 
@@ -89,6 +90,14 @@ Store everything in metric; convert at the edge.
 5. Saturday 10:00pm: for each paid client build the week summary, run P3, write `review_items`.
 6. Sunday (review day): the review queue is open for the coach.
 7. On send: save final reply, generate P4 headline, create `reports` row, push notify client.
+
+**Account deletion (PRD F16):** cancel any active Stripe subscription immediately → fill `consents.email_hash` and null their `user_id` → delete all storage objects → delete the auth user, which cascades every user-owned row; `events.user_id` is set to null. A daily job purges consents 3 years after deletion.
+
+**Downgrade or cancel (PRD F11):** the Stripe webhook sets `tier = free`. No data is deleted. Paid features lock in RLS and UI; past reports and the message thread stay readable but read only; the latest coach-set target stays and becomes user-editable.
+
+**Price change (PRD F14):** saving a new price creates a new Stripe price, archives the old one, and stores the new `stripe_price_id`. Existing subscriptions keep their old price.
+
+**Metrics:** north star = users who completed onboarding (`onboarding_completed`) and logged food on 4 or more days in the measured week, divided by all users who completed onboarding. Active this week = logged food on at least 1 day.
 
 **Adherence definition:** a day counts as adherent when calories are within ±10% of target and food was logged. Protein day hit when protein ≥ 90% of target. Both thresholds in `app_config`.
 

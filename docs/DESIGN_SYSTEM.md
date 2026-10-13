@@ -84,7 +84,11 @@ Stacks for drill-ins, bottom sheets for short tasks (log confirm, weight entry, 
 - **Quick add chip:** pill, `surface` fill, food name plus calories. One tap logs it.
 - **Stat block:** big number + label + thin progress bar.
 - **Confirmation card (bottom sheet):** list of parsed items. Each row: name, amount stepper, macros line, swap and remove. Flagged rows have a `caution` dot and "Check this" label with alternatives. Primary button "Log it." Secondary "Add item."
-- **Entry row:** time, name, calories, protein. Swipe left for edit and delete. Optional meal tag pill.
+  - Amount defaults to grams (or oz per units) for scale users, with a quick unit toggle (g or oz, cups, servings, hand).
+  - Estimated row: "Estimated" in `text-muted` plus an inline "Weigh it" text button that focuses the amount field in grams. No-scale users get a hand portion picker in its place. One line, never a modal.
+  - Hand portion row: small "Hand portion" tag in `text-muted`. Not flagged.
+  - Meat, fish, grains and pasta: one-tap segmented toggle Raw / Cooked, plus Dry for grains and pasta. 44pt segments.
+- **Entry row:** time, name, calories, protein. Swipe left for edit and delete. Optional meal tag pill. Estimated entries show "est." in `caption` style, `text-muted`.
 - **Habit row:** checkbox (44pt), habit name, streak count.
 - **Locked element:** standard component with a small lock icon and muted overlay; tapping opens the upgrade screen. Report preview is blurred.
 - **Review card (coach):** full-screen card with sections: summary, flags, numbers, check-in, suggestion (accept or ignore), editable draft, Send button. Swipe or Send to advance.
@@ -92,6 +96,9 @@ Stacks for drill-ins, bottom sheets for short tasks (log confirm, weight entry, 
 - **Empty states:** one line of plain copy and the action. No illustrations.
 
 ## Screens
+
+### Onboarding: food scale step
+"Do you have a food scale?" with two large buttons, Yes and Not yet. Not yet opens one skippable screen with the copy below and a 4 row hand portion guide (palm, fist, cupped hand, thumb), each row an outline icon, the hand portion name and what it measures.
 
 ### Today
 1. Date and day switcher
@@ -109,23 +116,23 @@ Bottom sheet over Today. Items, edits, flags, "Log it." Pending offline items sh
 
 ### Progress
 1. Weight trend chart (smoothed line in `accent-strong`, raw dots in `text-muted` at 40% opacity), 7 and 28 day change
-2. Weekly cards: adherence, protein days, habits (paid), feel and performance (paid)
+2. Weekly cards: adherence, protein days, weighed share, habits (paid), feel and performance (paid)
 3. Weekly reports list (paid; blurred preview for free)
 
 ### Check-in (paid)
 One question per screen, progress dots at top, big tap targets for 1 to 5 scales, photo step with skip, short text last, Submit. Target completion under 60 seconds.
 
 ### Weekly report (paid)
-Single scroll: headline sentence, coach note, 4 to 5 stat cards, trend chart.
+Single scroll: headline sentence, coach note, 4 to 6 stat cards (including "Weighed"), trend chart.
 
 ### Coach
-Members see the coach card and upgrade screen here; clients see their message thread and latest report.
+Members see the coach card and upgrade screen here; clients see their message thread and latest report. After a downgrade, the thread and past reports stay visible, read only, with the message field replaced by a locked element.
 
 ### Me
-Profile, targets (editable for free users), units, reminders (time and toggle per reminder), subscription, privacy and data, About (includes "Food data from Open Food Facts" linking to openfoodfacts.org), delete account.
+Profile, targets (editable for free users), units, food scale (Yes / Not yet), reminders (time and toggle per reminder), subscription, privacy and data, About (includes "Food data from Open Food Facts" linking to openfoodfacts.org), delete account.
 
 ### Clients (Sean only)
-Roster with flag badges and filters, Review queue entry point with count, Metrics, Settings.
+Roster with flag badges and filters, Review queue entry point with count, Metrics, Settings. AI settings fields show a live character counter (`caption`, `text-muted`) against their limit.
 
 ## Copy rules
 
@@ -149,6 +156,13 @@ Examples
 | Check-in reminder | Check-in is open. Takes under a minute. |
 | Upgrade screen title | Get coached |
 | Locked report | Your weekly report unlocks with coaching |
+| Estimated item hint | Weigh it |
+| Estimated item tag | Estimated |
+| Estimated entry marker | est. |
+| Hand portion tag | Hand portion |
+| Report and Progress stat label | Weighed |
+| Onboarding scale question | Do you have a food scale? |
+| Onboarding, no scale yet | A food scale is the biggest upgrade to your accuracy. Most cost less than lunch. Until then, use hand portions. |
 
 ## Accessibility
 

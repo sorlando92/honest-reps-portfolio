@@ -22,9 +22,12 @@ Return every distinct food or drink as a separate item.
 For each item give: a short generic name suited to searching a food database, the quantity as a number, the unit (g, oz, ml, fl_oz, cup, tbsp, tsp, piece, slice, serving), an estimated weight in grams, and your confidence from 0 to 1.
 If the user gives no amount, use a typical single serving for an adult and lower confidence to at most 0.6.
 If the description includes a brand or restaurant, put it in "brand".
+For each item also return amount_source: weighed when the user gives a weight in g, oz, or lb or says they weighed it; label for a packaged or chain restaurant product with a standard serving; measured for volume, spoons, fluid ounces, or counts with a known size; hand for palm, fist, cupped hand, thumb, or handful; estimated otherwise. Weight ounces and fluid ounces are different: '6 oz chicken' is weighed, '12 oz almond milk' is measured. For weighed items use the exact stated weight. For meat, fish, grains, and pasta return state as raw, cooked, or dry when stated, otherwise null. Never treat a nutrient amount like '42g protein' as a serving weight.
 Do not invent foods that are not described. Ignore non-food text.
 Output only JSON that matches the schema.
 ```
+
+Confidence caps by amount source, applied in code after validation: estimated 0.6, hand 0.75, measured 0.9, weighed and label 1.0.
 
 User message: the raw text plus `{units: "imperial"|"metric", local_time}`.
 
@@ -38,14 +41,16 @@ Output schema:
       "quantity": 2,
       "unit": "piece",
       "grams": 100,
-      "confidence": 0.95
+      "amount_source": "measured",
+      "state": null,
+      "confidence": 0.9
     }
   ],
   "unparsed_text": ""
 }
 ```
 
-Post-processing: search `food_items` cache then USDA for each `name` (+ brand). Flag the item when model confidence < 0.7 or best match score is low. Return top 3 alternatives per flagged item.
+Post-processing: search `food_items` cache then USDA for each `name` (+ brand). Weighed items keep the exact stated grams. Hand items convert to grams with the coach's hand portion conversions. When `state` is null for meat, fish, grains or pasta, match the cooked entry and expose the Raw / Cooked (/ Dry) toggle. Flag the item when capped confidence < 0.7 or best match score is low. Return top 3 alternatives per flagged item.
 
 Fallback: on failure, show the manual search sheet prefilled with the raw text.
 
@@ -63,7 +68,7 @@ If the image does not show food, return an empty items array.
 Output only JSON that matches the schema.
 ```
 
-Optional user text caption is appended ("half of this", "with ranch"). Same schema and post-processing as P1. Cap confidence at 0.8 for anything not read from a label.
+Optional user text caption is appended ("half of this", "with ranch"). Same schema and post-processing as P1. Every item returns `amount_source: estimated` (capped at 0.6) unless a nutrition label or scale display is readable, which gives `label` or `weighed`. See QUESTIONS.md Q34 on how this shows on the card.
 
 ---
 
@@ -82,6 +87,8 @@ Produce:
 2. flags: a list of concerns from this set only: low_logging, checkin_late, weight_flat_vs_goal, low_protein, low_energy_or_sleep, high_hunger, medical_mention, disengagement_risk.
 3. suggestion: at most one change to targets or habits, or none. Include the reason in one sentence tied to the data. Suggest calorie changes of no more than 10 percent at a time. Do not suggest a change if the client has logged fewer than 4 days.
 4. draft_reply: a reply to the client written in the coach's voice described below. Lead with the most important thing. Name one specific win from the data if there is a real one. Give one clear focus for next week. Keep it under 120 words unless the coach's style notes say otherwise.
+
+If most entries are estimated, you may make accurate logging the one focus for next week. Do not lecture.
 
 Global safety rules apply. If the client's answers or messages mention a medical condition, set medical_mention, keep the reply general, and suggest they talk with their doctor.
 
@@ -112,7 +119,9 @@ Defaults until Sean supplies his own:
 - phrases_avoid: "cheat meal, bad food, crush it, journey, game changer"
 - examples: empty (Sean will add 10 to 20 real replies; tracked in QUESTIONS.md)
 
-The editable layer can never override the locked layer. Strip any text in the editable layer that tries to change the output format or the safety rules before sending.
+Field limits (PRD F13): voice 600 characters, focus 600, phrases to use 400, phrases to avoid 400, up to 20 examples of up to 1,200 characters each.
+
+The editable layer can never override the locked layer. It is not filtered (QUESTIONS.md Q21): it sits in a clearly marked section, the locked rules come after it, output is validated with Zod, and a code check rejects banned words, emojis, exclamation points, and em or en dashes. On failure, retry once, then use the fallback.
 
 ### Input (user message, JSON)
 ```json
@@ -124,6 +133,7 @@ The editable layer can never override the locked layer. Strip any text in the ed
     "daily": [{"date": "", "calories": 0, "protein_g": 0, "carbs_g": 0, "fat_g": 0, "logged": true}],
     "adherent_days": 4,
     "protein_days_hit": 3,
+    "amount_sources": {"weighed": 0, "label": 0, "measured": 0, "hand": 0, "estimated": 0},
     "weight_trend_lb": {"current": 0, "change_7d": 0, "change_28d": 0},
     "habits": [{"name": "", "hit_days": 0, "of": 7}]
   },
@@ -181,5 +191,5 @@ On true: set `messages.flagged_medical`, add the roster flag, notify the coach. 
 
 ## Eval sets (create in M1 and M4)
 
-- `evals/parsing.jsonl`: 50 real meal descriptions from Sean's clients with expected items and gram ranges. Pass bar: 85% of items matched within ±25% grams.
+- `evals/parsing.jsonl`: v0.2, 24 synthetic cases with amount source and state on every item. Scoring, M1 pass bars and maintenance rules are in `evals/README.md`. Grows to 50 cases before gym beta, at least half from real logs.
 - `evals/review.jsonl`: 10 synthetic client weeks covering the scenarios in QUESTIONS.md item 3. Sean grades drafts as send as is, light edit, or rewrite. Pass bar before beta: 70% send as is or light edit.

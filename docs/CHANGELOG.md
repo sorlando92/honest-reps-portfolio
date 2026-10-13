@@ -44,3 +44,12 @@ Deviations and notes:
 - Resolved Q8, Q9b, Q10, Q17, Q22, Q27, Q28, Q29, Q31 and COACH_EMAIL; see QUESTIONS.md. Added Q32 (late check-ins after review prep).
 - Domain plan recorded: app.honestreps.app on Vercel, Resend sending from auth@mail.honestreps.app.
 - Code for the PM decisions: coach tab bar is Today, Progress, Clients, Me (Q22). New `coach_settings.weekly_cycle` column (migration 20261012000004). Seed carries the Q17 and Q29 defaults; applied to the hosted project, including a one time update of the existing coach row. Unit, RLS and e2e tests pass.
+
+### 2026-10-13: PM decisions round 2 applied to docs
+
+- Resolved Q3, Q15, Q16, Q18, Q19, Q21b, Q24, Q26, Q30. MILESTONES.md approved. M0 review findings 1, 2, 3, 5, 6, 7 approved for a fix before M1.
+- Spec change "precision first logging" applied to PRD (thesis, F1, F2, F3, F5, F7, F9, F10, F14, F15), DESIGN_SYSTEM, ARCHITECTURE, AI_PROMPTS (P1, P2, P3) and MILESTONES (M1 to M4).
+- `evals/parsing.jsonl` and `evals/README.md` v0.2 added: 24 synthetic cases with new M1 pass bars.
+- AI_PROMPTS P3 now matches the Q21 resolution (editable layer not filtered); the old "strip" wording was left over.
+- New questions: Q33 (where hand portion conversions live), Q34 ("Estimated" and "Check this" on one row), Q35 (real meals versus the synthetic set). Owner task 11 added for the M1 API keys.
+- Deferred to M2: the privacy policy template that states the F16 deletion terms (no template exists yet).

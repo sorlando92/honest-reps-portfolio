@@ -1,4 +1,4 @@
-# Honest Reps Milestones v1 (proposed, awaiting Sean's approval)
+# Honest Reps Milestones v1 (approved 2026-10-13)
 
 Each milestone ends with a demo to Sean on a real phone and his sign-off. Order is chosen so the riskiest part (logging) is proven first and the alpha can start as soon as the coach loop works.
 
@@ -15,43 +15,48 @@ Done when: Sean can sign in on his phone, install to home screen, and see empty 
 
 ## M1. Logging core (F2 minus photo)
 - Text logging with P1, USDA matching, confirmation card, flags and alternatives
-- Search, barcode via Open Food Facts, manual entry
-- Edit, delete, favorites, quick add chips by time of day, optional meal tags
+- Precision first: amount source and state on every item, confidence caps, grams default for scale users, "Weigh it" hint, hand portion tag and picker, Raw / Cooked / Dry toggle, cooked default matching
+- Hand portion conversions seeded with the PRD F14 defaults (the edit screen ships in M4)
+- Search, barcode via Open Food Facts, manual entry (grams default for scale users)
+- Edit, delete, favorites, quick add chips by time of day (remember the last weighed amount), optional meal tags
 - Offline queue and sync
-- `evals/parsing.jsonl` with first 20 cases (Sean supplies real meal descriptions)
+- `ai_calls` table
+- `evals/parsing.jsonl` v0.2 (24 synthetic cases, in the repo) and `pnpm eval:parsing`
 
-Done when: repeat meal logs in under 5 seconds, described meal under 20 seconds, parsing eval at 85% or better, offline log syncs.
+Done when: repeat meal logs in under 5 seconds, described meal under 20 seconds, the parsing eval meets every M1 pass bar in `evals/README.md`, offline log syncs.
 
 ## M2. Member experience (F1, F3, F4, F17 member reminders, F16 signup consents)
-- Onboarding, target formula from settings, medical screening and flag
+- Onboarding, target formula from settings, medical screening and flag, food scale step and hand portion guide, `onboarding_completed` event
 - Required install step and push permission
-- Today screen complete, Progress with weight trend
-- Evening nudge, reminder preferences in Me
-- Signup consents, privacy policy and terms pages, account deletion
+- Today screen complete with the "est." marker, Progress with weight trend and weighed share
+- Evening nudge, reminder preferences and food scale setting in Me
+- Signup consents, privacy policy and terms pages, account deletion per PRD F16 (consent retention with email hash, events kept without user id)
 
 Done when: a new member goes from the signup link to first food logged in under 3 minutes, on both an Android phone (Sean's Pixel) and an iPhone (installed to home screen, signed in by code).
 
 ## M3. Client features (F5, F6, F7, F8, photo logging)
-- Weekly check-in flow, configurable questions, reminders, overdue logic
+- Weekly check-in flow, configurable questions with report tags, reminders, overdue logic
 - Habit library and assignments, daily checks, streaks
 - Messaging with photos and push, P5 message safety screen
 - Photo logging with P2
-- Weekly report with P4 headline
+- Weekly report with P4 headline and the Weighed stat card
 
 Done when: a test client completes a full week cycle end to end.
 
 ## M4. Coach loop (F9, F10, F12, F13, F14, F15)
-- Roster with flags and filters
-- Weekly review prep job with P3, review card queue, edit and send, report generation
+- Roster with flags and filters, including "targets not reviewed"
+- Weekly review prep job with P3 (amount source counts in the input), review card queue with weighed share, edit and send, report generation
 - Client invite with comped or external flag
-- Coach settings screen including AI settings, preview, versions, rollback
-- Metrics page
+- Coach settings screen including AI settings with field limits and counters, hand portion conversions, preview, versions, rollback
+- Metrics page with the north star as defined in PRD section 5, active this week, and weighed share
 - `evals/review.jsonl` graded by Sean
 
 Done when: Sean reviews 10 test clients averaging 3 minutes or less each.
 
 ## M5. Billing, compliance, polish (F11, F16 paid disclosure)
 - Upgrade screen, Stripe Checkout, webhooks, cancel, comp
+- Price from Stripe, new price on change with the old one archived
+- Downgrade behavior per PRD F11: locks, read-only thread and reports, user-editable targets
 - State disclosure acceptance on paid signup
 - Locked states for free users (camera, report preview, coaching card)
 - Accessibility audit (axe plus manual VoiceOver), performance pass, copy review against DESIGN_SYSTEM.md rules
