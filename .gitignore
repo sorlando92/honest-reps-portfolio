@@ -53,3 +53,6 @@ next-env.d.ts
 # Parsing eval run outputs
 /evals/results/
 /evals/.cache/
+
+# Official chain nutrition pages saved by hand (source material for modules/nutrition/data/chains)
+/.chain-sources/
