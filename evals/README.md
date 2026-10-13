@@ -1,4 +1,4 @@
-# Parsing eval set (v0.3, synthetic starting point)
+# Parsing eval set (v0.4, synthetic starting point)
 
 `parsing.jsonl` holds 29 synthetic meal descriptions covering how people actually log. It replaces the "Sean supplies 20 real meals" task for M1. Real, anonymized meals from the alpha replace or extend it later.
 
@@ -35,6 +35,8 @@ Weight ounces vs fluid ounces: "6 oz chicken" is weighed; "12 oz almond milk" is
 | Beverages, alcohol, zero calorie | p006, p010, p019 |
 
 Split: 17 dev cases for tuning, 12 holdout (p004, p007, p011, p013, p017, p020, p023, p025 to p029) never used while tuning. p017 was used once for a matcher fix in v0.2; p025 to p029 are fresh and are the trusted holdout until real alpha meals are added.
+
+v0.4: p027 (McDonald's) expects estimated and flagged with a wide calorie range, because McDonald's is not curated yet (QUESTIONS.md Q41). Tighten it when McDonald's is curated.
 
 ## Scoring (per run)
 

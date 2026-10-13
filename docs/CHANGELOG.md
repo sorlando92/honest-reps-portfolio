@@ -119,3 +119,7 @@ M0 signed off by Sean 2026-10-13 (Pixel: sign in by code, install, tabs, light a
 ### 2026-10-13: chain data descoped
 
 - Sean descoped further chain PDFs (Q41). Six chains curated; the other five stay uncovered for now. Eval cases p004 (Chick-fil-A, covered) and p027 (McDonald's, uncovered) are affected accordingly.
+
+### 2026-10-13: PM decisions round 4 applied to docs
+
+- Q39 (cans are label), Q40 (local FDC import, cache-first interim), eval v0.4 (p027 expects estimated). MILESTONES M1 build order set; barcode, favorites, quick add and meal tags deferred until after phone testing.

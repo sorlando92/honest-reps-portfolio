@@ -18,12 +18,15 @@ Done when: Sean can sign in on his phone, install to home screen, and see empty 
 - Precision first: amount source and state on every item, confidence caps, grams default for scale users, "Weigh it" hint, hand portion tag and picker, Raw / Cooked / Dry toggle, cooked default matching
 - Hand portion conversions seeded with the PRD F14 defaults (the edit screen ships in M4)
 - Search, barcode via Open Food Facts, manual entry (grams default for scale users)
-- Edit, delete, favorites, quick add chips by time of day (remember the last weighed amount), optional meal tags
+- Edit, delete
+- Deferred until Sean has tested the log loop on his phone for a few days (PM 2026-10-13): barcode, favorites, quick add chips (remember the last weighed amount), optional meal tags
 - Offline queue and sync
 - `ai_calls` table
 - `evals/parsing.jsonl` v0.2 (24 synthetic cases, in the repo) and `pnpm eval:parsing`
 
-Done when: repeat meal logs in under 5 seconds, described meal under 20 seconds, the parsing eval meets every M1 pass bar in `evals/README.md`, offline log syncs.
+Build order (PM 2026-10-13): model locked by the eval, confirmation card, then manual entry, edit and delete, offline queue and sync.
+
+Done when: repeat meal logs in under 5 seconds (measured once favorites and quick add land), described meal under 20 seconds, the parsing eval meets every M1 pass bar in `evals/README.md`, offline log syncs.
 
 ## M2. Member experience (F1, F3, F4, F17 member reminders, F16 signup consents)
 - Onboarding, target formula from settings, medical screening and flag, food scale step and hand portion guide, `onboarding_completed` event

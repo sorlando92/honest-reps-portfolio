@@ -13,7 +13,7 @@
 | Push | Web Push (VAPID) | iOS requires home screen install |
 | Offline | Service worker + IndexedDB queue | Sync on reconnect |
 | AI | Anthropic API | Model ID in env `ANTHROPIC_MODEL`; prompts in `lib/ai/`; every call logged to `ai_calls` |
-| Food data | USDA FoodData Central, Open Food Facts | Cache lookups in `food_items` |
+| Food data | USDA FoodData Central (Foundation, SR Legacy and FNDDS imported into Postgres and searched locally), Open Food Facts for barcodes | QUESTIONS.md Q40. Until the import lands: the FDC search API with a cache-first table of search results. Matched foods are kept in `food_items`. |
 | Billing | Stripe Checkout + Billing + webhooks | Stripe is the source of truth for price. `coach_settings` stores only `stripe_price_id`; the display amount is read from Stripe and cached. |
 | Analytics | `events` table (first party) | Product analytics only; feeds the metrics page. LLM call logs go to `ai_calls`. A database check limits names to the PRD list. Server-only events are written with the service role. Events before sign in are rate limited per IP (hashed, never stored raw). |
 | Hosting | Vercel (paid plan before any real users; the free plan does not allow commercial use) | Preview deploy per PR. Production at `app.honestreps.app` (see Domains and email). |

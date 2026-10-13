@@ -34,6 +34,13 @@ Recommendation: when a check-in arrives after prep has run, rerun P3 for that cl
 **Q35. [M1] Real meals versus the synthetic eval set.** `evals/README.md` v0.2 says the synthetic set replaces "Sean supplies 20 real meals" for M1. The PM decisions round 2 say Sean will supply 20 real meals.
 Recommendation: v0.2 is the M1 gate. When Sean's meals arrive they are added as p025 onward (set v0.3), split between dev and holdout, and count toward the 50 case beta target. They do not block M1. Blocks: nothing.
 
+### Resolved by the PM (round 4, 2026-10-13)
+
+- **Q39** Cans are label. The Q37 example "a can" is now "a banana", so branded drinks count as packaged products.
+- **Q40** Import FDC Foundation, SR Legacy and FNDDS into Postgres and search locally. Interim: cache-first API search. A higher USDA limit is optional, not a gate.
+- **p027** Kept in the holdout. Eval v0.4 expects estimated and flagged with a wide calorie range until McDonald's is curated.
+- **Priorities:** lock the P1 model from the eval (cache must come from a clean run), then the confirmation card, then manual entry, edit and delete, offline queue and sync. Barcode, favorites, quick add and meal tags wait until Sean has tested on his phone for a few days.
+
 ### Resolved by Sean (2026-10-13)
 
 - **Q41** Chain data descoped for now. Six chains stay curated (Chick-fil-A, Chipotle, Culver's, Domino's, Panera, Subway). McDonald's, Starbucks, Taco Bell, Raising Cane's and Imo's stay uncovered (generic match, estimated, flagged) until revisited.
