@@ -1,0 +1,2967 @@
+{
+ "chain": "Chick-fil-A",
+ "aliases": [
+  "chick-fil-a",
+  "chick fil a",
+  "chickfila",
+  "chik fil a",
+  "cfa"
+ ],
+ "source_url": "https://www.chick-fil-a.com/nutrition-allergens",
+ "verified_on": "2026-10-13",
+ "note": "Parsed from the official US nutrition and allergens page. Values per listed serving.",
+ "items": [
+  {
+   "name": "Waffle",
+   "serving_grams": 83,
+   "kcal": 380,
+   "protein_g": 5,
+   "carbs_g": 52,
+   "fat_g": 18
+  },
+  {
+   "name": "Breakfast Breads",
+   "serving_grams": 81,
+   "kcal": 350,
+   "protein_g": 4,
+   "carbs_g": 53,
+   "fat_g": 15
+  },
+  {
+   "name": "4 ct Mini Yeast Rolls",
+   "serving_grams": 70,
+   "kcal": 300,
+   "protein_g": 6,
+   "carbs_g": 52,
+   "fat_g": 8
+  },
+  {
+   "name": "English Muffin",
+   "serving_grams": 58,
+   "kcal": 200,
+   "protein_g": 5,
+   "carbs_g": 43,
+   "fat_g": 1
+  },
+  {
+   "name": "Buttery Biscuit",
+   "serving_grams": 81,
+   "kcal": 350,
+   "protein_g": 4,
+   "carbs_g": 53,
+   "fat_g": 15
+  },
+  {
+   "name": "Breakfast Waffle",
+   "serving_grams": 68,
+   "kcal": 320,
+   "protein_g": 4,
+   "carbs_g": 46,
+   "fat_g": 15
+  },
+  {
+   "name": "Fruit Cup",
+   "serving_grams": 125,
+   "kcal": 70,
+   "protein_g": 1,
+   "carbs_g": 16,
+   "fat_g": 0
+  },
+  {
+   "name": "Large Fruit Cup",
+   "serving_grams": 215,
+   "kcal": 120,
+   "protein_g": 1,
+   "carbs_g": 28,
+   "fat_g": 0
+  },
+  {
+   "name": "Small Fruit Cup",
+   "serving_grams": 107,
+   "kcal": 60,
+   "protein_g": 1,
+   "carbs_g": 14,
+   "fat_g": 0
+  },
+  {
+   "name": "Medium Fruit Cup",
+   "serving_grams": 125,
+   "kcal": 70,
+   "protein_g": 1,
+   "carbs_g": 16,
+   "fat_g": 0
+  },
+  {
+   "name": "Hash Brown Scramble Bowl",
+   "serving_grams": 233,
+   "kcal": 470,
+   "protein_g": 29,
+   "carbs_g": 19,
+   "fat_g": 30
+  },
+  {
+   "name": "Hash Brown Scramble Bowl w/ No Meat, no hash browns",
+   "serving_grams": 137,
+   "kcal": 200,
+   "protein_g": 16,
+   "carbs_g": 3,
+   "fat_g": 14
+  },
+  {
+   "name": "Hash Brown Scramble Bowl w/ Bacon, no hash browns",
+   "serving_grams": 158,
+   "kcal": 300,
+   "protein_g": 22,
+   "carbs_g": 2,
+   "fat_g": 22
+  },
+  {
+   "name": "Hash Brown Scramble Bowl w/ Spicy Chicken, no hash browns",
+   "serving_grams": 208,
+   "kcal": 350,
+   "protein_g": 31,
+   "carbs_g": 9,
+   "fat_g": 22
+  },
+  {
+   "name": "Hash Brown Scramble Bowl w/ Grilled Filet, no hash browns",
+   "serving_grams": 187,
+   "kcal": 270,
+   "protein_g": 29,
+   "carbs_g": 2,
+   "fat_g": 16
+  },
+  {
+   "name": "Hash Brown Scramble Bowl w/ Sausage, no hash browns",
+   "serving_grams": 169,
+   "kcal": 340,
+   "protein_g": 21,
+   "carbs_g": 2,
+   "fat_g": 27
+  },
+  {
+   "name": "Hash Brown Scramble Bowl w/ Nuggets, no hash browns",
+   "serving_grams": 190,
+   "kcal": 320,
+   "protein_g": 28,
+   "carbs_g": 7,
+   "fat_g": 20
+  },
+  {
+   "name": "Hash Brown Scramble Bowl w/ No Meat",
+   "serving_grams": 180,
+   "kcal": 350,
+   "protein_g": 17,
+   "carbs_g": 16,
+   "fat_g": 24
+  },
+  {
+   "name": "Hash Brown Scramble Bowl w/ Bacon",
+   "serving_grams": 200,
+   "kcal": 450,
+   "protein_g": 23,
+   "carbs_g": 15,
+   "fat_g": 32
+  },
+  {
+   "name": "Hash Brown Scramble Bowl w/ Spicy Chicken",
+   "serving_grams": 251,
+   "kcal": 500,
+   "protein_g": 32,
+   "carbs_g": 21,
+   "fat_g": 32
+  },
+  {
+   "name": "Hash Brown Scramble Bowl w/ Grilled Filet",
+   "serving_grams": 230,
+   "kcal": 410,
+   "protein_g": 30,
+   "carbs_g": 15,
+   "fat_g": 26
+  },
+  {
+   "name": "Hash Brown Scramble Bowl w/ Sausage",
+   "serving_grams": 212,
+   "kcal": 480,
+   "protein_g": 23,
+   "carbs_g": 15,
+   "fat_g": 37
+  },
+  {
+   "name": "Hash Brown Scramble Bowl w/ Nuggets",
+   "serving_grams": 233,
+   "kcal": 470,
+   "protein_g": 29,
+   "carbs_g": 19,
+   "fat_g": 30
+  },
+  {
+   "name": "Hash Brown Scramble Burrito",
+   "serving_grams": 304,
+   "kcal": 700,
+   "protein_g": 34,
+   "carbs_g": 51,
+   "fat_g": 40
+  },
+  {
+   "name": "Hash Brown Scramble Burrito w/ No Meat, no hash browns",
+   "serving_grams": 208,
+   "kcal": 440,
+   "protein_g": 21,
+   "carbs_g": 35,
+   "fat_g": 24
+  },
+  {
+   "name": "Hash Brown Scramble Burrito w/ Bacon, no hash browns",
+   "serving_grams": 228,
+   "kcal": 540,
+   "protein_g": 27,
+   "carbs_g": 34,
+   "fat_g": 32
+  },
+  {
+   "name": "Hash Brown Scramble Burrito w/ Spicy Chicken, no hash browns",
+   "serving_grams": 279,
+   "kcal": 590,
+   "protein_g": 36,
+   "carbs_g": 40,
+   "fat_g": 32
+  },
+  {
+   "name": "Hash Brown Scramble Burrito w/ Grilled Filet, no hash brown",
+   "serving_grams": 258,
+   "kcal": 500,
+   "protein_g": 34,
+   "carbs_g": 34,
+   "fat_g": 26
+  },
+  {
+   "name": "Hash Brown Scramble Burrito w/ Sausage, no hash browns",
+   "serving_grams": 240,
+   "kcal": 570,
+   "protein_g": 26,
+   "carbs_g": 34,
+   "fat_g": 37
+  },
+  {
+   "name": "Hash Brown Scramble Burrito w/ Nuggets, no hash browns",
+   "serving_grams": 261,
+   "kcal": 550,
+   "protein_g": 33,
+   "carbs_g": 38,
+   "fat_g": 30
+  },
+  {
+   "name": "Hash Brown Scramble Burrito w/ No Meat",
+   "serving_grams": 251,
+   "kcal": 580,
+   "protein_g": 22,
+   "carbs_g": 47,
+   "fat_g": 34
+  },
+  {
+   "name": "Hash Brown Scramble Burrito w/ Bacon",
+   "serving_grams": 271,
+   "kcal": 680,
+   "protein_g": 30,
+   "carbs_g": 46,
+   "fat_g": 42
+  },
+  {
+   "name": "Hash Brown Scramble Burrito w/ Spicy Chicken",
+   "serving_grams": 322,
+   "kcal": 740,
+   "protein_g": 37,
+   "carbs_g": 53,
+   "fat_g": 42
+  },
+  {
+   "name": "Hash Brown Scramble Burrito w/ Grilled Filet",
+   "serving_grams": 301,
+   "kcal": 650,
+   "protein_g": 35,
+   "carbs_g": 46,
+   "fat_g": 36
+  },
+  {
+   "name": "Hash Brown Scramble Burrito w/ Sausage",
+   "serving_grams": 283,
+   "kcal": 720,
+   "protein_g": 28,
+   "carbs_g": 46,
+   "fat_g": 47
+  },
+  {
+   "name": "Hash Brown Scramble Burrito w/ Nuggets",
+   "serving_grams": 304,
+   "kcal": 700,
+   "protein_g": 34,
+   "carbs_g": 51,
+   "fat_g": 40
+  },
+  {
+   "name": "Chick-fil-A Chick-n-Minis",
+   "serving_grams": 127,
+   "kcal": 360,
+   "protein_g": 20,
+   "carbs_g": 41,
+   "fat_g": 13
+  },
+  {
+   "name": "10 ct Chick-fil-A Chick-n-Minis",
+   "serving_grams": 318,
+   "kcal": 910,
+   "protein_g": 49,
+   "carbs_g": 103,
+   "fat_g": 34
+  },
+  {
+   "name": "4 ct Chick-fil-A Chick-n-Minis",
+   "serving_grams": 127,
+   "kcal": 360,
+   "protein_g": 20,
+   "carbs_g": 41,
+   "fat_g": 13
+  },
+  {
+   "name": "Sausage, Egg & Cheese Muffin",
+   "serving_grams": 173,
+   "kcal": 490,
+   "protein_g": 23,
+   "carbs_g": 29,
+   "fat_g": 32
+  },
+  {
+   "name": "Bacon, Egg & Cheese Muffin",
+   "serving_grams": 126,
+   "kcal": 300,
+   "protein_g": 16,
+   "carbs_g": 28,
+   "fat_g": 13
+  },
+  {
+   "name": "Chicken, Egg & Cheese Muffin",
+   "serving_grams": 187,
+   "kcal": 410,
+   "protein_g": 27,
+   "carbs_g": 36,
+   "fat_g": 18
+  },
+  {
+   "name": "Sausage, Egg & Cheese Biscuit",
+   "serving_grams": 192,
+   "kcal": 620,
+   "protein_g": 22,
+   "carbs_g": 38,
+   "fat_g": 42
+  },
+  {
+   "name": "Bacon, Egg & Cheese Biscuit",
+   "serving_grams": 145,
+   "kcal": 420,
+   "protein_g": 15,
+   "carbs_g": 38,
+   "fat_g": 23
+  },
+  {
+   "name": "Chicken, Egg & Cheese Biscuit",
+   "serving_grams": 211,
+   "kcal": 550,
+   "protein_g": 27,
+   "carbs_g": 48,
+   "fat_g": 28
+  },
+  {
+   "name": "Egg White Grill",
+   "serving_grams": 172,
+   "kcal": 300,
+   "protein_g": 27,
+   "carbs_g": 29,
+   "fat_g": 8
+  },
+  {
+   "name": "Spicy Chicken Biscuit",
+   "serving_grams": 153,
+   "kcal": 450,
+   "protein_g": 19,
+   "carbs_g": 44,
+   "fat_g": 22
+  },
+  {
+   "name": "Chick-fil-A Chicken Biscuit",
+   "serving_grams": 153,
+   "kcal": 460,
+   "protein_g": 19,
+   "carbs_g": 45,
+   "fat_g": 23
+  },
+  {
+   "name": "Chicken & Waffles Breakfast Sandwich w/ Grilled Filet",
+   "serving_grams": 129,
+   "kcal": 440,
+   "protein_g": 20,
+   "carbs_g": 47,
+   "fat_g": 19
+  },
+  {
+   "name": "Chicken & Waffles Breakfast Sandwich w/ Spicy Filet",
+   "serving_grams": 150,
+   "kcal": 530,
+   "protein_g": 23,
+   "carbs_g": 54,
+   "fat_g": 25
+  },
+  {
+   "name": "Berry Parfait",
+   "serving_grams": 206,
+   "kcal": 270,
+   "protein_g": 13,
+   "carbs_g": 35,
+   "fat_g": 9
+  },
+  {
+   "name": "Berry Parfait w/ Cookie Crumbs",
+   "serving_grams": 195,
+   "kcal": 240,
+   "protein_g": 12,
+   "carbs_g": 31,
+   "fat_g": 8
+  },
+  {
+   "name": "Berry Parfait w/ Granola",
+   "serving_grams": 206,
+   "kcal": 270,
+   "protein_g": 13,
+   "carbs_g": 35,
+   "fat_g": 9
+  },
+  {
+   "name": "Hash Browns",
+   "serving_grams": 77,
+   "kcal": 270,
+   "protein_g": 3,
+   "carbs_g": 23,
+   "fat_g": 18
+  },
+  {
+   "name": "Large Hash Browns",
+   "serving_grams": 121,
+   "kcal": 420,
+   "protein_g": 4,
+   "carbs_g": 35,
+   "fat_g": 29
+  },
+  {
+   "name": "Small Hash Browns",
+   "serving_grams": 77,
+   "kcal": 270,
+   "protein_g": 3,
+   "carbs_g": 23,
+   "fat_g": 18
+  },
+  {
+   "name": "Chicken & Waffles Breakfast Sandwich w/ Chick-fil-A Filet",
+   "serving_grams": 150,
+   "kcal": 530,
+   "protein_g": 22,
+   "carbs_g": 55,
+   "fat_g": 26
+  },
+  {
+   "name": "Chick-fil-A Chick-n-Strips",
+   "serving_grams": 136,
+   "kcal": 310,
+   "protein_g": 29,
+   "carbs_g": 16,
+   "fat_g": 14
+  },
+  {
+   "name": "2 ct Chick-fil-A Chick-n-Strips",
+   "serving_grams": 91,
+   "kcal": 200,
+   "protein_g": 19,
+   "carbs_g": 11,
+   "fat_g": 9
+  },
+  {
+   "name": "10 ct Chick-fil-A Chick-n-Strips",
+   "serving_grams": 452,
+   "kcal": 1020,
+   "protein_g": 96,
+   "carbs_g": 54,
+   "fat_g": 46
+  },
+  {
+   "name": "4 ct Chick-fil-A Chick-n-Strips",
+   "serving_grams": 181,
+   "kcal": 410,
+   "protein_g": 39,
+   "carbs_g": 22,
+   "fat_g": 19
+  },
+  {
+   "name": "3 ct Chick-fil-A Chick-n-Strips",
+   "serving_grams": 136,
+   "kcal": 310,
+   "protein_g": 29,
+   "carbs_g": 16,
+   "fat_g": 14
+  },
+  {
+   "name": "Grilled Nuggets",
+   "serving_grams": 95,
+   "kcal": 130,
+   "protein_g": 25,
+   "carbs_g": 1,
+   "fat_g": 3
+  },
+  {
+   "name": "30 ct Grilled Nuggets",
+   "serving_grams": 369,
+   "kcal": 510,
+   "protein_g": 98,
+   "carbs_g": 4,
+   "fat_g": 11
+  },
+  {
+   "name": "12 ct Grilled Nuggets",
+   "serving_grams": 142,
+   "kcal": 200,
+   "protein_g": 38,
+   "carbs_g": 2,
+   "fat_g": 4.5
+  },
+  {
+   "name": "8 ct Grilled Nuggets",
+   "serving_grams": 95,
+   "kcal": 130,
+   "protein_g": 25,
+   "carbs_g": 1,
+   "fat_g": 3
+  },
+  {
+   "name": "Chick-fil-A Nuggets",
+   "serving_grams": 113,
+   "kcal": 250,
+   "protein_g": 27,
+   "carbs_g": 11,
+   "fat_g": 11
+  },
+  {
+   "name": "30 ct Chick-fil-A Nuggets",
+   "serving_grams": 425,
+   "kcal": 950,
+   "protein_g": 100,
+   "carbs_g": 41,
+   "fat_g": 43
+  },
+  {
+   "name": "12 ct Chick-fil-A Nuggets",
+   "serving_grams": 170,
+   "kcal": 380,
+   "protein_g": 40,
+   "carbs_g": 16,
+   "fat_g": 17
+  },
+  {
+   "name": "8 ct Chick-fil-A Nuggets",
+   "serving_grams": 113,
+   "kcal": 250,
+   "protein_g": 27,
+   "carbs_g": 11,
+   "fat_g": 11
+  },
+  {
+   "name": "Chick-fil-A Grilled Chicken Club Sandwich",
+   "serving_grams": 237,
+   "kcal": 520,
+   "protein_g": 37,
+   "carbs_g": 45,
+   "fat_g": 22
+  },
+  {
+   "name": "Grilled Chicken Club w/ No Cheese",
+   "serving_grams": 216,
+   "kcal": 440,
+   "protein_g": 31,
+   "carbs_g": 45,
+   "fat_g": 15
+  },
+  {
+   "name": "Grilled Chicken Club w/ American",
+   "serving_grams": 230,
+   "kcal": 490,
+   "protein_g": 34,
+   "carbs_g": 45,
+   "fat_g": 19
+  },
+  {
+   "name": "Grilled Chicken Club w/ Pepper Jack",
+   "serving_grams": 237,
+   "kcal": 520,
+   "protein_g": 37,
+   "carbs_g": 45,
+   "fat_g": 22
+  },
+  {
+   "name": "Grilled Chicken Club w/ Colby Jack",
+   "serving_grams": 237,
+   "kcal": 520,
+   "protein_g": 37,
+   "carbs_g": 45,
+   "fat_g": 22
+  },
+  {
+   "name": "Spicy Deluxe Sandwich",
+   "serving_grams": 259,
+   "kcal": 540,
+   "protein_g": 34,
+   "carbs_g": 46,
+   "fat_g": 24
+  },
+  {
+   "name": "Spicy Deluxe Sandwich w/ No Cheese",
+   "serving_grams": 238,
+   "kcal": 460,
+   "protein_g": 28,
+   "carbs_g": 46,
+   "fat_g": 18
+  },
+  {
+   "name": "Spicy Deluxe Sandwich w/ American",
+   "serving_grams": 252,
+   "kcal": 510,
+   "protein_g": 31,
+   "carbs_g": 47,
+   "fat_g": 22
+  },
+  {
+   "name": "Spicy Deluxe Sandwich w/ Colby Jack",
+   "serving_grams": 259,
+   "kcal": 540,
+   "protein_g": 33,
+   "carbs_g": 46,
+   "fat_g": 24
+  },
+  {
+   "name": "Spicy Deluxe Sandwich w/ Pepper Jack",
+   "serving_grams": 259,
+   "kcal": 540,
+   "protein_g": 34,
+   "carbs_g": 46,
+   "fat_g": 24
+  },
+  {
+   "name": "Chick-fil-A Deluxe Sandwich",
+   "serving_grams": 247,
+   "kcal": 490,
+   "protein_g": 32,
+   "carbs_g": 43,
+   "fat_g": 21
+  },
+  {
+   "name": "Chick-fil-A Deluxe Sandwich w/ No Cheese",
+   "serving_grams": 233,
+   "kcal": 430,
+   "protein_g": 29,
+   "carbs_g": 42,
+   "fat_g": 16
+  },
+  {
+   "name": "Chick-fil-A Deluxe Sandwich w/ Pepper Jack",
+   "serving_grams": 254,
+   "kcal": 510,
+   "protein_g": 34,
+   "carbs_g": 43,
+   "fat_g": 23
+  },
+  {
+   "name": "Chick-fil-A Deluxe Sandwich w/ Colby Jack",
+   "serving_grams": 254,
+   "kcal": 510,
+   "protein_g": 34,
+   "carbs_g": 43,
+   "fat_g": 23
+  },
+  {
+   "name": "Chick-fil-A Deluxe Sandwich w/ American",
+   "serving_grams": 247,
+   "kcal": 490,
+   "protein_g": 32,
+   "carbs_g": 43,
+   "fat_g": 21
+  },
+  {
+   "name": "Chick-fil-A Cool Wrap",
+   "serving_grams": 231,
+   "kcal": 660,
+   "protein_g": 43,
+   "carbs_g": 32,
+   "fat_g": 45
+  },
+  {
+   "name": "Grilled Chicken Sandwich",
+   "serving_grams": 206,
+   "kcal": 390,
+   "protein_g": 28,
+   "carbs_g": 45,
+   "fat_g": 11
+  },
+  {
+   "name": "Spicy Chicken Sandwich",
+   "serving_grams": 188,
+   "kcal": 450,
+   "protein_g": 28,
+   "carbs_g": 44,
+   "fat_g": 18
+  },
+  {
+   "name": "Chick-fil-A Chicken Sandwich",
+   "serving_grams": 183,
+   "kcal": 420,
+   "protein_g": 29,
+   "carbs_g": 41,
+   "fat_g": 16
+  },
+  {
+   "name": "Chicken & Waffles Sandwich w/ Grilled Filet",
+   "serving_grams": 179,
+   "kcal": 540,
+   "protein_g": 29,
+   "carbs_g": 55,
+   "fat_g": 24
+  },
+  {
+   "name": "Chicken & Waffles Sandwich w/ Spicy Filet",
+   "serving_grams": 215,
+   "kcal": 710,
+   "protein_g": 31,
+   "carbs_g": 70,
+   "fat_g": 35
+  },
+  {
+   "name": "Chicken & Waffles Sandwich w/ Chick-fil-A Filet",
+   "serving_grams": 210,
+   "kcal": 690,
+   "protein_g": 32,
+   "carbs_g": 66,
+   "fat_g": 34
+  },
+  {
+   "name": "Market Salad",
+   "serving_grams": 326,
+   "kcal": 550,
+   "protein_g": 28,
+   "carbs_g": 42,
+   "fat_g": 31
+  },
+  {
+   "name": "Market Salad w/ No Chicken",
+   "serving_grams": 241,
+   "kcal": 440,
+   "protein_g": 7,
+   "carbs_g": 40,
+   "fat_g": 29
+  },
+  {
+   "name": "Market Salad w/ Grilled Filet (Warm)",
+   "serving_grams": 325,
+   "kcal": 550,
+   "protein_g": 28,
+   "carbs_g": 42,
+   "fat_g": 31
+  },
+  {
+   "name": "Market Salad w/ Grilled Nuggets",
+   "serving_grams": 335,
+   "kcal": 570,
+   "protein_g": 32,
+   "carbs_g": 41,
+   "fat_g": 32
+  },
+  {
+   "name": "Market Salad w/ Nuggets",
+   "serving_grams": 354,
+   "kcal": 700,
+   "protein_g": 34,
+   "carbs_g": 51,
+   "fat_g": 40
+  },
+  {
+   "name": "Market Salad w/ Chick-fil-A Chick-n-Strips",
+   "serving_grams": 377,
+   "kcal": 750,
+   "protein_g": 36,
+   "carbs_g": 57,
+   "fat_g": 43
+  },
+  {
+   "name": "Market Salad w/ Spicy Grilled Filet (Cold)",
+   "serving_grams": 326,
+   "kcal": 540,
+   "protein_g": 26,
+   "carbs_g": 42,
+   "fat_g": 31
+  },
+  {
+   "name": "Market Salad w/ Grilled Filet (Cold)",
+   "serving_grams": 326,
+   "kcal": 550,
+   "protein_g": 28,
+   "carbs_g": 42,
+   "fat_g": 31
+  },
+  {
+   "name": "Spicy Southwest Salad",
+   "serving_grams": 424,
+   "kcal": 680,
+   "protein_g": 33,
+   "carbs_g": 27,
+   "fat_g": 49
+  },
+  {
+   "name": "Spicy Southwest Salad w/ No Chicken",
+   "serving_grams": 339,
+   "kcal": 570,
+   "protein_g": 14,
+   "carbs_g": 25,
+   "fat_g": 47
+  },
+  {
+   "name": "Spicy Southwest Salad w/ Grilled Filet (Warm)",
+   "serving_grams": 423,
+   "kcal": 680,
+   "protein_g": 35,
+   "carbs_g": 26,
+   "fat_g": 48
+  },
+  {
+   "name": "Spicy Southwest Salad w/ Chick-fil-A Chick-n-Strips",
+   "serving_grams": 475,
+   "kcal": 880,
+   "protein_g": 43,
+   "carbs_g": 41,
+   "fat_g": 60
+  },
+  {
+   "name": "Spicy Southwest Salad w/ Grilled Nuggets",
+   "serving_grams": 434,
+   "kcal": 700,
+   "protein_g": 39,
+   "carbs_g": 26,
+   "fat_g": 49
+  },
+  {
+   "name": "Spicy Southwest Salad w/ Nuggets",
+   "serving_grams": 448,
+   "kcal": 800,
+   "protein_g": 39,
+   "carbs_g": 35,
+   "fat_g": 56
+  },
+  {
+   "name": "Spicy Southwest Salad w/ Grilled Filet (Cold)",
+   "serving_grams": 424,
+   "kcal": 680,
+   "protein_g": 35,
+   "carbs_g": 26,
+   "fat_g": 48
+  },
+  {
+   "name": "Spicy Southwest Salad w/ Spicy Grilled Filet (Cold)",
+   "serving_grams": 424,
+   "kcal": 680,
+   "protein_g": 33,
+   "carbs_g": 27,
+   "fat_g": 49
+  },
+  {
+   "name": "Cobb Salad",
+   "serving_grams": 411,
+   "kcal": 830,
+   "protein_g": 41,
+   "carbs_g": 31,
+   "fat_g": 60
+  },
+  {
+   "name": "Cobb Salad w/ No Chicken",
+   "serving_grams": 284,
+   "kcal": 500,
+   "protein_g": 14,
+   "carbs_g": 15,
+   "fat_g": 42
+  },
+  {
+   "name": "Cobb Salad w/ Grilled Filet (Warm)",
+   "serving_grams": 368,
+   "kcal": 600,
+   "protein_g": 35,
+   "carbs_g": 16,
+   "fat_g": 44
+  },
+  {
+   "name": "Cobb Salad w/ Grilled Filet (Cold)",
+   "serving_grams": 369,
+   "kcal": 610,
+   "protein_g": 35,
+   "carbs_g": 16,
+   "fat_g": 44
+  },
+  {
+   "name": "Cobb Salad w/ Chick-fil-A Chick-n-Strips",
+   "serving_grams": 420,
+   "kcal": 810,
+   "protein_g": 43,
+   "carbs_g": 31,
+   "fat_g": 56
+  },
+  {
+   "name": "Cobb Salad w/ Grilled Nuggets",
+   "serving_grams": 378,
+   "kcal": 630,
+   "protein_g": 39,
+   "carbs_g": 16,
+   "fat_g": 45
+  },
+  {
+   "name": "Cobb Salad w/ Spicy Grilled Filet (Cold)",
+   "serving_grams": 369,
+   "kcal": 600,
+   "protein_g": 33,
+   "carbs_g": 16,
+   "fat_g": 45
+  },
+  {
+   "name": "Cobb Salad w/ Nuggets",
+   "serving_grams": 411,
+   "kcal": 830,
+   "protein_g": 41,
+   "carbs_g": 31,
+   "fat_g": 60
+  },
+  {
+   "name": "Mac & Cheese",
+   "serving_grams": 227,
+   "kcal": 450,
+   "protein_g": 20,
+   "carbs_g": 28,
+   "fat_g": 29
+  },
+  {
+   "name": "Small Mac & Cheese",
+   "serving_grams": 136,
+   "kcal": 270,
+   "protein_g": 12,
+   "carbs_g": 17,
+   "fat_g": 17
+  },
+  {
+   "name": "Medium Mac & Cheese",
+   "serving_grams": 227,
+   "kcal": 450,
+   "protein_g": 20,
+   "carbs_g": 28,
+   "fat_g": 29
+  },
+  {
+   "name": "Chick-fil-A Waffle Potato Fries",
+   "serving_grams": 125,
+   "kcal": 420,
+   "protein_g": 5,
+   "carbs_g": 45,
+   "fat_g": 24
+  },
+  {
+   "name": "Small Chick-fil-A Waffle Potato Fries",
+   "serving_grams": 96,
+   "kcal": 320,
+   "protein_g": 4,
+   "carbs_g": 35,
+   "fat_g": 19
+  },
+  {
+   "name": "Large Chick-fil-A Waffle Potato Fries",
+   "serving_grams": 179,
+   "kcal": 600,
+   "protein_g": 7,
+   "carbs_g": 65,
+   "fat_g": 35
+  },
+  {
+   "name": "Medium Chick-fil-A Waffle Potato Fries",
+   "serving_grams": 125,
+   "kcal": 420,
+   "protein_g": 5,
+   "carbs_g": 45,
+   "fat_g": 24
+  },
+  {
+   "name": "Side Salad",
+   "serving_grams": 166,
+   "kcal": 470,
+   "protein_g": 6,
+   "carbs_g": 14,
+   "fat_g": 42
+  },
+  {
+   "name": "Chicken Noodle Soup",
+   "serving_grams": 252,
+   "kcal": 190,
+   "protein_g": 11,
+   "carbs_g": 27,
+   "fat_g": 4.5
+  },
+  {
+   "name": "Bowl of Chicken Noodle Soup",
+   "serving_grams": 476,
+   "kcal": 320,
+   "protein_g": 20,
+   "carbs_g": 42,
+   "fat_g": 8
+  },
+  {
+   "name": "Cup of Chicken Noodle Soup",
+   "serving_grams": 252,
+   "kcal": 190,
+   "protein_g": 11,
+   "carbs_g": 27,
+   "fat_g": 4.5
+  },
+  {
+   "name": "Chicken Tortilla Soup",
+   "serving_grams": 265,
+   "kcal": 350,
+   "protein_g": 25,
+   "carbs_g": 39,
+   "fat_g": 11
+  },
+  {
+   "name": "Kale Crunch Side",
+   "serving_grams": 112,
+   "kcal": 170,
+   "protein_g": 4,
+   "carbs_g": 13,
+   "fat_g": 12
+  },
+  {
+   "name": "Buddy Fruits Apple Sauce",
+   "serving_grams": 90,
+   "kcal": 45,
+   "protein_g": 0,
+   "carbs_g": 12,
+   "fat_g": 0
+  },
+  {
+   "name": "Chick-fil-A Sauce Flavored Waffle Potato Chips",
+   "serving_grams": 43,
+   "kcal": 210,
+   "protein_g": 3,
+   "carbs_g": 26,
+   "fat_g": 12
+  },
+  {
+   "name": "Original Flavor Waffle Potato Chips",
+   "serving_grams": 43,
+   "kcal": 220,
+   "protein_g": 3,
+   "carbs_g": 25,
+   "fat_g": 13
+  },
+  {
+   "name": "Mac & Cheese Kid’s Meal",
+   "serving_grams": 227,
+   "kcal": 450,
+   "protein_g": 20,
+   "carbs_g": 28,
+   "fat_g": 29
+  },
+  {
+   "name": "5 Ct Grilled Nuggets Kids Meal",
+   "serving_grams": 59,
+   "kcal": 80,
+   "protein_g": 16,
+   "carbs_g": 1,
+   "fat_g": 2
+  },
+  {
+   "name": "2 Ct Chick-n-Strips Kids Meal",
+   "serving_grams": 91,
+   "kcal": 200,
+   "protein_g": 19,
+   "carbs_g": 11,
+   "fat_g": 9
+  },
+  {
+   "name": "5 Ct Nuggets Kids Meal",
+   "serving_grams": 71,
+   "kcal": 160,
+   "protein_g": 17,
+   "carbs_g": 7,
+   "fat_g": 7
+  },
+  {
+   "name": "Chocolate Fudge Brownie",
+   "serving_grams": 85,
+   "kcal": 370,
+   "protein_g": 4,
+   "carbs_g": 47,
+   "fat_g": 21
+  },
+  {
+   "name": "Chocolate Chunk Cookie",
+   "serving_grams": 78,
+   "kcal": 370,
+   "protein_g": 5,
+   "carbs_g": 49,
+   "fat_g": 17
+  },
+  {
+   "name": "6 pack Chocolate Chunk Cookie",
+   "serving_grams": 78,
+   "kcal": 370,
+   "protein_g": 5,
+   "carbs_g": 49,
+   "fat_g": 17
+  },
+  {
+   "name": "Frosted Sodas",
+   "serving_grams": 369,
+   "kcal": 320,
+   "protein_g": 7,
+   "carbs_g": 60,
+   "fat_g": 7
+  },
+  {
+   "name": "Frosted Powerade Mountain Berry Blast",
+   "serving_grams": 369,
+   "kcal": 290,
+   "protein_g": 7,
+   "carbs_g": 53,
+   "fat_g": 7
+  },
+  {
+   "name": "Frosted Barq’s Red Flash",
+   "serving_grams": 369,
+   "kcal": 320,
+   "protein_g": 7,
+   "carbs_g": 61,
+   "fat_g": 7
+  },
+  {
+   "name": "Frosted Fanta Strawberry",
+   "serving_grams": 369,
+   "kcal": 320,
+   "protein_g": 7,
+   "carbs_g": 61,
+   "fat_g": 7
+  },
+  {
+   "name": "Frosted Fanta Orange",
+   "serving_grams": 369,
+   "kcal": 320,
+   "protein_g": 7,
+   "carbs_g": 60,
+   "fat_g": 7
+  },
+  {
+   "name": "Frosted Mello Yello",
+   "serving_grams": 369,
+   "kcal": 320,
+   "protein_g": 7,
+   "carbs_g": 62,
+   "fat_g": 7
+  },
+  {
+   "name": "Frosted Caffeine Free Barq’s Root Beer",
+   "serving_grams": 369,
+   "kcal": 320,
+   "protein_g": 7,
+   "carbs_g": 62,
+   "fat_g": 7
+  },
+  {
+   "name": "Frosted Sprite",
+   "serving_grams": 369,
+   "kcal": 320,
+   "protein_g": 7,
+   "carbs_g": 59,
+   "fat_g": 7
+  },
+  {
+   "name": "Frosted Hi-C Orange",
+   "serving_grams": 369,
+   "kcal": 310,
+   "protein_g": 7,
+   "carbs_g": 58,
+   "fat_g": 7
+  },
+  {
+   "name": "Frosted Hi-C Fruit Punch",
+   "serving_grams": 369,
+   "kcal": 320,
+   "protein_g": 7,
+   "carbs_g": 61,
+   "fat_g": 7
+  },
+  {
+   "name": "Frosted Coca-Cola Cherry",
+   "serving_grams": 369,
+   "kcal": 320,
+   "protein_g": 7,
+   "carbs_g": 61,
+   "fat_g": 7
+  },
+  {
+   "name": "Frosted Caffeine Free Diet Coke",
+   "serving_grams": 369,
+   "kcal": 260,
+   "protein_g": 7,
+   "carbs_g": 45,
+   "fat_g": 7
+  },
+  {
+   "name": "Frosted Coke Zero Sugar",
+   "serving_grams": 369,
+   "kcal": 260,
+   "protein_g": 7,
+   "carbs_g": 45,
+   "fat_g": 7
+  },
+  {
+   "name": "Frosted Diet Coke",
+   "serving_grams": 369,
+   "kcal": 260,
+   "protein_g": 7,
+   "carbs_g": 45,
+   "fat_g": 7
+  },
+  {
+   "name": "Frosted Coke",
+   "serving_grams": 369,
+   "kcal": 320,
+   "protein_g": 7,
+   "carbs_g": 60,
+   "fat_g": 7
+  },
+  {
+   "name": "Frosted Barq’s Root Beer",
+   "serving_grams": 369,
+   "kcal": 320,
+   "protein_g": 7,
+   "carbs_g": 61,
+   "fat_g": 7
+  },
+  {
+   "name": "Frosted Diet Dr Pepper",
+   "serving_grams": 369,
+   "kcal": 260,
+   "protein_g": 7,
+   "carbs_g": 45,
+   "fat_g": 7
+  },
+  {
+   "name": "Frosted Dr Pepper",
+   "serving_grams": 369,
+   "kcal": 320,
+   "protein_g": 7,
+   "carbs_g": 60,
+   "fat_g": 7
+  },
+  {
+   "name": "Frosted Lemonade",
+   "serving_grams": 383,
+   "kcal": 350,
+   "protein_g": 7,
+   "carbs_g": 67,
+   "fat_g": 7
+  },
+  {
+   "name": "Frosted Lemonade w/ Diet Lemonade",
+   "serving_grams": 383,
+   "kcal": 280,
+   "protein_g": 7,
+   "carbs_g": 50,
+   "fat_g": 7
+  },
+  {
+   "name": "Pineapple Dragonfruit Frosted Lemonade",
+   "serving_grams": 375,
+   "kcal": 360,
+   "protein_g": 7,
+   "carbs_g": 70,
+   "fat_g": 7
+  },
+  {
+   "name": "Pineapple Dragonfruit Frosted Lemonade w/ Diet Lemonade",
+   "serving_grams": 375,
+   "kcal": 300,
+   "protein_g": 7,
+   "carbs_g": 54,
+   "fat_g": 7
+  },
+  {
+   "name": "S’mores Frosted Coffee",
+   "serving_grams": 382,
+   "kcal": 400,
+   "protein_g": 7,
+   "carbs_g": 77,
+   "fat_g": 8
+  },
+  {
+   "name": "S’mores Milkshake",
+   "serving_grams": 411,
+   "kcal": 650,
+   "protein_g": 12,
+   "carbs_g": 109,
+   "fat_g": 19
+  },
+  {
+   "name": "Toasted Marshmallow Whipped Topping",
+   "serving_grams": 23,
+   "kcal": 60,
+   "protein_g": 1,
+   "carbs_g": 7,
+   "fat_g": 3
+  },
+  {
+   "name": "Chick-fil-A Icedream Cone",
+   "serving_grams": 135,
+   "kcal": 180,
+   "protein_g": 4,
+   "carbs_g": 32,
+   "fat_g": 4
+  },
+  {
+   "name": "Chick-fil-A Icedream Cup",
+   "serving_grams": 122,
+   "kcal": 140,
+   "protein_g": 4,
+   "carbs_g": 24,
+   "fat_g": 3.5
+  },
+  {
+   "name": "Vanilla Milkshake",
+   "serving_grams": 409,
+   "kcal": 580,
+   "protein_g": 13,
+   "carbs_g": 82,
+   "fat_g": 23
+  },
+  {
+   "name": "Strawberry Milkshake",
+   "serving_grams": 409,
+   "kcal": 560,
+   "protein_g": 10,
+   "carbs_g": 92,
+   "fat_g": 18
+  },
+  {
+   "name": "Chocolate Milkshake",
+   "serving_grams": 409,
+   "kcal": 600,
+   "protein_g": 12,
+   "carbs_g": 93,
+   "fat_g": 22
+  },
+  {
+   "name": "Cookies & Cream Milkshake",
+   "serving_grams": 409,
+   "kcal": 630,
+   "protein_g": 13,
+   "carbs_g": 91,
+   "fat_g": 25
+  },
+  {
+   "name": "Vanilla Frosted Coffee",
+   "serving_grams": 400,
+   "kcal": 330,
+   "protein_g": 7,
+   "carbs_g": 62,
+   "fat_g": 7
+  },
+  {
+   "name": "Mocha Frosted Coffee",
+   "serving_grams": 400,
+   "kcal": 330,
+   "protein_g": 7,
+   "carbs_g": 61,
+   "fat_g": 7
+  },
+  {
+   "name": "Caramel Frosted Coffee",
+   "serving_grams": 406,
+   "kcal": 370,
+   "protein_g": 7,
+   "carbs_g": 63,
+   "fat_g": 10
+  },
+  {
+   "name": "Frosted Coffee",
+   "serving_grams": 374,
+   "kcal": 260,
+   "protein_g": 7,
+   "carbs_g": 45,
+   "fat_g": 7
+  },
+  {
+   "name": "Dr Pepper Float",
+   "serving_grams": 369,
+   "kcal": 320,
+   "protein_g": 7,
+   "carbs_g": 60,
+   "fat_g": 7
+  },
+  {
+   "name": "Seasonal Gallon Beverages",
+   "serving_grams": 340,
+   "kcal": 210,
+   "protein_g": 0,
+   "carbs_g": 53,
+   "fat_g": 0
+  },
+  {
+   "name": "Gallon Pineapple Dragonfruit Unsweet Tea",
+   "serving_grams": 340,
+   "kcal": 25,
+   "protein_g": 0,
+   "carbs_g": 5,
+   "fat_g": 0
+  },
+  {
+   "name": "Gallon Pineapple Dragonfruit Sweet Tea",
+   "serving_grams": 340,
+   "kcal": 150,
+   "protein_g": 0,
+   "carbs_g": 37,
+   "fat_g": 0
+  },
+  {
+   "name": "Gallon Pineapple Dragonfruit Sunjoy (1/2 Unsweet Tea, 1/2 Diet Lemonade)",
+   "serving_grams": 340,
+   "kcal": 45,
+   "protein_g": 0,
+   "carbs_g": 10,
+   "fat_g": 0
+  },
+  {
+   "name": "Gallon Pineapple Dragonfruit Sunjoy (1/2 Sweet Tea, 1/2 Diet Lemonade)",
+   "serving_grams": 340,
+   "kcal": 110,
+   "protein_g": 0,
+   "carbs_g": 28,
+   "fat_g": 0
+  },
+  {
+   "name": "Gallon Pineapple Dragonfruit Sunjoy (1/2 Unsweet Tea, 1/2 Lemonade)",
+   "serving_grams": 340,
+   "kcal": 110,
+   "protein_g": 0,
+   "carbs_g": 27,
+   "fat_g": 0
+  },
+  {
+   "name": "Gallon Pineapple Dragonfruit Sunjoy (1/2 Sweet Tea, 1/2 Lemonade)",
+   "serving_grams": 340,
+   "kcal": 180,
+   "protein_g": 0,
+   "carbs_g": 44,
+   "fat_g": 0
+  },
+  {
+   "name": "Gallon Pineapple Dragonfruit Diet Lemonade",
+   "serving_grams": 340,
+   "kcal": 70,
+   "protein_g": 0,
+   "carbs_g": 16,
+   "fat_g": 0
+  },
+  {
+   "name": "Gallon Pineapple Dragonfruit Lemonade",
+   "serving_grams": 340,
+   "kcal": 210,
+   "protein_g": 0,
+   "carbs_g": 53,
+   "fat_g": 0
+  },
+  {
+   "name": "Gallon Beverages",
+   "serving_grams": 340,
+   "kcal": 190,
+   "protein_g": 0,
+   "carbs_g": 49,
+   "fat_g": 0
+  },
+  {
+   "name": "Bag of Ice",
+   "serving_grams": 28,
+   "kcal": 0,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 0
+  },
+  {
+   "name": "Gallon Sunjoy (1/2 Unsweet Tea, 1/2 Diet Lemonade)",
+   "serving_grams": 340,
+   "kcal": 20,
+   "protein_g": 0,
+   "carbs_g": 6,
+   "fat_g": 0
+  },
+  {
+   "name": "Gallon Sunjoy (1/2 Unsweet Tea, 1/2 Lemonade)",
+   "serving_grams": 340,
+   "kcal": 100,
+   "protein_g": 0,
+   "carbs_g": 26,
+   "fat_g": 0
+  },
+  {
+   "name": "Gallon Sunjoy (1/2 Sweet Tea, 1/2 Diet Lemonade)",
+   "serving_grams": 340,
+   "kcal": 90,
+   "protein_g": 0,
+   "carbs_g": 23,
+   "fat_g": 0
+  },
+  {
+   "name": "Gallon Sunjoy (1/2 Sweet Tea, 1/2 Lemonade)",
+   "serving_grams": 340,
+   "kcal": 160,
+   "protein_g": 0,
+   "carbs_g": 41,
+   "fat_g": 0
+  },
+  {
+   "name": "Gallon Chick-fil-A Iced Tea (1/2 Sweet Tea, 1/2 Unsweet Tea)",
+   "serving_grams": 340,
+   "kcal": 70,
+   "protein_g": 0,
+   "carbs_g": 18,
+   "fat_g": 0
+  },
+  {
+   "name": "Gallon Freshly-Brewed Iced Tea Unsweetened",
+   "serving_grams": 340,
+   "kcal": 0,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 0
+  },
+  {
+   "name": "Gallon Freshly-Brewed Iced Tea Sweetened",
+   "serving_grams": 340,
+   "kcal": 130,
+   "protein_g": 0,
+   "carbs_g": 33,
+   "fat_g": 0
+  },
+  {
+   "name": "Gallon Chick-fil-A Lemonade (1/2 Lemonade, 1/2 Diet Lemonade)",
+   "serving_grams": 340,
+   "kcal": 120,
+   "protein_g": 0,
+   "carbs_g": 33,
+   "fat_g": 0
+  },
+  {
+   "name": "Gallon Chick-fil-A Diet Lemonade",
+   "serving_grams": 340,
+   "kcal": 40,
+   "protein_g": 0,
+   "carbs_g": 12,
+   "fat_g": 0
+  },
+  {
+   "name": "Gallon Chick-fil-A Lemonade",
+   "serving_grams": 340,
+   "kcal": 190,
+   "protein_g": 0,
+   "carbs_g": 49,
+   "fat_g": 0
+  },
+  {
+   "name": "Freshly-Brewed Sweetened Iced Tea",
+   "serving_grams": 604,
+   "kcal": 120,
+   "protein_g": 0,
+   "carbs_g": 31,
+   "fat_g": 0
+  },
+  {
+   "name": "Large Freshly-Brewed Sweetened Iced Tea",
+   "serving_grams": 893,
+   "kcal": 170,
+   "protein_g": 0,
+   "carbs_g": 44,
+   "fat_g": 0
+  },
+  {
+   "name": "Medium Freshly-Brewed Sweetened Iced Tea",
+   "serving_grams": 604,
+   "kcal": 120,
+   "protein_g": 0,
+   "carbs_g": 31,
+   "fat_g": 0
+  },
+  {
+   "name": "Small Freshly-Brewed Sweetened Iced Tea",
+   "serving_grams": 451,
+   "kcal": 90,
+   "protein_g": 0,
+   "carbs_g": 22,
+   "fat_g": 0
+  },
+  {
+   "name": "Toasted Marshmallow Hot Coffee",
+   "serving_grams": 380,
+   "kcal": 110,
+   "protein_g": 0,
+   "carbs_g": 26,
+   "fat_g": 0
+  },
+  {
+   "name": "Dr Pepper",
+   "serving_grams": 584,
+   "kcal": 170,
+   "protein_g": 0,
+   "carbs_g": 44,
+   "fat_g": 0
+  },
+  {
+   "name": "Large Dr Pepper",
+   "serving_grams": 859,
+   "kcal": 250,
+   "protein_g": 0,
+   "carbs_g": 64,
+   "fat_g": 0
+  },
+  {
+   "name": "Medium Dr Pepper",
+   "serving_grams": 584,
+   "kcal": 170,
+   "protein_g": 0,
+   "carbs_g": 44,
+   "fat_g": 0
+  },
+  {
+   "name": "Small Dr Pepper",
+   "serving_grams": 451,
+   "kcal": 130,
+   "protein_g": 0,
+   "carbs_g": 34,
+   "fat_g": 0
+  },
+  {
+   "name": "Coca-Cola",
+   "serving_grams": 584,
+   "kcal": 170,
+   "protein_g": 0,
+   "carbs_g": 46,
+   "fat_g": 0
+  },
+  {
+   "name": "Large Coca-Cola",
+   "serving_grams": 859,
+   "kcal": 250,
+   "protein_g": 0,
+   "carbs_g": 68,
+   "fat_g": 0
+  },
+  {
+   "name": "Medium Coca-Cola",
+   "serving_grams": 584,
+   "kcal": 170,
+   "protein_g": 0,
+   "carbs_g": 46,
+   "fat_g": 0
+  },
+  {
+   "name": "Small Coca-Cola",
+   "serving_grams": 451,
+   "kcal": 130,
+   "protein_g": 0,
+   "carbs_g": 35,
+   "fat_g": 0
+  },
+  {
+   "name": "Sunjoy (1/2 Sweet Tea, 1/2 Diet Lemonade)",
+   "serving_grams": 641,
+   "kcal": 110,
+   "protein_g": 0,
+   "carbs_g": 29,
+   "fat_g": 0
+  },
+  {
+   "name": "Large Sunjoy (1/2 Sweet Tea, 1/2 Diet Lemonade)",
+   "serving_grams": 944,
+   "kcal": 150,
+   "protein_g": 0,
+   "carbs_g": 40,
+   "fat_g": 0
+  },
+  {
+   "name": "Medium Sunjoy (1/2 Sweet Tea, 1/2 Diet Lemonade)",
+   "serving_grams": 641,
+   "kcal": 110,
+   "protein_g": 0,
+   "carbs_g": 29,
+   "fat_g": 0
+  },
+  {
+   "name": "Small Sunjoy (1/2 Sweet Tea, 1/2 Diet Lemonade)",
+   "serving_grams": 479,
+   "kcal": 80,
+   "protein_g": 0,
+   "carbs_g": 20,
+   "fat_g": 0
+  },
+  {
+   "name": "Sunjoy (1/2 Unsweet Tea, 1/2 Lemonade)",
+   "serving_grams": 641,
+   "kcal": 160,
+   "protein_g": 0,
+   "carbs_g": 41,
+   "fat_g": 0
+  },
+  {
+   "name": "Large Sunjoy (1/2 Unsweet Tea, 1/2 Lemonade)",
+   "serving_grams": 944,
+   "kcal": 260,
+   "protein_g": 0,
+   "carbs_g": 66,
+   "fat_g": 0
+  },
+  {
+   "name": "Medium Sunjoy (1/2 Unsweet Tea, 1/2 Lemonade)",
+   "serving_grams": 641,
+   "kcal": 160,
+   "protein_g": 0,
+   "carbs_g": 41,
+   "fat_g": 0
+  },
+  {
+   "name": "Small Sunjoy (1/2 Unsweet Tea, 1/2 Lemonade)",
+   "serving_grams": 479,
+   "kcal": 130,
+   "protein_g": 0,
+   "carbs_g": 33,
+   "fat_g": 0
+  },
+  {
+   "name": "Sunjoy (1/2 Unsweet Tea, 1/2 Diet Lemonade)",
+   "serving_grams": 641,
+   "kcal": 35,
+   "protein_g": 0,
+   "carbs_g": 10,
+   "fat_g": 0
+  },
+  {
+   "name": "Large Sunjoy (1/2 Unsweet Tea, 1/2 Diet Lemonade)",
+   "serving_grams": 944,
+   "kcal": 60,
+   "protein_g": 0,
+   "carbs_g": 15,
+   "fat_g": 0
+  },
+  {
+   "name": "Medium Sunjoy (1/2 Unsweet Tea, 1/2 Diet Lemonade)",
+   "serving_grams": 641,
+   "kcal": 35,
+   "protein_g": 0,
+   "carbs_g": 10,
+   "fat_g": 0
+  },
+  {
+   "name": "Small Sunjoy (1/2 Unsweet Tea, 1/2 Diet Lemonade)",
+   "serving_grams": 479,
+   "kcal": 30,
+   "protein_g": 0,
+   "carbs_g": 8,
+   "fat_g": 0
+  },
+  {
+   "name": "Sunjoy (1/2 Sweet Tea, 1/2 Lemonade)",
+   "serving_grams": 641,
+   "kcal": 240,
+   "protein_g": 0,
+   "carbs_g": 60,
+   "fat_g": 0
+  },
+  {
+   "name": "Large Sunjoy (1/2 Sweet Tea, 1/2 Lemonade)",
+   "serving_grams": 944,
+   "kcal": 350,
+   "protein_g": 0,
+   "carbs_g": 91,
+   "fat_g": 0
+  },
+  {
+   "name": "Medium Sunjoy (1/2 Sweet Tea, 1/2 Lemonade)",
+   "serving_grams": 641,
+   "kcal": 240,
+   "protein_g": 0,
+   "carbs_g": 60,
+   "fat_g": 0
+  },
+  {
+   "name": "Small Sunjoy (1/2 Sweet Tea, 1/2 Lemonade)",
+   "serving_grams": 479,
+   "kcal": 180,
+   "protein_g": 0,
+   "carbs_g": 45,
+   "fat_g": 0
+  },
+  {
+   "name": "Chick-fil-A Diet Lemonade",
+   "serving_grams": 612,
+   "kcal": 60,
+   "protein_g": 0,
+   "carbs_g": 15,
+   "fat_g": 0
+  },
+  {
+   "name": "Large Chick-fil-A Diet Lemonade",
+   "serving_grams": 916,
+   "kcal": 80,
+   "protein_g": 0,
+   "carbs_g": 23,
+   "fat_g": 0
+  },
+  {
+   "name": "Medium Chick-fil-A Diet Lemonade",
+   "serving_grams": 612,
+   "kcal": 60,
+   "protein_g": 0,
+   "carbs_g": 15,
+   "fat_g": 0
+  },
+  {
+   "name": "Small Chick-fil-A Diet Lemonade",
+   "serving_grams": 465,
+   "kcal": 40,
+   "protein_g": 0,
+   "carbs_g": 12,
+   "fat_g": 0
+  },
+  {
+   "name": "Chick-fil-A Lemonade",
+   "serving_grams": 612,
+   "kcal": 260,
+   "protein_g": 0,
+   "carbs_g": 66,
+   "fat_g": 0
+  },
+  {
+   "name": "Large Chick-fil-A Lemonade",
+   "serving_grams": 916,
+   "kcal": 380,
+   "protein_g": 1,
+   "carbs_g": 98,
+   "fat_g": 0
+  },
+  {
+   "name": "Medium Chick-fil-A Lemonade",
+   "serving_grams": 612,
+   "kcal": 260,
+   "protein_g": 0,
+   "carbs_g": 66,
+   "fat_g": 0
+  },
+  {
+   "name": "Small Chick-fil-A Lemonade",
+   "serving_grams": 465,
+   "kcal": 190,
+   "protein_g": 0,
+   "carbs_g": 49,
+   "fat_g": 0
+  },
+  {
+   "name": "Freshly-Brewed Unsweetened Iced Tea",
+   "serving_grams": 604,
+   "kcal": 0,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 0
+  },
+  {
+   "name": "Large Freshly-Brewed Unsweetened Iced Tea",
+   "serving_grams": 893,
+   "kcal": 0,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 0
+  },
+  {
+   "name": "Medium Freshly-Brewed Unsweetened Iced Tea",
+   "serving_grams": 604,
+   "kcal": 0,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 0
+  },
+  {
+   "name": "Small Freshly-Brewed Unsweetened Iced Tea",
+   "serving_grams": 451,
+   "kcal": 0,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 0
+  },
+  {
+   "name": "Pineapple Dragonfruit Lemonade",
+   "serving_grams": 691,
+   "kcal": 290,
+   "protein_g": 0,
+   "carbs_g": 72,
+   "fat_g": 0
+  },
+  {
+   "name": "Pineapple Dragonfruit Diet Lemonade",
+   "serving_grams": 662,
+   "kcal": 90,
+   "protein_g": 0,
+   "carbs_g": 21,
+   "fat_g": 0
+  },
+  {
+   "name": "Iced Coffee",
+   "serving_grams": 661,
+   "kcal": 200,
+   "protein_g": 7,
+   "carbs_g": 34,
+   "fat_g": 4
+  },
+  {
+   "name": "Honest Kids Apple Juice",
+   "serving_grams": 170,
+   "kcal": 35,
+   "protein_g": 0,
+   "carbs_g": 9,
+   "fat_g": 0
+  },
+  {
+   "name": "1% Chocolate Milk",
+   "serving_grams": 198,
+   "kcal": 140,
+   "protein_g": 7,
+   "carbs_g": 23,
+   "fat_g": 2
+  },
+  {
+   "name": "1% Milk",
+   "serving_grams": 213,
+   "kcal": 90,
+   "protein_g": 7,
+   "carbs_g": 10,
+   "fat_g": 2
+  },
+  {
+   "name": "Simply Orange",
+   "serving_grams": 326,
+   "kcal": 160,
+   "protein_g": 2,
+   "carbs_g": 34,
+   "fat_g": 0
+  },
+  {
+   "name": "DASANI Bottled Water",
+   "serving_grams": 479,
+   "kcal": 0,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 0
+  },
+  {
+   "name": "Toasted Marshmallow Cream Cold Brew",
+   "serving_grams": 712,
+   "kcal": 530,
+   "protein_g": 8,
+   "carbs_g": 87,
+   "fat_g": 17
+  },
+  {
+   "name": "Toasted Marshmallow Iced Coffee",
+   "serving_grams": 683,
+   "kcal": 270,
+   "protein_g": 7,
+   "carbs_g": 50,
+   "fat_g": 4
+  },
+  {
+   "name": "Pineapple Dragonfruit Unsweet Tea",
+   "serving_grams": 662,
+   "kcal": 35,
+   "protein_g": 0,
+   "carbs_g": 7,
+   "fat_g": 0
+  },
+  {
+   "name": "Pineapple Dragonfruit Sweet Tea",
+   "serving_grams": 662,
+   "kcal": 150,
+   "protein_g": 0,
+   "carbs_g": 37,
+   "fat_g": 0
+  },
+  {
+   "name": "Pineapple Dragonfruit Sunjoy (Unsweet Tea, Diet Lemonade)",
+   "serving_grams": 662,
+   "kcal": 60,
+   "protein_g": 0,
+   "carbs_g": 14,
+   "fat_g": 0
+  },
+  {
+   "name": "Pineapple Dragonfruit Sunjoy (Unsweet Tea, Lemonade)",
+   "serving_grams": 662,
+   "kcal": 160,
+   "protein_g": 0,
+   "carbs_g": 39,
+   "fat_g": 0
+  },
+  {
+   "name": "Pineapple Dragonfruit Sunjoy (Sweet Tea, Diet Lemonade)",
+   "serving_grams": 662,
+   "kcal": 140,
+   "protein_g": 0,
+   "carbs_g": 34,
+   "fat_g": 0
+  },
+  {
+   "name": "Pineapple Dragonfruit Sunjoy (Sweet Tea, Lemonade)",
+   "serving_grams": 662,
+   "kcal": 240,
+   "protein_g": 0,
+   "carbs_g": 59,
+   "fat_g": 0
+  },
+  {
+   "name": "Pineapple Dragonfruit & Sprite",
+   "serving_grams": 662,
+   "kcal": 190,
+   "protein_g": 0,
+   "carbs_g": 50,
+   "fat_g": 0
+  },
+  {
+   "name": "Hot Coffee",
+   "serving_grams": 340,
+   "kcal": 0,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 0
+  },
+  {
+   "name": "Cream Cold Brew",
+   "serving_grams": 700,
+   "kcal": 520,
+   "protein_g": 9,
+   "carbs_g": 75,
+   "fat_g": 22
+  },
+  {
+   "name": "Vanilla Cream Cold Brew",
+   "serving_grams": 689,
+   "kcal": 470,
+   "protein_g": 8,
+   "carbs_g": 72,
+   "fat_g": 17
+  },
+  {
+   "name": "Mocha Cream Cold Brew",
+   "serving_grams": 689,
+   "kcal": 460,
+   "protein_g": 9,
+   "carbs_g": 71,
+   "fat_g": 17
+  },
+  {
+   "name": "Caramel Cream Cold Brew",
+   "serving_grams": 700,
+   "kcal": 520,
+   "protein_g": 9,
+   "carbs_g": 75,
+   "fat_g": 22
+  },
+  {
+   "name": "Vanilla Iced Coffee",
+   "serving_grams": 661,
+   "kcal": 210,
+   "protein_g": 7,
+   "carbs_g": 35,
+   "fat_g": 4
+  },
+  {
+   "name": "Mocha Iced Coffee",
+   "serving_grams": 661,
+   "kcal": 200,
+   "protein_g": 8,
+   "carbs_g": 34,
+   "fat_g": 4.5
+  },
+  {
+   "name": "Caramel Iced Coffee",
+   "serving_grams": 672,
+   "kcal": 260,
+   "protein_g": 8,
+   "carbs_g": 38,
+   "fat_g": 9
+  },
+  {
+   "name": "Honey Roasted BBQ Sauce",
+   "serving_grams": 12,
+   "kcal": 60,
+   "protein_g": 0,
+   "carbs_g": 3,
+   "fat_g": 5
+  },
+  {
+   "name": "Zesty Buffalo Sauce",
+   "serving_grams": 21,
+   "kcal": 25,
+   "protein_g": 0,
+   "carbs_g": 1,
+   "fat_g": 2.5
+  },
+  {
+   "name": "Sweet & Spicy Sriracha Sauce",
+   "serving_grams": 28,
+   "kcal": 45,
+   "protein_g": 0,
+   "carbs_g": 11,
+   "fat_g": 0
+  },
+  {
+   "name": "Polynesian Sauce",
+   "serving_grams": 28,
+   "kcal": 110,
+   "protein_g": 0,
+   "carbs_g": 14,
+   "fat_g": 6
+  },
+  {
+   "name": "Honey Mustard Sauce",
+   "serving_grams": 28,
+   "kcal": 50,
+   "protein_g": 0,
+   "carbs_g": 11,
+   "fat_g": 0
+  },
+  {
+   "name": "Garden Herb Ranch Sauce",
+   "serving_grams": 21,
+   "kcal": 100,
+   "protein_g": 0,
+   "carbs_g": 1,
+   "fat_g": 11
+  },
+  {
+   "name": "Chick-fil-A Sauce",
+   "serving_grams": 28,
+   "kcal": 140,
+   "protein_g": 0,
+   "carbs_g": 6,
+   "fat_g": 13
+  },
+  {
+   "name": "Barbeque Sauce",
+   "serving_grams": 28,
+   "kcal": 45,
+   "protein_g": 0,
+   "carbs_g": 11,
+   "fat_g": 0
+  },
+  {
+   "name": "Classic Syrup",
+   "serving_grams": 23,
+   "kcal": 60,
+   "protein_g": 0,
+   "carbs_g": 16,
+   "fat_g": 0
+  },
+  {
+   "name": "Zesty Apple Cider Vinaigrette Dressing",
+   "serving_grams": 56,
+   "kcal": 230,
+   "protein_g": 0,
+   "carbs_g": 16,
+   "fat_g": 19
+  },
+  {
+   "name": "Light Italian Dressing",
+   "serving_grams": 57,
+   "kcal": 25,
+   "protein_g": 0,
+   "carbs_g": 3,
+   "fat_g": 1
+  },
+  {
+   "name": "Light Balsamic Vinaigrette Dressing",
+   "serving_grams": 57,
+   "kcal": 80,
+   "protein_g": 0,
+   "carbs_g": 10,
+   "fat_g": 4
+  },
+  {
+   "name": "Garden Herb Ranch Dressing",
+   "serving_grams": 57,
+   "kcal": 280,
+   "protein_g": 1,
+   "carbs_g": 2,
+   "fat_g": 29
+  },
+  {
+   "name": "Fat-Free Honey Mustard Dressing",
+   "serving_grams": 57,
+   "kcal": 90,
+   "protein_g": 0,
+   "carbs_g": 22,
+   "fat_g": 0
+  },
+  {
+   "name": "Creamy Salsa Dressing",
+   "serving_grams": 57,
+   "kcal": 290,
+   "protein_g": 1,
+   "carbs_g": 2,
+   "fat_g": 31
+  },
+  {
+   "name": "Avocado Lime Ranch Dressing",
+   "serving_grams": 57,
+   "kcal": 310,
+   "protein_g": 1,
+   "carbs_g": 3,
+   "fat_g": 32
+  },
+  {
+   "name": "Multigrain Brioche Bun",
+   "serving_grams": 71,
+   "kcal": 210,
+   "protein_g": 7,
+   "carbs_g": 38,
+   "fat_g": 4.5
+  },
+  {
+   "name": "Buttery White Bun",
+   "serving_grams": 60,
+   "kcal": 180,
+   "protein_g": 5,
+   "carbs_g": 29,
+   "fat_g": 6
+  },
+  {
+   "name": "Gluten Free Bun",
+   "serving_grams": 79,
+   "kcal": 180,
+   "protein_g": 3,
+   "carbs_g": 37,
+   "fat_g": 3.5
+  },
+  {
+   "name": "White Bun (Unbuttered)",
+   "serving_grams": 54,
+   "kcal": 150,
+   "protein_g": 5,
+   "carbs_g": 28,
+   "fat_g": 1
+  },
+  {
+   "name": "Chick-fil-A Filet",
+   "serving_grams": 115,
+   "kcal": 250,
+   "protein_g": 24,
+   "carbs_g": 12,
+   "fat_g": 12
+  },
+  {
+   "name": "Spicy Filet",
+   "serving_grams": 120,
+   "kcal": 280,
+   "protein_g": 23,
+   "carbs_g": 16,
+   "fat_g": 13
+  },
+  {
+   "name": "Grilled Filet",
+   "serving_grams": 84,
+   "kcal": 110,
+   "protein_g": 21,
+   "carbs_g": 1,
+   "fat_g": 2
+  },
+  {
+   "name": "Spicy Breakfast Filet",
+   "serving_grams": 71,
+   "kcal": 150,
+   "protein_g": 15,
+   "carbs_g": 7,
+   "fat_g": 7
+  },
+  {
+   "name": "Chick-fil-A Breakfast Filet",
+   "serving_grams": 71,
+   "kcal": 160,
+   "protein_g": 15,
+   "carbs_g": 8,
+   "fat_g": 8
+  },
+  {
+   "name": "Grilled Breakfast Filet",
+   "serving_grams": 50,
+   "kcal": 60,
+   "protein_g": 13,
+   "carbs_g": 0,
+   "fat_g": 1
+  },
+  {
+   "name": "Sausage",
+   "serving_grams": 57,
+   "kcal": 240,
+   "protein_g": 11,
+   "carbs_g": 1,
+   "fat_g": 22
+  },
+  {
+   "name": "Bacon",
+   "serving_grams": 10,
+   "kcal": 50,
+   "protein_g": 4,
+   "carbs_g": 0,
+   "fat_g": 3.5
+  },
+  {
+   "name": "Roasted Nut Blend",
+   "serving_grams": 10,
+   "kcal": 70,
+   "protein_g": 1,
+   "carbs_g": 2,
+   "fat_g": 6
+  },
+  {
+   "name": "Seasoned Tortilla Strips",
+   "serving_grams": 14,
+   "kcal": 70,
+   "protein_g": 1,
+   "carbs_g": 8,
+   "fat_g": 4
+  },
+  {
+   "name": "Harvest Nut Granola",
+   "serving_grams": 14,
+   "kcal": 70,
+   "protein_g": 1,
+   "carbs_g": 10,
+   "fat_g": 2
+  },
+  {
+   "name": "Crispy Bell Peppers",
+   "serving_grams": 14,
+   "kcal": 80,
+   "protein_g": 1,
+   "carbs_g": 6,
+   "fat_g": 6
+  },
+  {
+   "name": "Chili Lime Pepitas",
+   "serving_grams": 14,
+   "kcal": 80,
+   "protein_g": 4,
+   "carbs_g": 2,
+   "fat_g": 7
+  },
+  {
+   "name": "Blue Cheese Crumbles",
+   "serving_grams": 9,
+   "kcal": 30,
+   "protein_g": 2,
+   "carbs_g": 0,
+   "fat_g": 2.5
+  },
+  {
+   "name": "Pepper Jack Cheese",
+   "serving_grams": 21,
+   "kcal": 80,
+   "protein_g": 4,
+   "carbs_g": 0,
+   "fat_g": 6
+  },
+  {
+   "name": "Colby Jack Cheese",
+   "serving_grams": 21,
+   "kcal": 80,
+   "protein_g": 5,
+   "carbs_g": 0,
+   "fat_g": 7
+  },
+  {
+   "name": "American Cheese",
+   "serving_grams": 14,
+   "kcal": 50,
+   "protein_g": 3,
+   "carbs_g": 1,
+   "fat_g": 4.5
+  },
+  {
+   "name": "Tomato",
+   "serving_grams": 30,
+   "kcal": 5,
+   "protein_g": 0,
+   "carbs_g": 1,
+   "fat_g": 0
+  },
+  {
+   "name": "Lettuce",
+   "serving_grams": 20,
+   "kcal": 5,
+   "protein_g": 0,
+   "carbs_g": 1,
+   "fat_g": 0
+  },
+  {
+   "name": "Saltines",
+   "serving_grams": 12,
+   "kcal": 50,
+   "protein_g": 1,
+   "carbs_g": 9,
+   "fat_g": 1
+  },
+  {
+   "name": "Chick-n-Strips Trays",
+   "serving_grams": 47,
+   "kcal": 110,
+   "protein_g": 10,
+   "carbs_g": 6,
+   "fat_g": 5
+  },
+  {
+   "name": "Large Chick-n-Strips Tray",
+   "serving_grams": 47,
+   "kcal": 110,
+   "protein_g": 10,
+   "carbs_g": 6,
+   "fat_g": 5
+  },
+  {
+   "name": "Medium Chick-n-Strips Tray",
+   "serving_grams": 47,
+   "kcal": 110,
+   "protein_g": 10,
+   "carbs_g": 6,
+   "fat_g": 5
+  },
+  {
+   "name": "Small Chick-n-Strips Tray",
+   "serving_grams": 47,
+   "kcal": 110,
+   "protein_g": 10,
+   "carbs_g": 6,
+   "fat_g": 5
+  },
+  {
+   "name": "Chick-fil-A Nugget Trays",
+   "serving_grams": 14,
+   "kcal": 30,
+   "protein_g": 3,
+   "carbs_g": 1,
+   "fat_g": 1.5
+  },
+  {
+   "name": "Large Chick-fil-A Nuggets Tray",
+   "serving_grams": 14,
+   "kcal": 30,
+   "protein_g": 3,
+   "carbs_g": 1,
+   "fat_g": 1.5
+  },
+  {
+   "name": "Medium Chick-fil-ANuggets Tray",
+   "serving_grams": 14,
+   "kcal": 30,
+   "protein_g": 3,
+   "carbs_g": 1,
+   "fat_g": 1.5
+  },
+  {
+   "name": "Small Chick-fil-A Nuggets Tray",
+   "serving_grams": 14,
+   "kcal": 30,
+   "protein_g": 3,
+   "carbs_g": 1,
+   "fat_g": 1.5
+  },
+  {
+   "name": "30 ct Chick-fil-A Nuggets Football-Shaped Tray",
+   "serving_grams": 425,
+   "kcal": 950,
+   "protein_g": 100,
+   "carbs_g": 41,
+   "fat_g": 43
+  },
+  {
+   "name": "10 ct Chick-fil-A Chick-n-Minis Football-Shaped Tray",
+   "serving_grams": 318,
+   "kcal": 910,
+   "protein_g": 49,
+   "carbs_g": 103,
+   "fat_g": 34
+  },
+  {
+   "name": "Cookie & Brownie Tray",
+   "serving_grams": 60,
+   "kcal": 280,
+   "protein_g": 3,
+   "carbs_g": 36,
+   "fat_g": 14
+  },
+  {
+   "name": "Large Chocolate Chunk Cookie and Chocolate Fudge Brownie Tray",
+   "serving_grams": 60,
+   "kcal": 280,
+   "protein_g": 3,
+   "carbs_g": 36,
+   "fat_g": 14
+  },
+  {
+   "name": "Small Chocolate Chunk Cookie and Chocolate Fudge Brownie Tray",
+   "serving_grams": 60,
+   "kcal": 280,
+   "protein_g": 3,
+   "carbs_g": 36,
+   "fat_g": 14
+  },
+  {
+   "name": "Chocolate Fudge Brownie Tray",
+   "serving_grams": 43,
+   "kcal": 190,
+   "protein_g": 2,
+   "carbs_g": 23,
+   "fat_g": 10
+  },
+  {
+   "name": "Large Chocolate Fudge Brownie Tray",
+   "serving_grams": 43,
+   "kcal": 190,
+   "protein_g": 2,
+   "carbs_g": 23,
+   "fat_g": 10
+  },
+  {
+   "name": "Small Chocolate Fudge Brownie Tray",
+   "serving_grams": 43,
+   "kcal": 190,
+   "protein_g": 2,
+   "carbs_g": 23,
+   "fat_g": 10
+  },
+  {
+   "name": "Chocolate Chunk Cookie Tray",
+   "serving_grams": 78,
+   "kcal": 370,
+   "protein_g": 5,
+   "carbs_g": 49,
+   "fat_g": 17
+  },
+  {
+   "name": "Large Chocolate Chunk Cookie Tray",
+   "serving_grams": 78,
+   "kcal": 370,
+   "protein_g": 5,
+   "carbs_g": 49,
+   "fat_g": 17
+  },
+  {
+   "name": "Small Chocolate Chunk Cookie Tray",
+   "serving_grams": 78,
+   "kcal": 370,
+   "protein_g": 5,
+   "carbs_g": 49,
+   "fat_g": 17
+  },
+  {
+   "name": "Kale Crunch Side Tray",
+   "serving_grams": 610,
+   "kcal": 1160,
+   "protein_g": 30,
+   "carbs_g": 77,
+   "fat_g": 87
+  },
+  {
+   "name": "Large Kale Crunch Side Tray",
+   "serving_grams": 1332,
+   "kcal": 2440,
+   "protein_g": 63,
+   "carbs_g": 166,
+   "fat_g": 182
+  },
+  {
+   "name": "Small Kale Crunch Side Tray",
+   "serving_grams": 610,
+   "kcal": 1160,
+   "protein_g": 30,
+   "carbs_g": 77,
+   "fat_g": 87
+  },
+  {
+   "name": "Garden Salad Tray",
+   "serving_grams": 595,
+   "kcal": 310,
+   "protein_g": 19,
+   "carbs_g": 20,
+   "fat_g": 18
+  },
+  {
+   "name": "Large Garden Salad Tray",
+   "serving_grams": 1191,
+   "kcal": 630,
+   "protein_g": 38,
+   "carbs_g": 41,
+   "fat_g": 36
+  },
+  {
+   "name": "Small Garden Salad Tray",
+   "serving_grams": 595,
+   "kcal": 310,
+   "protein_g": 19,
+   "carbs_g": 20,
+   "fat_g": 18
+  },
+  {
+   "name": "Mac & Cheese Tray",
+   "serving_grams": 2482,
+   "kcal": 4930,
+   "protein_g": 221,
+   "carbs_g": 308,
+   "fat_g": 312
+  },
+  {
+   "name": "Large Mac & Cheese Tray",
+   "serving_grams": 4964,
+   "kcal": 9850,
+   "protein_g": 442,
+   "carbs_g": 616,
+   "fat_g": 625
+  },
+  {
+   "name": "Small Mac & Cheese Tray",
+   "serving_grams": 2482,
+   "kcal": 4930,
+   "protein_g": 221,
+   "carbs_g": 308,
+   "fat_g": 312
+  },
+  {
+   "name": "Spicy Chilled Grilled Chicken Sub Sandwich Tray",
+   "serving_grams": 115,
+   "kcal": 220,
+   "protein_g": 16,
+   "carbs_g": 25,
+   "fat_g": 6
+  },
+  {
+   "name": "Large Spicy Chilled Grilled Chicken Sub Sandwich Tray",
+   "serving_grams": 115,
+   "kcal": 220,
+   "protein_g": 16,
+   "carbs_g": 25,
+   "fat_g": 6
+  },
+  {
+   "name": "Medium Spicy Chilled Grilled Chicken Sub Sandwich Tray",
+   "serving_grams": 115,
+   "kcal": 220,
+   "protein_g": 16,
+   "carbs_g": 25,
+   "fat_g": 6
+  },
+  {
+   "name": "Small Spicy Chilled Grilled Chicken Sub Sandwich Tray",
+   "serving_grams": 115,
+   "kcal": 220,
+   "protein_g": 16,
+   "carbs_g": 25,
+   "fat_g": 6
+  },
+  {
+   "name": "Chilled Grilled Chicken Sub Sandwich Tray",
+   "serving_grams": 115,
+   "kcal": 220,
+   "protein_g": 18,
+   "carbs_g": 25,
+   "fat_g": 6
+  },
+  {
+   "name": "Large Chilled Grilled Chicken Sub Sandwich Tray",
+   "serving_grams": 115,
+   "kcal": 220,
+   "protein_g": 18,
+   "carbs_g": 25,
+   "fat_g": 6
+  },
+  {
+   "name": "Medium Chilled Grilled Chicken Sub Sandwich Tray",
+   "serving_grams": 115,
+   "kcal": 220,
+   "protein_g": 18,
+   "carbs_g": 25,
+   "fat_g": 6
+  },
+  {
+   "name": "Small Chilled Grilled Chicken Sub Sandwich Tray",
+   "serving_grams": 115,
+   "kcal": 220,
+   "protein_g": 18,
+   "carbs_g": 25,
+   "fat_g": 6
+  },
+  {
+   "name": "Grilled Chicken Bundle",
+   "serving_grams": 224,
+   "kcal": 460,
+   "protein_g": 37,
+   "carbs_g": 35,
+   "fat_g": 19
+  },
+  {
+   "name": "Southwest Veggie Wrap Trays",
+   "serving_grams": 128,
+   "kcal": 460,
+   "protein_g": 14,
+   "carbs_g": 19,
+   "fat_g": 39
+  },
+  {
+   "name": "Large Southwest Veggie Wrap Tray",
+   "serving_grams": 128,
+   "kcal": 460,
+   "protein_g": 14,
+   "carbs_g": 19,
+   "fat_g": 39
+  },
+  {
+   "name": "Medium Southwest Veggie Wrap Tray",
+   "serving_grams": 128,
+   "kcal": 460,
+   "protein_g": 14,
+   "carbs_g": 19,
+   "fat_g": 39
+  },
+  {
+   "name": "Small Southwest Veggie Wrap Tray",
+   "serving_grams": 128,
+   "kcal": 460,
+   "protein_g": 14,
+   "carbs_g": 19,
+   "fat_g": 39
+  },
+  {
+   "name": "Spicy Cool Wrap Trays",
+   "serving_grams": 116,
+   "kcal": 480,
+   "protein_g": 21,
+   "carbs_g": 18,
+   "fat_g": 39
+  },
+  {
+   "name": "Large Spicy Cool Wrap Tray",
+   "serving_grams": 116,
+   "kcal": 480,
+   "protein_g": 21,
+   "carbs_g": 18,
+   "fat_g": 39
+  },
+  {
+   "name": "Medium Spicy Cool Wrap Tray",
+   "serving_grams": 116,
+   "kcal": 480,
+   "protein_g": 21,
+   "carbs_g": 18,
+   "fat_g": 39
+  },
+  {
+   "name": "Small Spicy Cool Wrap Tray",
+   "serving_grams": 116,
+   "kcal": 480,
+   "protein_g": 21,
+   "carbs_g": 18,
+   "fat_g": 39
+  },
+  {
+   "name": "Chick-fil-A Cool Wrap Trays",
+   "serving_grams": 116,
+   "kcal": 480,
+   "protein_g": 22,
+   "carbs_g": 18,
+   "fat_g": 39
+  },
+  {
+   "name": "Large Chick-fil-A Cool Wrap Tray",
+   "serving_grams": 116,
+   "kcal": 480,
+   "protein_g": 22,
+   "carbs_g": 18,
+   "fat_g": 39
+  },
+  {
+   "name": "Medium Chick-fil-A Cool Wrap Tray",
+   "serving_grams": 116,
+   "kcal": 480,
+   "protein_g": 22,
+   "carbs_g": 18,
+   "fat_g": 39
+  },
+  {
+   "name": "Small Chick-fil-A Cool Wrap Tray",
+   "serving_grams": 116,
+   "kcal": 480,
+   "protein_g": 22,
+   "carbs_g": 18,
+   "fat_g": 39
+  },
+  {
+   "name": "Chilled Chick-n-Strips Trays",
+   "serving_grams": 47,
+   "kcal": 110,
+   "protein_g": 10,
+   "carbs_g": 6,
+   "fat_g": 5
+  },
+  {
+   "name": "Large Chilled Chick-n-Strips (Cooked & Chilled for Later) Tray",
+   "serving_grams": 47,
+   "kcal": 110,
+   "protein_g": 10,
+   "carbs_g": 6,
+   "fat_g": 5
+  },
+  {
+   "name": "Medium Chilled Chick-n-Strips (Cooked & Chilled for Later) Tray",
+   "serving_grams": 47,
+   "kcal": 110,
+   "protein_g": 10,
+   "carbs_g": 6,
+   "fat_g": 5
+  },
+  {
+   "name": "Small Chilled Chick-n-Strips (Cooked & Chilled for Later) Tray",
+   "serving_grams": 47,
+   "kcal": 110,
+   "protein_g": 10,
+   "carbs_g": 6,
+   "fat_g": 5
+  },
+  {
+   "name": "Chilled Chick-fil-A Nugget Trays",
+   "serving_grams": 14,
+   "kcal": 30,
+   "protein_g": 3,
+   "carbs_g": 1,
+   "fat_g": 1.5
+  },
+  {
+   "name": "Large Chilled Chick-fil-A Nuggets Tray",
+   "serving_grams": 14,
+   "kcal": 30,
+   "protein_g": 3,
+   "carbs_g": 1,
+   "fat_g": 1.5
+  },
+  {
+   "name": "Medium Chilled Chick-fil-A Nuggets Tray",
+   "serving_grams": 14,
+   "kcal": 30,
+   "protein_g": 3,
+   "carbs_g": 1,
+   "fat_g": 1.5
+  },
+  {
+   "name": "Small Chilled Chick-fil-A Nuggets Tray",
+   "serving_grams": 14,
+   "kcal": 30,
+   "protein_g": 3,
+   "carbs_g": 1,
+   "fat_g": 1.5
+  },
+  {
+   "name": "Fruit Tray",
+   "serving_grams": 1446,
+   "kcal": 780,
+   "protein_g": 8,
+   "carbs_g": 182,
+   "fat_g": 0
+  },
+  {
+   "name": "Large Fruit Tray",
+   "serving_grams": 2948,
+   "kcal": 1580,
+   "protein_g": 16,
+   "carbs_g": 369,
+   "fat_g": 0
+  },
+  {
+   "name": "Small Fruit Tray",
+   "serving_grams": 1446,
+   "kcal": 780,
+   "protein_g": 8,
+   "carbs_g": 182,
+   "fat_g": 0
+  },
+  {
+   "name": "Spicy Chilled Grilled Chicken Sub Sandwich",
+   "serving_grams": 230,
+   "kcal": 500,
+   "protein_g": 34,
+   "carbs_g": 53,
+   "fat_g": 17
+  },
+  {
+   "name": "Chilled Grilled Chicken Sub Sandwich",
+   "serving_grams": 230,
+   "kcal": 500,
+   "protein_g": 36,
+   "carbs_g": 52,
+   "fat_g": 17
+  },
+  {
+   "name": "Bottled Diet Lemonade",
+   "serving_grams": 492,
+   "kcal": 60,
+   "protein_g": 0,
+   "carbs_g": 17,
+   "fat_g": 0
+  },
+  {
+   "name": "Bottled Lemonade",
+   "serving_grams": 520,
+   "kcal": 280,
+   "protein_g": 0,
+   "carbs_g": 73,
+   "fat_g": 0
+  },
+  {
+   "name": "Bottled Unsweet Tea",
+   "serving_grams": 486,
+   "kcal": 0,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 0
+  },
+  {
+   "name": "Bottled Sweet Tea",
+   "serving_grams": 506,
+   "kcal": 190,
+   "protein_g": 0,
+   "carbs_g": 50,
+   "fat_g": 0
+  },
+  {
+   "name": "Catering Coffee",
+   "serving_grams": 2722,
+   "kcal": 0,
+   "protein_g": 0,
+   "carbs_g": 0,
+   "fat_g": 0
+  }
+ ]
+}

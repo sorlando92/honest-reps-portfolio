@@ -1,19 +1,19 @@
 import "server-only"
 import { z } from "zod"
 import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod"
-import { aiModel, anthropic, GLOBAL_SAFETY_RULES, type AiCallRecord } from "./client.ts"
+import { aiModel, anthropic, EXTRACTION_SAFETY_RULES, supportsServerFallback, type AiCallRecord } from "./client.ts"
 
 // AI_PROMPTS.md P1. Bump the version whenever the locked text or schema
 // changes; it is logged with every call in ai_calls.
-export const P1_VERSION = "p1-2026-10-14.1"
+export const P1_VERSION = "p1-2026-10-14.2"
 
-// Locked layer, verbatim from AI_PROMPTS.md P1, after the global safety rules.
-const P1_SYSTEM = `${GLOBAL_SAFETY_RULES}
+// Locked layer, verbatim from AI_PROMPTS.md P1, after the safety rules.
+const P1_SYSTEM = `${EXTRACTION_SAFETY_RULES}
 
 You extract foods from a meal description for a nutrition tracker.
 Return every distinct food or drink as a separate item.
 For each item give: a short generic name suited to searching a food database, the quantity as a number, the unit (g, oz, ml, fl_oz, cup, tbsp, tsp, piece, slice, serving), an estimated weight in grams, and your confidence from 0 to 1.
-If the user gives no amount, use a typical single serving for an adult and lower confidence to at most 0.6.
+If the user gives no amount, use the standard serving for a packaged or chain restaurant product (amount_source label), the typical size for a counted item such as an egg, an apple or a can (measured), and otherwise a typical single adult serving with confidence at most 0.6 (estimated).
 If the description includes a brand or restaurant, put it in "brand".
 For each item also return amount_source: weighed when the user gives a weight in g, oz, or lb or says they weighed it; label for a packaged or chain restaurant product with a standard serving; measured for volume, spoons, fluid ounces, or counts with a known size; hand for palm, fist, cupped hand, thumb, or handful; estimated otherwise. Weight ounces and fluid ounces are different: '6 oz chicken' is weighed, '12 oz almond milk' is measured. For weighed items use the exact stated weight. For meat, fish, grains, and pasta return state as raw, cooked, or dry when stated, otherwise null. Never treat a nutrient amount like '42g protein' as a serving weight.
 Do not invent foods that are not described. Ignore non-food text.
@@ -70,8 +70,11 @@ export interface P1Result {
  * P1: meal text to items. Validates with Zod, retries once on invalid
  * output, then gives up so logging never blocks. Never throws.
  */
-export async function runP1(text: string, ctx: { units: "imperial" | "metric"; localTime: string }): Promise<P1Result> {
-  const model = aiModel()
+export async function runP1(
+  text: string,
+  ctx: { units: "imperial" | "metric"; localTime: string; model?: string }
+): Promise<P1Result> {
+  const model = ctx.model ?? aiModel()
   const started = Date.now()
   const tokens = { input: 0, output: 0 }
   let servedBy = model
@@ -83,8 +86,9 @@ export async function runP1(text: string, ctx: { units: "imperial" | "metric"; l
         model,
         max_tokens: 8000,
         // Refused requests rerun on a fallback model inside the same call.
-        betas: ["server-side-fallback-2026-07-01"],
-        fallbacks: "default",
+        ...(supportsServerFallback(model)
+          ? { betas: ["server-side-fallback-2026-07-01"], fallbacks: "default" as const }
+          : {}),
         // Extraction is simple; low effort keeps a log under the 20 second target.
         output_config: { effort: "low", format: betaZodOutputFormat(P1Output) },
         system: P1_SYSTEM,

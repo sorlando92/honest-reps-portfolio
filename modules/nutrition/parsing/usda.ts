@@ -55,7 +55,7 @@ async function searchOnce(query: string, dataType: string | null, pageSize: numb
   if (!key) throw new Error("Missing environment variable USDA_API_KEY. See .env.example.")
   const params = new URLSearchParams({ query, pageSize: String(pageSize), api_key: key })
   if (dataType) params.set("dataType", dataType)
-  const body = (await fetchWithRetry(`${SEARCH_URL}?${params}`).then((r) => r.json())) as SearchResponse
+  const body = await cached(params, async () => (await fetchWithRetry(`${SEARCH_URL}?${params}`).then((r) => r.json())) as SearchResponse)
 
   return (body.foods ?? []).flatMap((f) => {
     if (keep && f.dataType !== keep) return []
@@ -63,6 +63,29 @@ async function searchOnce(query: string, dataType: string | null, pageSize: numb
     if (!per100g) return []
     return [{ fdcId: f.fdcId, description: f.description, dataType: f.dataType, brand: f.brandName || f.brandOwner || null, per100g }]
   })
+}
+
+/**
+ * Eval only: with USDA_CACHE_DIR set, responses are kept on disk so repeated
+ * eval runs are repeatable and do not spend the key's 3,600 requests an hour.
+ * The app never sets it.
+ */
+async function cached(params: URLSearchParams, load: () => Promise<SearchResponse>): Promise<SearchResponse> {
+  const dir = process.env.USDA_CACHE_DIR
+  if (!dir) return load()
+  const { createHash } = await import("node:crypto")
+  const { mkdir, readFile, writeFile } = await import("node:fs/promises")
+  const keyless = new URLSearchParams(params)
+  keyless.delete("api_key")
+  const file = `${dir}/${createHash("sha1").update(keyless.toString()).digest("hex")}.json`
+  try {
+    return JSON.parse(await readFile(file, "utf8")) as SearchResponse
+  } catch {
+    const body = await load()
+    await mkdir(dir, { recursive: true })
+    await writeFile(file, JSON.stringify(body))
+    return body
+  }
 }
 
 // Retry the stray 400, rate limits and server errors; give up after 3 tries

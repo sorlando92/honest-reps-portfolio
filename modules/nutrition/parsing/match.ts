@@ -27,7 +27,7 @@ const DRY = /\b(dry|dried|uncooked)\b/
 const NEUTRAL = new Set([
   "a", "and", "as", "or", "of", "the", "with", "without", "to", "ns", "nfs", "method", "cooking", "type",
   "plain", "regular", "whole", "meat", "only", "eaten", "not", "made", "from", "includes", "prepared",
-  "cooked", "raw", "uncooked", "dry",
+  "cooked", "raw", "uncooked", "dry", "1", "slice", "piece", "serving",
 ])
 
 // Foods whose calories change a lot between raw, cooked and dry (PRD F2).
@@ -66,6 +66,34 @@ export function wantedState(name: string, stated: FoodState | null): FoodState |
   return isStateful(name) ? "cooked" : null
 }
 
+/**
+ * Ranks a chain's own menu items. Menu names are short and leave out what
+ * the chain implies ("Nuggets" at Chick-fil-A is chicken), so the score is
+ * how much of the menu name the user's words cover, minus a little for each
+ * of the user's words the menu name lacks. The quantity counts as a word, so
+ * "8 count nuggets" prefers "8 ct Nuggets".
+ */
+export function rankMenu<C extends { name: string }>(
+  item: { name: string; quantity: number },
+  menu: C[]
+): { item: C; score: number }[] {
+  const said = new Set([...tokens(item.name), String(item.quantity)].filter((t) => !MENU_NEUTRAL.has(t)))
+  return menu
+    .map((m) => {
+      const words = tokens(m.name).filter((t) => !MENU_NEUTRAL.has(t))
+      if (!words.length) return { item: m, score: 0 }
+      const covered = words.filter((t) => said.has(t) || (SYNONYMS[t] ?? []).some((s) => said.has(s))).length
+      const unsaid = [...said].filter((t) => !words.includes(t) && !/^\d+$/.test(t)).length
+      // A matching count ("12 ct") beats the same item without one.
+      const countBonus = words.some((t) => /^\d+$/.test(t) && said.has(t)) ? 0.05 : 0
+      return { item: m, score: Math.max(0, Math.min(1, covered / words.length - 0.1 * unsaid + countBonus)) }
+    })
+    .sort((a, b) => b.score - a.score)
+}
+
+// Serving words in menu names ("1 slice", "8 ct") that say nothing about the food.
+const MENU_NEUTRAL = new Set(["1", "ct", "count", "slice", "piece", "serving", "w", "with", "the", "a", "of", "and", "order"])
+
 // Preparations that change calories a lot, or unusual variants. Unless the
 // user said them, a candidate carrying one is a worse match than a plain one.
 const OFF_TARGET = new Set([
@@ -84,6 +112,7 @@ const CATEGORY_HEADS = new Set([
 const SYNONYMS: Record<string, string[]> = {
   oatmeal: ["oat"],
   toast: ["toasted", "bread"],
+  count: ["ct"],
   coke: ["cola"],
   soda: ["carbonated"],
 }

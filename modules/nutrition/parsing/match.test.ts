@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { describedState, rank, wantedState } from "./match"
+import { describedState, rank, rankMenu, wantedState } from "./match"
 
 const foods = (...descriptions: string[]) =>
   descriptions.map((description, i) => ({ id: String(i), description, dataType: "SR Legacy", brand: null }))
@@ -48,5 +48,18 @@ describe("state", () => {
     // USDA "raw" beans are dry beans, about 2.5 times the calories of cooked.
     expect(wantedState("black beans", null)).toBe("cooked")
     expect(wantedState("penne", "dry")).toBe("dry")
+  })
+})
+
+describe("rankMenu", () => {
+  const menu = ["Chick-fil-A Nuggets", "8 ct Grilled Nuggets", "12 ct Chick-fil-A Nuggets", "Medium Waffle Potato Fries", "Large Waffle Potato Fries"]
+    .map((name) => ({ name: name.replace("Chick-fil-A ", "") }))
+  const top = (name: string, quantity = 1) => rankMenu({ name, quantity }, menu)[0].item.name
+
+  it("matches the menu name the user's words cover", () => {
+    expect(top("chicken nuggets", 8)).toBe("Nuggets")
+    expect(top("chicken nuggets", 12)).toBe("12 ct Nuggets")
+    expect(top("grilled nuggets", 8)).toBe("8 ct Grilled Nuggets")
+    expect(top("waffle fries, large")).toBe("Large Waffle Potato Fries")
   })
 })

@@ -3,7 +3,9 @@ import "server-only"
 // directly in Node, which does not know the @/ alias.
 import { runP1, type AmountSource, type FoodState, type P1Item } from "../../../lib/ai/p1.ts"
 import type { AiCallRecord } from "../../../lib/ai/client.ts"
-import { rank, wantedState } from "./match.ts"
+import { curatedSourceId, findCuratedChain, isUncuratedChain, type ChainData } from "../data/chains/index.ts"
+import { DEFAULT_HAND_PORTIONS, handPortionFor, handPortionGrams, type HandPortions } from "./hand.ts"
+import { rank, rankMenu, wantedState } from "./match.ts"
 import { searchUsda, type Per100g, type UsdaFood } from "./usda.ts"
 
 // QUESTIONS.md Q11: starts at 0.5, tuned against the parsing eval. Read from
@@ -11,9 +13,11 @@ import { searchUsda, type Per100g, type UsdaFood } from "./usda.ts"
 export const DEFAULT_MATCH_THRESHOLD = 0.5
 // AI_PROMPTS.md P1: flag when capped confidence is under 0.7.
 const CONFIDENCE_FLAG = 0.7
+// Amount source caps (AI_PROMPTS.md P1), for amounts this code re-labels.
+const ESTIMATED_CAP = 0.6
 
 export interface MatchedFood {
-  source: "usda"
+  source: "usda" | "custom"
   sourceId: string
   name: string
   brand: string | null
@@ -38,7 +42,10 @@ export interface ParsedItem {
   proteinG: number
   carbsG: number
   fatG: number
+  /** Saved entries count flagged items; the reason decides what the card shows (Q34). */
   flagged: boolean
+  /** "match": food uncertain, show "Check this". "amount": amount estimated, show "Estimated". */
+  flagReason: "match" | "amount" | null
   alternatives: MatchedFood[]
 }
 
@@ -56,19 +63,99 @@ export interface ParseOptions {
   units: "imperial" | "metric"
   localTime: string
   matchThreshold?: number
+  /** The coach's conversions from nutrition_coach_settings. */
+  handPortions?: HandPortions
+  /** Overrides ANTHROPIC_MODEL; the eval uses it to compare models. */
+  model?: string
 }
 
 export async function parseMeal(text: string, opts: ParseOptions): Promise<ParseResult> {
-  const p1 = await runP1(text, { units: opts.units, localTime: opts.localTime })
+  const p1 = await runP1(text, { units: opts.units, localTime: opts.localTime, model: opts.model })
   if (!p1.output) {
     return { items: [], unparsedText: text, modelOutput: null, aiCall: p1.record, fallback: true }
   }
-  const threshold = opts.matchThreshold ?? DEFAULT_MATCH_THRESHOLD
-  const items = await Promise.all(p1.output.items.map((item) => matchItem(item, threshold)))
+  const ctx: MatchContext = {
+    text,
+    threshold: opts.matchThreshold ?? DEFAULT_MATCH_THRESHOLD,
+    hand: opts.handPortions ?? DEFAULT_HAND_PORTIONS,
+  }
+  const items = await Promise.all(p1.output.items.map((item) => matchItem(withHandGrams(item, ctx), ctx)))
   return { items, unparsedText: p1.output.unparsed_text, modelOutput: p1.output, aiCall: p1.record, fallback: false }
 }
 
-async function matchItem(item: P1Item, threshold: number): Promise<ParsedItem> {
+interface MatchContext {
+  text: string
+  threshold: number
+  hand: HandPortions
+}
+
+/** Hand portions take their grams from the coach's conversions (Q33). */
+function withHandGrams(item: P1Item, ctx: MatchContext): P1Item {
+  if (item.amount_source !== "hand") return item
+  const portion = handPortionFor(ctx.text, item.name)
+  const grams = portion ? handPortionGrams(portion, item.name, ctx.hand) : null
+  return grams ? { ...item, grams } : item
+}
+
+async function matchItem(item: P1Item, ctx: MatchContext): Promise<ParsedItem> {
+  const chain = findCuratedChain(item.brand)
+  if (chain) {
+    const curated = matchCurated(item, chain, ctx)
+    if (curated) return curated
+  }
+  // PRD F2: a chain without curated data (or an item it lacks) gets a generic
+  // match, marked estimated and flagged.
+  const uncovered = chain !== null || isUncuratedChain(item.brand)
+  const generic = await matchUsda(uncovered ? { ...item, brand: null } : item, ctx)
+  if (!uncovered) return generic
+  return { ...generic, brand: item.brand, amountSource: "estimated", confidence: Math.min(generic.confidence, ESTIMATED_CAP), ...flags(ESTIMATED_CAP, "estimated", generic.matchScore, ctx) }
+}
+
+function matchCurated(item: P1Item, chain: ChainData, ctx: MatchContext): ParsedItem | null {
+  // Drop the chain's own name ("Medium Chick-fil-A Waffle Potato Fries") but
+  // keep the commas: the ranker reads the leading food from them.
+  const names = [chain.chain, ...chain.aliases].sort((a, b) => b.length - a.length)
+  const pattern = new RegExp(names.map((n) => n.replace(/[^a-z0-9]/gi, (c) => (c === " " ? "\\s*" : `\\${c}?`))).join("|"), "gi")
+  const strip = (s: string) => s.replace(pattern, " ").replace(/\s+/g, " ").trim()
+  const menu = chain.items.map((ci) => ({ name: strip(ci.name), ci }))
+  const ranked = rankMenu({ name: strip(item.name), quantity: item.quantity }, menu)
+  const best = ranked[0]
+  if (!best || best.score < ctx.threshold) return null
+
+  const toMatched = (r: (typeof ranked)[number]): MatchedFood => ({
+    source: "custom",
+    sourceId: curatedSourceId(chain, r.item.ci),
+    name: r.item.ci.name,
+    brand: chain.chain,
+    dataType: "Curated",
+    state: null,
+    per100g: per100(r.item.ci),
+  })
+  const ci = best.item.ci
+  // Whole servings: "double chicken" or "2 slices" is the serving times two.
+  const servings = Math.max(1, Math.round(item.grams / ci.serving_grams))
+  const confidence = Math.max(item.confidence, 0.9)
+  return {
+    name: item.name,
+    brand: chain.chain,
+    quantity: item.quantity,
+    unit: item.unit,
+    grams: round(ci.serving_grams * servings, 1),
+    amountSource: "label",
+    state: null,
+    confidence,
+    match: toMatched(best),
+    matchScore: best.score,
+    calories: round(ci.kcal * servings),
+    proteinG: round(ci.protein_g * servings, 1),
+    carbsG: round(ci.carbs_g * servings, 1),
+    fatG: round(ci.fat_g * servings, 1),
+    ...flags(confidence, "label", best.score, ctx),
+    alternatives: ranked.slice(1, 4).map(toMatched),
+  }
+}
+
+async function matchUsda(item: P1Item, ctx: MatchContext): Promise<ParsedItem> {
   const query = searchQuery(item)
   const [generic, branded] = await Promise.all([
     searchUsda(query).catch(() => [] as UsdaFood[]),
@@ -89,11 +176,9 @@ async function matchItem(item: P1Item, threshold: number): Promise<ParsedItem> {
   const best = ranked[0]
   const match = best ? toMatched(best) : null
   const matchScore = best?.score ?? 0
-  // PRD F2: hand portions are tagged, never flagged for their amount.
-  const unsureAmount = item.amount_source !== "hand" && item.confidence < CONFIDENCE_FLAG
-  const flagged = unsureAmount || matchScore < threshold
   const factor = item.grams / 100
   const per = match?.per100g
+  const flagInfo = flags(item.confidence, item.amount_source, matchScore, ctx)
 
   return {
     name: item.name,
@@ -111,9 +196,30 @@ async function matchItem(item: P1Item, threshold: number): Promise<ParsedItem> {
     proteinG: per ? round(per.protein_g * factor, 1) : 0,
     carbsG: per ? round(per.carbs_g * factor, 1) : 0,
     fatG: per ? round(per.fat_g * factor, 1) : 0,
-    flagged,
-    alternatives: flagged ? ranked.slice(1, 4).map(toMatched) : [],
+    ...flagInfo,
+    alternatives: flagInfo.flagged ? ranked.slice(1, 4).map(toMatched) : [],
   }
+}
+
+/**
+ * QUESTIONS.md Q34: one signal per row, by cause. An uncertain food match
+ * wins over an estimated amount. Hand portions are never flagged for their
+ * amount (PRD F2).
+ */
+function flags(
+  confidence: number,
+  source: AmountSource,
+  matchScore: number,
+  ctx: MatchContext
+): Pick<ParsedItem, "flagged" | "flagReason"> {
+  if (matchScore < ctx.threshold) return { flagged: true, flagReason: "match" }
+  if (source !== "hand" && confidence < CONFIDENCE_FLAG) return { flagged: true, flagReason: "amount" }
+  return { flagged: false, flagReason: null }
+}
+
+function per100(ci: { serving_grams: number; kcal: number; protein_g: number; carbs_g: number; fat_g: number }): Per100g {
+  const f = 100 / ci.serving_grams
+  return { kcal: round(ci.kcal * f, 1), protein_g: round(ci.protein_g * f, 2), carbs_g: round(ci.carbs_g * f, 2), fat_g: round(ci.fat_g * f, 2) }
 }
 
 /** P1's name without the restaurant in parentheses, plus the stated state. */

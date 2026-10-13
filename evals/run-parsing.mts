@@ -1,4 +1,4 @@
-// pnpm eval:parsing [--runs 3] [--split dev|holdout|all] [--cases p001,p002]
+// pnpm eval:parsing [--runs 3] [--split dev|holdout|all] [--cases p001,p002] [--model claude-haiku-5-5]
 //
 // Runs evals/parsing.jsonl through the real parsing pipeline (P1 plus USDA
 // matching), scores each run per evals/README.md, and prints the median per
@@ -27,6 +27,8 @@ const PRICES: Record<string, [number, number]> = {
   "claude-haiku-5-5": [0.1, 0.5],
 }
 const CONCURRENCY = 4
+// Keep USDA responses on disk between runs (modules/nutrition/parsing/usda.ts).
+process.env.USDA_CACHE_DIR ??= "evals/.cache/usda"
 
 const args = process.argv.slice(2)
 const arg = (name: string) => {
@@ -36,6 +38,7 @@ const arg = (name: string) => {
 const runs = Number(arg("runs") ?? 3)
 const split = arg("split") ?? "all"
 const only = arg("cases")?.split(",")
+const model = arg("model")
 
 const cases: EvalCase[] = readFileSync(new URL("./parsing.jsonl", import.meta.url), "utf8")
   .split("\n")
@@ -58,7 +61,7 @@ interface CaseRun {
 }
 
 async function runCase(c: EvalCase, run: number): Promise<CaseRun> {
-  const result = await parseMeal(c.input, { units: c.units, localTime: "12:30" })
+  const result = await parseMeal(c.input, { units: c.units, localTime: "12:30", model })
   const items = result.items.map((i) => ({
     name: i.name,
     matchName: i.match?.name ?? null,
@@ -141,17 +144,17 @@ console.log(`Cases that flip between runs: ${flips.join(", ") || "none"}`)
 
 const tokensIn = results.reduce((s, r) => s + r.inputTokens, 0)
 const tokensOut = results.reduce((s, r) => s + r.outputTokens, 0)
-const model = results[0]?.model ?? "unknown"
-const [pin, pout] = PRICES[model] ?? [0, 0]
+const servedBy = results[0]?.model ?? "unknown"
+const [pin, pout] = PRICES[servedBy] ?? [0, 0]
 const cost = (tokensIn * pin + tokensOut * pout) / 1e6
 const latencies = results.map((r) => r.latencyMs)
 console.log(
-  `\nModel ${model}. P1 latency median ${median(latencies)} ms, max ${Math.max(...latencies)} ms. ` +
+  `\nModel ${servedBy}. P1 latency median ${median(latencies)} ms, max ${Math.max(...latencies)} ms. ` +
     `Tokens ${tokensIn} in, ${tokensOut} out. Cost about $${cost.toFixed(3)} ($${(cost / results.length).toFixed(4)} per parse).` +
     (results.some((r) => r.fallback) ? ` P1 fallbacks: ${results.filter((r) => r.fallback).length}.` : "")
 )
 
 mkdirSync(new URL("./results/", import.meta.url), { recursive: true })
-const file = new URL(`./results/parsing-${new Date().toISOString().replace(/[:.]/g, "-")}.json`, import.meta.url)
-writeFileSync(file, JSON.stringify({ model, runs, dev, holdout, results }, null, 2))
+const file = new URL(`./results/parsing-${servedBy}-${new Date().toISOString().replace(/[:.]/g, "-")}.json`, import.meta.url)
+writeFileSync(file, JSON.stringify({ model: servedBy, runs, dev, holdout, results }, null, 2))
 console.log(`Details: ${file.pathname}`)

@@ -7,6 +7,8 @@
 // Needs NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY and COACH_EMAIL.
 
 import { createClient, type SupabaseClient } from "@supabase/supabase-js"
+import { CURATED_CHAINS, curatedSourceId } from "../modules/nutrition/data/chains/index.ts"
+import { DEFAULT_HAND_PORTIONS } from "../modules/nutrition/parsing/hand.ts"
 
 const url = need("NEXT_PUBLIC_SUPABASE_URL")
 const serviceKey = need("SUPABASE_SERVICE_ROLE_KEY")
@@ -24,6 +26,8 @@ const APP_CONFIG: Record<string, unknown> = {
   consent_versions: { coach_visibility: "2026-10-12" },
   adherence: { calorie_tolerance_pct: 10, protein_hit_pct: 90 },
   weight_trend: { method: "ewma", alpha: 0.1 },
+  // QUESTIONS.md Q11: food match score below this flags the item.
+  parsing: { match_threshold: 0.5 },
 }
 
 const COACH_SETTINGS = {
@@ -59,6 +63,34 @@ async function main() {
   )
   check(await admin.from("app_config").upsert({ key: "default_coach_id", value: coachId }, { onConflict: "key" }))
   console.log(`Coach: ${coachEmail} (${coachId})`)
+
+  // Nutrition module settings (QUESTIONS.md Q33); never overwrite coach edits.
+  check(
+    await admin
+      .from("nutrition_coach_settings")
+      .upsert({ coach_id: coachId, hand_portions: DEFAULT_HAND_PORTIONS }, { onConflict: "coach_id", ignoreDuplicates: true })
+  )
+
+  // Curated chain items (Q36): the JSON files are the source of truth, so
+  // these rows are replaced on every seed.
+  for (const chain of CURATED_CHAINS) {
+    const rows = chain.items.map((item) => {
+      const f = 100 / item.serving_grams
+      return {
+        source: "custom",
+        source_id: curatedSourceId(chain, item),
+        name: item.name,
+        brand: chain.chain,
+        data_type: "Curated",
+        per_100g: { kcal: item.kcal * f, protein_g: item.protein_g * f, carbs_g: item.carbs_g * f, fat_g: item.fat_g * f },
+        serving: { label: "1 serving", grams: item.serving_grams, kcal: item.kcal, protein_g: item.protein_g, carbs_g: item.carbs_g, fat_g: item.fat_g },
+        source_url: chain.source_url,
+        verified_on: chain.verified_on,
+      }
+    })
+    check(await admin.from("food_items").upsert(rows, { onConflict: "source,source_id" }))
+    console.log(`Chain items: ${chain.chain} (${rows.length})`)
+  }
 
   if (withSample) {
     if (!isLocal) throw new Error("Sample users are only seeded into a local database.")

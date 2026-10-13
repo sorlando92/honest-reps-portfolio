@@ -96,3 +96,14 @@ M0 signed off by Sean 2026-10-13 (Pixel: sign in by code, install, tabs, light a
 
 - Resolved Q33, Q34, Q36, Q37, Q38, the P1/P2 medical flag sentence, and the P1 model selection rule. Eval set v0.3 (29 cases; fresh holdout p025 to p029).
 - AI_PROMPTS: Q37 line in P1, curated chain matching, model selection rule. ARCHITECTURE: `nutrition_coach_settings`, `food_items.source_url` and `verified_on`. PRD F2 and DESIGN_SYSTEM: one signal per row (Q34), chain coverage (Q36), quick add never calls a model.
+
+### 2026-10-13: round 3 code, step 2 server side (not yet run against a database)
+
+- P1: Q37 line, safety rules without the medical_flag sentence (P1_VERSION p1-2026-10-14.2), model override, refusal fallback only on models that support it (not Haiku).
+- Q33: `nutrition_coach_settings` (migration 20261014000002, RLS suite), seeded with the PRD F14 defaults. Palm, cupped hand and thumb convert to grams; fist keeps P1's estimate (it is a volume).
+- Q36: curated chain data as one JSON file per chain in `modules/nutrition/data/chains/`, seeded into `food_items` with `source_url` and `verified_on`. Done: Domino's (75 items, Nutrition Guide PDF, August 2026) and Chick-fil-A (369 items, official nutrition page). Menu ranking for curated chains; whole servings from P1's grams. Uncovered chains get a generic match, estimated and flagged. Not done: the other 9 chains, whose official pages block automated fetches or need a browser.
+- Q34: items carry `flagReason` (match or amount).
+- Step 2 server side: `food_entries` and `food_entry_items` (migration 20261014000003, RLS suite), `ai_calls.input` and `output`, `POST /api/parse` (60 per user per hour) and `POST /api/entries` (copies the audit trail from `ai_calls`, dedupes offline syncs, emits `food_logged` with amount source counts).
+- Eval: `--model` flag; USDA responses cached on disk during eval runs (`USDA_CACHE_DIR`).
+- Found: the USDA key's 3,600 requests an hour ran out during the three model comparison, so the Opus comparison run is invalid and the comparison is not finished.
+- Blocked: Docker Desktop fails to start, so the three new migrations and their RLS suites have not run, and the card UI cannot be checked at 375px.

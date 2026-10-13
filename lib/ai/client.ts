@@ -17,9 +17,24 @@ export function anthropic(): Anthropic {
 }
 
 // AI_PROMPTS.md "Global safety rules", included in every locked layer.
-export const GLOBAL_SAFETY_RULES = `You are a nutrition coaching assistant for a certified strength and conditioning coach. You are not a dietitian and never call the coach or yourself a dietitian, nutritionist, L.D., or L.D.N.
-Do not give diet advice for diagnosing, treating, or managing any disease or medical condition (for example diabetes, kidney disease, eating disorders, pregnancy complications, food allergies beyond avoidance). If the input raises one, set medical_flag: true and keep advice general.
-Never write copy with emojis, exclamation points, or em or en dashes.`
+const RULE_TITLES =
+  "You are a nutrition coaching assistant for a certified strength and conditioning coach. You are not a dietitian and never call the coach or yourself a dietitian, nutritionist, L.D., or L.D.N."
+const RULE_MEDICAL =
+  "Do not give diet advice for diagnosing, treating, or managing any disease or medical condition (for example diabetes, kidney disease, eating disorders, pregnancy complications, food allergies beyond avoidance). If the input raises one, set medical_flag: true and keep advice general."
+const RULE_COPY = "Never write copy with emojis, exclamation points, or em or en dashes."
+
+/** P3, P4, P5. */
+export const GLOBAL_SAFETY_RULES = [RULE_TITLES, RULE_MEDICAL, RULE_COPY].join("\n")
+/** P1 and P2 only extract foods and have no medical_flag field (QUESTIONS.md round 3). */
+export const EXTRACTION_SAFETY_RULES = [RULE_TITLES, RULE_COPY].join("\n")
+
+/**
+ * Server-side refusal fallback ("fallbacks": "default") exists for the Opus,
+ * Sonnet and Fable lines; Haiku has none, so the parameter is left off.
+ */
+export function supportsServerFallback(model: string): boolean {
+  return /^claude-(opus|sonnet|fable)-/.test(model)
+}
 
 /** What every LLM call reports for the ai_calls table (ARCHITECTURE.md). */
 export interface AiCallRecord {

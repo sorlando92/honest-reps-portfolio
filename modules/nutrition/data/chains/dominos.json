@@ -1,0 +1,621 @@
+{
+ "chain": "Domino's",
+ "aliases": [
+  "domino's",
+  "dominos",
+  "domino",
+  "domino's pizza",
+  "dominos pizza"
+ ],
+ "source_url": "https://www.dominos.com/cms/assets/0e4a30f5-a8fb-4c2d-ab54-b1aae92b72df",
+ "verified_on": "2026-10-13",
+ "note": "Domino's Nutrition Guide, August 2026 (PDF linked from the official Cal-O-Meter page). Slices are 1/8 of a large or medium pizza.",
+ "items": [
+  {
+   "name": "The People's Pizza - Deluxe pizza, medium hand tossed, 1 slice",
+   "serving_grams": 153,
+   "kcal": 390,
+   "fat_g": 19,
+   "carbs_g": 39,
+   "protein_g": 15
+  },
+  {
+   "name": "The People's Pizza - Deluxe pizza, large hand tossed, 1 slice",
+   "serving_grams": 135,
+   "kcal": 340,
+   "fat_g": 16,
+   "carbs_g": 35,
+   "protein_g": 13
+  },
+  {
+   "name": "ExtravaganZZa pizza, medium hand tossed, 1 slice",
+   "serving_grams": 174,
+   "kcal": 440,
+   "fat_g": 22,
+   "carbs_g": 40,
+   "protein_g": 18
+  },
+  {
+   "name": "ExtravaganZZa pizza, large hand tossed, 1 slice",
+   "serving_grams": 153,
+   "kcal": 380,
+   "fat_g": 19,
+   "carbs_g": 36,
+   "protein_g": 16
+  },
+  {
+   "name": "Honolulu Hawaiian pizza, medium hand tossed, 1 slice",
+   "serving_grams": 150,
+   "kcal": 380,
+   "fat_g": 17,
+   "carbs_g": 40,
+   "protein_g": 17
+  },
+  {
+   "name": "Honolulu Hawaiian pizza, large hand tossed, 1 slice",
+   "serving_grams": 132,
+   "kcal": 330,
+   "fat_g": 14,
+   "carbs_g": 36,
+   "protein_g": 14
+  },
+  {
+   "name": "MeatZZa pizza, medium hand tossed, 1 slice",
+   "serving_grams": 151,
+   "kcal": 420,
+   "fat_g": 21,
+   "carbs_g": 38,
+   "protein_g": 18
+  },
+  {
+   "name": "MeatZZa pizza, large hand tossed, 1 slice",
+   "serving_grams": 133,
+   "kcal": 370,
+   "fat_g": 18,
+   "carbs_g": 34,
+   "protein_g": 15
+  },
+  {
+   "name": "Memphis BBQ Chicken pizza, medium hand tossed, 1 slice",
+   "serving_grams": 147,
+   "kcal": 410,
+   "fat_g": 17,
+   "carbs_g": 44,
+   "protein_g": 18
+  },
+  {
+   "name": "Memphis BBQ Chicken pizza, large hand tossed, 1 slice",
+   "serving_grams": 128,
+   "kcal": 350,
+   "fat_g": 14,
+   "carbs_g": 39,
+   "protein_g": 15
+  },
+  {
+   "name": "Pacific Veggie pizza, medium hand tossed, 1 slice",
+   "serving_grams": 149,
+   "kcal": 360,
+   "fat_g": 15,
+   "carbs_g": 39,
+   "protein_g": 14
+  },
+  {
+   "name": "Pacific Veggie pizza, large hand tossed, 1 slice",
+   "serving_grams": 131,
+   "kcal": 310,
+   "fat_g": 13,
+   "carbs_g": 35,
+   "protein_g": 12
+  },
+  {
+   "name": "Philly Cheese Steak pizza, medium hand tossed, 1 slice",
+   "serving_grams": 136,
+   "kcal": 370,
+   "fat_g": 16,
+   "carbs_g": 37,
+   "protein_g": 15
+  },
+  {
+   "name": "Philly Cheese Steak pizza, large hand tossed, 1 slice",
+   "serving_grams": 118,
+   "kcal": 310,
+   "fat_g": 13,
+   "carbs_g": 33,
+   "protein_g": 13
+  },
+  {
+   "name": "Spicy Chicken Bacon Ranch pizza, medium hand tossed, 1 slice",
+   "serving_grams": 155,
+   "kcal": 480,
+   "fat_g": 27,
+   "carbs_g": 38,
+   "protein_g": 19
+  },
+  {
+   "name": "Spicy Chicken Bacon Ranch pizza, large hand tossed, 1 slice",
+   "serving_grams": 135,
+   "kcal": 410,
+   "fat_g": 22,
+   "carbs_g": 34,
+   "protein_g": 16
+  },
+  {
+   "name": "Spinach & Feta pizza, medium hand tossed, 1 slice",
+   "serving_grams": 130,
+   "kcal": 370,
+   "fat_g": 17,
+   "carbs_g": 37,
+   "protein_g": 15
+  },
+  {
+   "name": "Spinach & Feta pizza, large hand tossed, 1 slice",
+   "serving_grams": 115,
+   "kcal": 320,
+   "fat_g": 15,
+   "carbs_g": 33,
+   "protein_g": 13
+  },
+  {
+   "name": "Ultimate Pepperoni pizza, medium hand tossed, 1 slice",
+   "serving_grams": 142,
+   "kcal": 420,
+   "fat_g": 21,
+   "carbs_g": 38,
+   "protein_g": 17
+  },
+  {
+   "name": "Ultimate Pepperoni pizza, large hand tossed, 1 slice",
+   "serving_grams": 125,
+   "kcal": 360,
+   "fat_g": 18,
+   "carbs_g": 34,
+   "protein_g": 15
+  },
+  {
+   "name": "Wisconsin 6 Cheese pizza, medium hand tossed, 1 slice",
+   "serving_grams": 141,
+   "kcal": 390,
+   "fat_g": 18,
+   "carbs_g": 39,
+   "protein_g": 17
+  },
+  {
+   "name": "Wisconsin 6 Cheese pizza, large hand tossed, 1 slice",
+   "serving_grams": 122,
+   "kcal": 330,
+   "fat_g": 15,
+   "carbs_g": 35,
+   "protein_g": 14
+  },
+  {
+   "name": "Garlic Bread Bites, 4 pieces",
+   "serving_grams": 62,
+   "kcal": 210,
+   "fat_g": 9,
+   "carbs_g": 27,
+   "protein_g": 5
+  },
+  {
+   "name": "Parmesan Bread Bites, 4 pieces",
+   "serving_grams": 63,
+   "kcal": 210,
+   "fat_g": 9,
+   "carbs_g": 27,
+   "protein_g": 5
+  },
+  {
+   "name": "Stuffed Cheesy Bread, 1 piece",
+   "serving_grams": 46,
+   "kcal": 160,
+   "fat_g": 8,
+   "carbs_g": 15,
+   "protein_g": 5
+  },
+  {
+   "name": "Bacon & Jalapeno Stuffed Cheesy Bread, 1 piece",
+   "serving_grams": 52,
+   "kcal": 170,
+   "fat_g": 10,
+   "carbs_g": 15,
+   "protein_g": 6
+  },
+  {
+   "name": "Pepperoni Stuffed Cheesy Bread, 1 piece",
+   "serving_grams": 49,
+   "kcal": 170,
+   "fat_g": 10,
+   "carbs_g": 15,
+   "protein_g": 6
+  },
+  {
+   "name": "Spinach & Feta Stuffed Cheesy Bread, 1 piece",
+   "serving_grams": 49,
+   "kcal": 160,
+   "fat_g": 9,
+   "carbs_g": 15,
+   "protein_g": 6
+  },
+  {
+   "name": "Boneless Chicken, 3 pieces",
+   "serving_grams": 75,
+   "kcal": 170,
+   "fat_g": 7,
+   "carbs_g": 18,
+   "protein_g": 9
+  },
+  {
+   "name": "Plain Wings (No sauce), 4 pieces",
+   "serving_grams": 91,
+   "kcal": 250,
+   "fat_g": 20,
+   "carbs_g": 8,
+   "protein_g": 14
+  },
+  {
+   "name": "Honey BBQ Wings, 4 pieces",
+   "serving_grams": 119,
+   "kcal": 310,
+   "fat_g": 20,
+   "carbs_g": 22,
+   "protein_g": 15
+  },
+  {
+   "name": "Hot Buffalo Wings, 4 pieces",
+   "serving_grams": 119,
+   "kcal": 260,
+   "fat_g": 20,
+   "carbs_g": 9,
+   "protein_g": 15
+  },
+  {
+   "name": "Mild Buffalo Wings, 4 pieces",
+   "serving_grams": 119,
+   "kcal": 260,
+   "fat_g": 20,
+   "carbs_g": 10,
+   "protein_g": 15
+  },
+  {
+   "name": "Garlic Parmesan Wings, 4 pieces",
+   "serving_grams": 119,
+   "kcal": 390,
+   "fat_g": 34,
+   "carbs_g": 10,
+   "protein_g": 15
+  },
+  {
+   "name": "Sweet Mango Habanero Wings, 4 pieces",
+   "serving_grams": 119,
+   "kcal": 310,
+   "fat_g": 20,
+   "carbs_g": 21,
+   "protein_g": 15
+  },
+  {
+   "name": "Classic Hot Buffalo Loaded Chicken, 8 pieces",
+   "serving_grams": 91,
+   "kcal": 200,
+   "fat_g": 11,
+   "carbs_g": 16,
+   "protein_g": 10
+  },
+  {
+   "name": "Crispy Bacon & Tomato Loaded Chicken, 8 pieces",
+   "serving_grams": 95,
+   "kcal": 270,
+   "fat_g": 18,
+   "carbs_g": 16,
+   "protein_g": 12
+  },
+  {
+   "name": "Spicy Jalapeno & Pineapple Loaded Chicken, 8 pieces",
+   "serving_grams": 95,
+   "kcal": 200,
+   "fat_g": 8,
+   "carbs_g": 23,
+   "protein_g": 9
+  },
+  {
+   "name": "Sweet BBQ Bacon Loaded Chicken, 8 pieces",
+   "serving_grams": 91,
+   "kcal": 220,
+   "fat_g": 11,
+   "carbs_g": 22,
+   "protein_g": 11
+  },
+  {
+   "name": "Chocolate Lava Cake, 1 cake",
+   "serving_grams": 86,
+   "kcal": 360,
+   "fat_g": 17,
+   "carbs_g": 47,
+   "protein_g": 4
+  },
+  {
+   "name": "S'mores Lava Cake, 1 cake",
+   "serving_grams": 79,
+   "kcal": 360,
+   "fat_g": 18,
+   "carbs_g": 44,
+   "protein_g": 4
+  },
+  {
+   "name": "Marbled Cookie Brownie, 1 brownie",
+   "serving_grams": 43,
+   "kcal": 200,
+   "fat_g": 10,
+   "carbs_g": 26,
+   "protein_g": 2
+  },
+  {
+   "name": "Cinnamon Bread Bites, 4 pieces",
+   "serving_grams": 65,
+   "kcal": 230,
+   "fat_g": 9,
+   "carbs_g": 30,
+   "protein_g": 5
+  },
+  {
+   "name": "Honey BBQ, 1 cup",
+   "serving_grams": 35,
+   "kcal": 70,
+   "fat_g": 0,
+   "carbs_g": 17,
+   "protein_g": 0
+  },
+  {
+   "name": "Blue Cheese, 1 cup",
+   "serving_grams": 35,
+   "kcal": 200,
+   "fat_g": 21,
+   "carbs_g": 2,
+   "protein_g": 1
+  },
+  {
+   "name": "Garlic, 1 cup",
+   "serving_grams": 28,
+   "kcal": 250,
+   "fat_g": 28,
+   "carbs_g": 0,
+   "protein_g": 0
+  },
+  {
+   "name": "Hot Buffalo, 1 cup",
+   "serving_grams": 35,
+   "kcal": 15,
+   "fat_g": 1,
+   "carbs_g": 1,
+   "protein_g": 0
+  },
+  {
+   "name": "Marinara, 1 cup",
+   "serving_grams": 57,
+   "kcal": 30,
+   "fat_g": 0,
+   "carbs_g": 6,
+   "protein_g": 0
+  },
+  {
+   "name": "Ranch, 1 cup",
+   "serving_grams": 35,
+   "kcal": 160,
+   "fat_g": 17,
+   "carbs_g": 1,
+   "protein_g": 0
+  },
+  {
+   "name": "Slice Sauce, 1 cup",
+   "serving_grams": 35,
+   "kcal": 170,
+   "fat_g": 18,
+   "carbs_g": 2,
+   "protein_g": 1
+  },
+  {
+   "name": "Sweet Icing, 1 cup",
+   "serving_grams": 64,
+   "kcal": 220,
+   "fat_g": 4,
+   "carbs_g": 52,
+   "protein_g": 0
+  },
+  {
+   "name": "Sweet Mango Habanero, 1 cup",
+   "serving_grams": 35,
+   "kcal": 70,
+   "fat_g": 0,
+   "carbs_g": 17,
+   "protein_g": 0
+  },
+  {
+   "name": "Nacho Cheese Dipping Cup, 1 cup",
+   "serving_grams": 57,
+   "kcal": 120,
+   "fat_g": 8,
+   "carbs_g": 5,
+   "protein_g": 6
+  },
+  {
+   "name": "Buffalo Chicken, 1/2 Sandwich",
+   "serving_grams": 171,
+   "kcal": 420,
+   "fat_g": 22,
+   "carbs_g": 36,
+   "protein_g": 19
+  },
+  {
+   "name": "Chicken Bacon Ranch, 1/2 Sandwich",
+   "serving_grams": 164,
+   "kcal": 470,
+   "fat_g": 26,
+   "carbs_g": 35,
+   "protein_g": 22
+  },
+  {
+   "name": "Chicken Parm, 1/2 Sandwich",
+   "serving_grams": 168,
+   "kcal": 410,
+   "fat_g": 19,
+   "carbs_g": 36,
+   "protein_g": 24
+  },
+  {
+   "name": "Italian, 1/2 Sandwich",
+   "serving_grams": 167,
+   "kcal": 420,
+   "fat_g": 22,
+   "carbs_g": 35,
+   "protein_g": 20
+  },
+  {
+   "name": "Philly Cheese Steak, 1/2 Sandwich",
+   "serving_grams": 164,
+   "kcal": 370,
+   "fat_g": 17,
+   "carbs_g": 37,
+   "protein_g": 18
+  },
+  {
+   "name": "Chicken Alfredo, 1 Dish",
+   "serving_grams": 326,
+   "kcal": 590,
+   "fat_g": 28,
+   "carbs_g": 60,
+   "protein_g": 24
+  },
+  {
+   "name": "5-Cheese Mac & Cheese, 1 Dish",
+   "serving_grams": 360,
+   "kcal": 830,
+   "fat_g": 50,
+   "carbs_g": 64,
+   "protein_g": 30
+  },
+  {
+   "name": "Spicy Buffalo 5-Cheese Mac & Cheese, 1 Dish",
+   "serving_grams": 374,
+   "kcal": 840,
+   "fat_g": 50,
+   "carbs_g": 64,
+   "protein_g": 31
+  },
+  {
+   "name": "Classic Garden Salad, 1.5 cup",
+   "serving_grams": 100,
+   "kcal": 70,
+   "fat_g": 3.5,
+   "carbs_g": 8,
+   "protein_g": 3
+  },
+  {
+   "name": "Chicken Caesar Salad, 1 container",
+   "serving_grams": 198,
+   "kcal": 190,
+   "fat_g": 7,
+   "carbs_g": 14,
+   "protein_g": 19
+  },
+  {
+   "name": "Marzetti Garden Ranch Dressing, 1.5 oz packet",
+   "serving_grams": 43,
+   "kcal": 220,
+   "fat_g": 24,
+   "carbs_g": 2,
+   "protein_g": 1
+  },
+  {
+   "name": "Marzetti Cardini Caesar Dressing, 1.5 oz packet",
+   "serving_grams": 43,
+   "kcal": 230,
+   "fat_g": 25,
+   "carbs_g": 0,
+   "protein_g": 1
+  },
+  {
+   "name": "Marzetti Balsamic Vinaigrette Dressing, 1.5 oz packet",
+   "serving_grams": 43,
+   "kcal": 130,
+   "fat_g": 12,
+   "carbs_g": 4,
+   "protein_g": 0
+  },
+  {
+   "name": "Ken's Ranch Dressing, 1.5 oz packet",
+   "serving_grams": 43,
+   "kcal": 190,
+   "fat_g": 20,
+   "carbs_g": 2,
+   "protein_g": 1
+  },
+  {
+   "name": "Ken's Caesar Dressing, 1.5 oz packet",
+   "serving_grams": 43,
+   "kcal": 210,
+   "fat_g": 23,
+   "carbs_g": 1,
+   "protein_g": 1
+  },
+  {
+   "name": "Ken's Lite Balsamic with Olive Oil, 1.5 oz packet",
+   "serving_grams": 43,
+   "kcal": 100,
+   "fat_g": 8,
+   "carbs_g": 4,
+   "protein_g": 0
+  },
+  {
+   "name": "Cheese pizza, large hand tossed, 1 slice",
+   "serving_grams": 120.8,
+   "kcal": 285,
+   "fat_g": 10.5,
+   "carbs_g": 34,
+   "protein_g": 11,
+   "note": "Sum of crust, garlic oil, pizza sauce and regular cheese"
+  },
+  {
+   "name": "Pepperoni pizza, large hand tossed, 1 slice",
+   "serving_grams": 117.8,
+   "kcal": 295,
+   "fat_g": 12,
+   "carbs_g": 33,
+   "protein_g": 11,
+   "note": "Sum of crust, garlic oil, pizza sauce, regular cheese with toppings and pepperoni"
+  },
+  {
+   "name": "Sausage pizza, large hand tossed, 1 slice",
+   "serving_grams": 126.8,
+   "kcal": 325,
+   "fat_g": 15.5,
+   "carbs_g": 33,
+   "protein_g": 11,
+   "note": "Sum of crust, garlic oil, pizza sauce, regular cheese with toppings and Italian sausage"
+  },
+  {
+   "name": "Cheese pizza, medium hand tossed, 1 slice",
+   "serving_grams": 85.4,
+   "kcal": 200,
+   "fat_g": 7.5,
+   "carbs_g": 24,
+   "protein_g": 8,
+   "note": "Sum of crust, garlic oil, pizza sauce and regular cheese"
+  },
+  {
+   "name": "Pepperoni pizza, medium hand tossed, 1 slice",
+   "serving_grams": 83.4,
+   "kcal": 210,
+   "fat_g": 8.5,
+   "carbs_g": 24,
+   "protein_g": 8,
+   "note": "Sum of crust, garlic oil, pizza sauce, regular cheese with toppings and pepperoni"
+  },
+  {
+   "name": "Sausage pizza, medium hand tossed, 1 slice",
+   "serving_grams": 88.4,
+   "kcal": 230,
+   "fat_g": 10.5,
+   "carbs_g": 24,
+   "protein_g": 9,
+   "note": "Sum of crust, garlic oil, pizza sauce, regular cheese with toppings and Italian sausage"
+  }
+ ]
+}
