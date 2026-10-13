@@ -11,8 +11,8 @@ Engineering adds questions here with: feature ID, the decision needed, and a rec
 5. **Qualifications text** for the disclosure document.
 6. **Privacy policy and terms.** Engineering ships templates in M2; the privacy policy states the PRD F16 deletion terms exactly. Sean approves final text before alpha.
 7. **Product name.** Honest Reps is a working title in `app_config`. Not a blocker.
-8. **Accounts for M0.** Done: GitHub (sorlando92/honest-reps), Supabase (honest-reps). Vercel in progress (setup walkthrough step 5). Blocks the M0 deploy.
-9. **Email sender.** Blocks M0. Resend on `mail.honestreps.app`, sender `auth@mail.honestreps.app`, name "Honest Reps", DMARC starting at `p=none` (see ARCHITECTURE.md "Domains and email"). Domain bought on Cloudflare Registrar. In progress (setup walkthrough steps 1 to 4).
+8. **Accounts for M0.** Done 2026-10-13: GitHub (sorlando92/honest-reps), Supabase (honest-reps), Vercel (Hobby plan, app live at `app.honestreps.app`). Remaining: upgrade Vercel to Pro before any client uses the app (Q6); add the root `honestreps.app` redirect (no DNS record yet). Commits must be authored as coach@example.test or Vercel blocks the deploy.
+9. **Email sender.** Done 2026-10-13: Resend sends from `auth@mail.honestreps.app` through Supabase SMTP; both sign in templates set in the hosted dashboard and verified with a test email.
 10. **Two-factor on owner accounts.** Turn on two-factor (authenticator app) for the Supabase, GitHub, Vercel, Cloudflare, Resend and Stripe accounts before the alpha. Does not block M0. See Q31.
 11. **M1 API keys.** Anthropic API key and USDA FoodData Central API key. Put them in Vercel environment variables (Production and Preview) and in the local `.env.local`, never in chat or the repo. Blocks M1.
 
@@ -39,6 +39,9 @@ Recommendation: keep one `flagged` value in data, but show one signal per row by
 
 **Q35. [M1] Real meals versus the synthetic eval set.** `evals/README.md` v0.2 says the synthetic set replaces "Sean supplies 20 real meals" for M1. The PM decisions round 2 say Sean will supply 20 real meals.
 Recommendation: v0.2 is the M1 gate. When Sean's meals arrive they are added as p025 onward (set v0.3), split between dev and holdout, and count toward the 50 case beta target. They do not block M1. Blocks: nothing.
+
+**Q36. [F2, M1] Where chain restaurant nutrition comes from.** Three eval cases are chain meals with published numbers (p003 Chipotle, p004 Chick-fil-A, p012 Domino's). USDA FoodData Central covers generic and packaged branded foods well but has little restaurant menu data, and Open Food Facts is barcode first. Without another source these cases likely fail "meal calories in range" and the label amount source.
+Recommendation: seed a small curated set of `food_items` with `source = custom` for the chains in the eval plus the ones gym members eat most (Sean names 5 to 10), using each chain's published nutrition page, re-verified before each release as `evals/README.md` already requires. A paid restaurant database API would be a stack change and is not recommended for v1. Blocks: the M1 eval pass bars.
 
 ### Resolved by the PM (round 2, 2026-10-13, commit "docs: PM decisions round 2")
 

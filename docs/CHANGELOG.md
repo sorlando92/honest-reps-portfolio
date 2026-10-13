@@ -69,3 +69,11 @@ App:
 - Finding 7: the coach is redirected from `/coach` to `/clients`.
 
 Tests: 69 unit and RLS (9 new, including a suite for `rate_limits`), 10 e2e at 375px light and dark, all passing.
+
+### 2026-10-13: M0 deployed, awaiting Sean's phone sign-off
+
+- Live at https://app.honestreps.app on Vercel (Hobby plan), deploying from `main`. Preview deploys per PR come with the Vercel GitHub integration.
+- Hosted Supabase has migrations through 20261013000001. Sign in email goes through Resend SMTP from `auth@mail.honestreps.app`; both hosted templates match `supabase/templates/sign-in.html` (verified with a test email: subject, 6 digit code, `/auth/confirm?token_hash` link).
+- The hosted email templates and URL settings are set by hand in the dashboard; `supabase/config.toml` only covers local. If the dashboard template is ever reset, the link breaks (the default link is a PKCE redirect `/auth/confirm` does not handle).
+- Not done: root `honestreps.app` redirect (no DNS record), real app icons (placeholders), Vercel Pro (required before clients).
+- New question Q36 (chain restaurant nutrition data).
