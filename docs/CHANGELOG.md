@@ -132,3 +132,16 @@ M0 signed off by Sean 2026-10-13 (Pixel: sign in by code, install, tabs, light a
 - e2e at 375px light and dark: describe, fix and log a meal; draft survives a reload. axe and 44pt checks pass. /api/parse is stubbed in e2e so tests never call the model or USDA.
 - Fixed: FDC rejects any search containing a slash ("93/7 ground beef"), which failed every time. Lean ratios now become "93% lean" and other slashes spaces. Found from the eval's clean run check (failed search logging); the fix is to the search request, not tuning on the holdout's results.
 - Deferred from the card: Raw / Cooked / Dry toggle (state shown as text), "Add item" (comes with manual entry), no-scale hand picker (needs `has_scale`, M2).
+
+### 2026-10-13: P1 model comparison (eval v0.4, clean runs)
+
+All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
+
+| Model | Fails | Holdout meal kcal | P1 latency median | Cost per parse |
+|---|---|---|---|---|
+| Haiku 5.5 | holdout amount source (86%), holdout meal kcal | 75% | 1.7 s | $0.0003 |
+| Sonnet 5.5 | holdout meal kcal | 67% | 1.8 s | $0.0040 |
+| Opus 5.5 | holdout meal kcal | 67% | 2.2 s | $0.0081 |
+
+- Dev meal kcal is 82% for all three after matcher fixes from dev failures: menu size and style words optional (size taken from the meal text), the named brand preferred, skin on avoided unless said, no leading food rule for comma-free branded names.
+- No model meets every bar; all miss holdout meal calories, which depends on matching and chain data rather than the model. Default set to Sonnet 5.5 (provisional, QUESTIONS.md Q42).

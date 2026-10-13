@@ -72,24 +72,38 @@ export function wantedState(name: string, stated: FoodState | null): FoodState |
  * how much of the menu name the user's words cover, minus a little for each
  * of the user's words the menu name lacks. The quantity counts as a word, so
  * "8 count nuggets" prefers "8 ct Nuggets".
+ *
+ * Size and style words ("large hand tossed") are not the food: they are not
+ * required, but they pick between sizes. They count when said anywhere in the
+ * meal text, since the parsed name often drops them ("2 slices of large
+ * pepperoni pizza" comes back as "pepperoni pizza").
  */
 export function rankMenu<C extends { name: string }>(
   item: { name: string; quantity: number },
-  menu: C[]
+  menu: C[],
+  mealText = ""
 ): { item: C; score: number }[] {
   const said = new Set([...tokens(item.name), String(item.quantity)].filter((t) => !MENU_NEUTRAL.has(t)))
+  const sizes = new Set([...said, ...tokens(mealText)].filter((t) => MENU_SIZE.has(t)))
   return menu
     .map((m) => {
-      const words = tokens(m.name).filter((t) => !MENU_NEUTRAL.has(t))
+      const all = tokens(m.name).filter((t) => !MENU_NEUTRAL.has(t))
+      const words = all.filter((t) => !MENU_SIZE.has(t))
       if (!words.length) return { item: m, score: 0 }
       const covered = words.filter((t) => said.has(t) || (SYNONYMS[t] ?? []).some((s) => said.has(s))).length
-      const unsaid = [...said].filter((t) => !words.includes(t) && !/^\d+$/.test(t)).length
+      const unsaid = [...said].filter((t) => !all.includes(t) && !/^\d+$/.test(t) && !MENU_SIZE.has(t)).length
       // A matching count ("12 ct") beats the same item without one.
-      const countBonus = words.some((t) => /^\d+$/.test(t) && said.has(t)) ? 0.05 : 0
-      return { item: m, score: Math.max(0, Math.min(1, covered / words.length - 0.1 * unsaid + countBonus)) }
+      const countBonus = all.some((t) => /^\d+$/.test(t) && said.has(t)) ? 0.05 : 0
+      const sizeWords = all.filter((t) => MENU_SIZE.has(t))
+      const sizeScore = 0.05 * sizeWords.filter((t) => sizes.has(t)).length - 0.15 * sizeWords.filter((t) => SIZE_NAMES.has(t) && !sizes.has(t) && [...sizes].some((s) => SIZE_NAMES.has(s))).length
+      return { item: m, score: Math.max(0, Math.min(1, covered / words.length - 0.1 * unsaid + countBonus + sizeScore)) }
     })
     .sort((a, b) => b.score - a.score)
 }
+
+// Sizes, and crust and style words, in menu names.
+const SIZE_NAMES = new Set(["small", "medium", "large", "regular", "kid", "kids", "mini"])
+const MENU_SIZE = new Set([...SIZE_NAMES, "hand", "tossed", "thin", "crust", "inch", "footlong", "half", "whole", "cup", "bowl"])
 
 // Serving words in menu names ("1 slice", "8 ct") that say nothing about the food.
 const MENU_NEUTRAL = new Set(["1", "ct", "count", "slice", "piece", "serving", "w", "with", "the", "a", "of", "and", "order"])
@@ -100,6 +114,8 @@ const OFF_TARGET = new Set([
   "breaded", "battered", "fried", "glutinous", "clarified", "ghee", "babyfood", "infant", "dehydrated",
   "imitation", "dried", "condensed", "concentrate", "powder", "mix", "soup", "frosted", "candied", "sweetened",
 ])
+
+const SKIN_ON = /\b(skin eaten|meat and skin|with skin)\b/
 
 // USDA category prefixes ("Fish, salmon", "Nuts, almonds", "Cereals, oats"):
 // a heading, not a different food.
@@ -137,8 +153,13 @@ export function rank<C extends Candidate>(
       const extras = new Set(desc.filter(extra))
       // USDA names lead with the food ("Bagels, egg", "Rice noodles, cooked"):
       // words there that the user did not say mean a different food.
-      const head = new Set(tokens(candidate.description.split(",")[0]).filter((t) => extra(t) && !CATEGORY_HEADS.has(t)))
-      const offTarget = [...extras].filter((t) => OFF_TARGET.has(t)).length
+      // Branded names have no commas ("CORE POWER ... PROTEIN SHAKE"), so there
+      // is no leading food to read; the rule only fits USDA's generic names.
+      const lead = candidate.description.includes(",") ? candidate.description.split(",")[0] : ""
+      const head = new Set(tokens(lead).filter((t) => extra(t) && !CATEGORY_HEADS.has(t)))
+      // Skin on adds a lot of fat; only match it when the user said skin.
+      const skinOn = !said.has("skin") && SKIN_ON.test(candidate.description.toLowerCase())
+      const offTarget = [...extras].filter((t) => OFF_TARGET.has(t)).length + (skinOn ? 1 : 0)
       const state = describedState(candidate.description, item.name)
 
       let raw = coverage - 0.04 * extras.size - 0.2 * head.size - 0.3 * offTarget
@@ -146,9 +167,10 @@ export function rank<C extends Candidate>(
       if (want && state && state !== want) raw -= 0.5
       if (want && !state) raw -= 0.1
       if (candidate.dataType === "Foundation" || candidate.dataType === "SR Legacy") raw += 0.03
+      // The user named the brand: that brand's product beats a generic one.
       if (brandTokens.length) {
         const owner = tokens(`${candidate.brand ?? ""} ${candidate.description}`)
-        if (brandTokens.every((t) => owner.includes(t))) raw += 0.2
+        if (brandTokens.every((t) => owner.includes(t))) raw += 0.4
       }
       return { candidate, raw, state }
     })

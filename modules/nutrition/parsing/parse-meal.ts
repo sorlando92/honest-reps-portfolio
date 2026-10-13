@@ -118,7 +118,7 @@ function matchCurated(item: P1Item, chain: ChainData, ctx: MatchContext): Parsed
   const pattern = new RegExp(names.map((n) => n.replace(/[^a-z0-9]/gi, (c) => (c === " " ? "\\s*" : `\\${c}?`))).join("|"), "gi")
   const strip = (s: string) => s.replace(pattern, " ").replace(/\s+/g, " ").trim()
   const menu = chain.items.map((ci) => ({ name: strip(ci.name), ci }))
-  const ranked = rankMenu({ name: strip(item.name), quantity: item.quantity }, menu)
+  const ranked = rankMenu({ name: strip(item.name), quantity: item.quantity }, menu, ctx.text)
   const best = ranked[0]
   if (!best || best.score < ctx.threshold) return null
 

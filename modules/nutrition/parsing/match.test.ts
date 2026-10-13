@@ -72,3 +72,28 @@ describe("searchText", () => {
     expect(searchText("chicken (Chipotle)")).toBe("chicken")
   })
 })
+
+describe("menu sizes, brands and skin", () => {
+  const menu = ["Pepperoni pizza, medium hand tossed, 1 slice", "Pepperoni pizza, large hand tossed, 1 slice", "Cheese pizza, large hand tossed, 1 slice"].map((name) => ({ name }))
+
+  it("finds the item without its size words and picks the size from the meal text", () => {
+    const top = rankMenu({ name: "pepperoni pizza", quantity: 2 }, menu, "2 slices of large pepperoni pizza from dominos")[0]
+    expect(top.item.name).toBe("Pepperoni pizza, large hand tossed, 1 slice")
+    expect(top.score).toBeGreaterThanOrEqual(0.5)
+    expect(rankMenu({ name: "pepperoni pizza", quantity: 1 }, menu, "medium pepperoni pizza")[0].item.name).toContain("medium")
+  })
+
+  it("prefers the brand the user named", () => {
+    const shakes = [
+      { id: "1", description: "Beverages, SLIMFAST, Meal replacement, High Protein Shake, Ready-To-Drink", dataType: "SR Legacy", brand: null },
+      { id: "2", description: "CORE POWER ELITE CHOCOLATE HIGH PROTEIN MILK SHAKE", dataType: "Branded", brand: "fairlife, LLC" },
+    ]
+    expect(rank({ name: "protein shake", brand: "Fairlife", state: null }, shakes)[0].candidate.id).toBe("2")
+  })
+
+  it("avoids skin on unless the user said skin", () => {
+    const thighs = ["Chicken thigh, NS as to cooking method, skin eaten", "Chicken, broilers or fryers, thigh, meat only, cooked, roasted"]
+    expect(best("chicken thigh", null, ...thighs)).toContain("meat only")
+    expect(best("chicken thigh with skin", null, ...thighs)).toContain("skin eaten")
+  })
+})
