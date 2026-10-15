@@ -231,3 +231,11 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
 - Quick add chips show above the log bar while it has focus: up to 3 favorites (newest first), then the most frequent foods for this time of day (morning, midday, evening, late in the user's timezone, over 60 days), up to 6 chips. A frequent food logs at its last weighed amount, else its most recent. One tap logs (`method: quick_add`, `food_logged` with `quick_add_source`); no card, no model. Disabled offline (Q46).
 - Favorites log at the amounts they were starred with; only frequent food chips use the last weighed amount.
 - Tests: unit (time of day buckets, ranking, last weighed amount), RLS (favorites), e2e (star, chips, one tap log) at 375px light and dark with axe and 44pt checks.
+
+### 2026-10-15: MVP step 2, local FDC import (Q40)
+
+- Migration 20261015000003 (additive): `fdc_foods` (one row per food: per 100 g, ordered common portions, release, generated full text index; signed in users read, server writes) and `search_fdc()` (foods sharing any word with the query, best full text rank first, up to 200). RLS suite added.
+- `scripts/import-fdc.mts` (`pnpm db:import-fdc --dir <folder>`): Foundation 2026-04-30 (323 foods; 72 without calories skipped), SR Legacy 2018-04 (7,793), FNDDS 2024-10-31 (5,431). Energy is kcal, else the Atwater values, as the API reports it. Loaded into local and hosted (13,547 foods each).
+- Generic food search now runs on our copy for text logging, food search, the Raw / Cooked / Dry toggle and common portions. The FDC API is called only for branded foods. `FDC_SEARCH=api` switches back, for comparing in the eval.
+- Eval v0.4, Sonnet 5.5, 3 runs, local search: every bar passes except meal calories (dev 82%, holdout 67%, bar 80%), the same as the API search. P1 latency median 1.9 s. Generic matching no longer depends on the USDA hourly quota.
+- Holdout meal calorie misses by kind (not tuned on): one uncovered chain (McDonald's), one curated chain, one weighed generic meal, one vague portion that flips between runs.

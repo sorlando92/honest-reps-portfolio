@@ -1,4 +1,5 @@
 import "server-only"
+import { searchFdcLocal } from "./fdc-local.ts"
 
 // USDA FoodData Central search (ARCHITECTURE.md "Food data").
 const SEARCH_URL = "https://api.nal.usda.gov/fdc/v1/foods/search"
@@ -54,6 +55,9 @@ interface SearchResponse {
 export async function searchUsda(query: string, opts: { branded?: boolean; pageSize?: number } = {}): Promise<UsdaFood[]> {
   const size = opts.pageSize ?? 25
   if (opts.branded) return searchOnce(query, "Branded", size)
+  // QUESTIONS.md Q40: generic foods come from our own copy. FDC_SEARCH=api
+  // uses the FDC API instead, for comparing the two in the eval.
+  if (process.env.FDC_SEARCH !== "api") return searchFdcLocal(query)
   const pages = await Promise.all([
     searchOnce(query, "Foundation", size),
     searchOnce(query, "SR Legacy", size),
@@ -163,13 +167,17 @@ export interface DetailPortion {
  * number first; labels drop USDA's size notes in parentheses.
  */
 export function detailPortion(portions: DetailPortion[]): Portion | null {
-  const usable = portions
+  return orderedPortions(portions)[0] ?? null
+}
+
+/** All usable portions, most common first (also used by the local FDC import). */
+export function orderedPortions(portions: DetailPortion[]): Portion[] {
+  return portions
     .filter((p) => p.gramWeight && p.gramWeight > 0)
-    .map((p) => ({ p, label: portionLabel(p) }))
+    .map((p, index) => ({ p, index, label: portionLabel(p) }))
     .filter((x) => x.label && !/\b(racc|nlea serving|quantity not specified)\b/i.test(x.label))
-    .sort((a, b) => (a.p.sequenceNumber ?? 999) - (b.p.sequenceNumber ?? 999))
-  const first = usable[0]
-  return first ? { label: first.label, grams: first.p.gramWeight! } : null
+    .sort((a, b) => (a.p.sequenceNumber ?? 999) - (b.p.sequenceNumber ?? 999) || a.index - b.index)
+    .map((x) => ({ label: x.label, grams: x.p.gramWeight! }))
 }
 
 function portionLabel(p: DetailPortion): string {
@@ -180,11 +188,3 @@ function portionLabel(p: DetailPortion): string {
 
 const clean = (s: string) => s.replace(/\([^)]*\)/g, "").replace(/\s+/g, " ").trim()
 
-/** One food's portions from FDC (one request; the caller caches the result). */
-export async function fetchUsdaPortion(fdcId: string): Promise<Portion | null> {
-  const key = process.env.USDA_API_KEY
-  if (!key) throw new Error("Missing environment variable USDA_API_KEY. See .env.example.")
-  const res = await fetchWithRetry(`https://api.nal.usda.gov/fdc/v1/food/${encodeURIComponent(fdcId)}?api_key=${key}`)
-  const body = (await res.json()) as { foodPortions?: DetailPortion[] }
-  return detailPortion(body.foodPortions ?? [])
-}

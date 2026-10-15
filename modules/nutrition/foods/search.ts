@@ -4,7 +4,8 @@ import type { FoodState } from "@/lib/ai/p1"
 import { CURATED_CHAINS, normalizeBrand, type ChainData } from "../data/chains/index"
 import { rank, searchText, tokens } from "../parsing/match"
 import type { Serving } from "../parsing/parse-meal"
-import { fetchUsdaPortion, searchUsda, type Per100g, type Portion, type UsdaFood } from "../parsing/usda"
+import { fdcPortion } from "../parsing/fdc-local"
+import { searchUsda, type Per100g, type Portion, type UsdaFood } from "../parsing/usda"
 
 /** One food search result: a food_items row the user can add to a card. */
 export interface FoodResult {
@@ -145,15 +146,15 @@ export function portionServing(portion: Portion, per: Per100g): Serving {
 }
 
 /**
- * The common portion for a USDA food the user picked. SR Legacy and Foundation
- * foods need one detail request, cached in food_items.serving; a food with no
- * portion is cached as such so it is not fetched again. Null for other foods.
+ * The common portion for a USDA food the user picked, from the local FDC copy
+ * (Q40), cached in food_items.serving; a food with no portion is cached as
+ * such. Null for other foods.
  */
 export async function portionForFood(admin: SupabaseClient, foodItemId: string): Promise<FoodResult["portion"]> {
   const { data: row } = await admin.from("food_items").select("source, source_id, per_100g, serving").eq("id", foodItemId).maybeSingle()
   if (!row || row.source !== "usda") return null
   if (row.serving) return portionOf(row.serving as Serving)
-  const portion = await fetchUsdaPortion(row.source_id).catch(() => undefined)
+  const portion = await fdcPortion(row.source_id).catch(() => undefined)
   if (portion === undefined) return null
   const per = row.per_100g as Per100g
   await admin
