@@ -52,7 +52,7 @@ Guardrails:
 
 ### Metrics and instrumentation (emit from day one)
 
-Events: `signup_started`, `signup_completed`, `onboarding_completed` (the first time the user reaches Today after onboarding), `pwa_installed`, `push_enabled`, `food_logged` (method: text, photo, barcode, search, quick_add; confidence; offline; counts per amount source), `food_entry_corrected`, `food_entry_deleted`, `weight_logged`, `habit_checked`, `checkin_started`, `checkin_submitted` (on_time boolean), `report_viewed`, `message_sent` (role), `upgrade_viewed` (source), `upgrade_completed`, `subscription_canceled`, `review_card_opened`, `review_reply_sent` (seconds_on_card, draft_edit_distance).
+Events: `signup_started`, `signup_completed`, `onboarding_completed` (the first time the user reaches Today after onboarding), `pwa_installed`, `push_enabled`, `food_logged` (method: text, photo, barcode, search, manual, quick_add; meal; confidence; offline; counts per amount source), `food_entry_corrected`, `food_entry_deleted`, `weight_logged`, `habit_checked`, `checkin_started`, `checkin_submitted` (on_time boolean), `report_viewed`, `message_sent` (role), `upgrade_viewed` (source), `upgrade_completed`, `subscription_canceled`, `review_card_opened`, `review_reply_sent` (seconds_on_card, draft_edit_distance), `meal_copied` (meal, from_date), `day_switched` (days_from_today), `streak_milestone` (days).
 
 Coach review time = time from `review_card_opened` to `review_reply_sent`.
 
@@ -111,7 +111,7 @@ Acceptance
 - Quick add: 5 to 6 chips of the user's most frequent foods for the current time of day, shown when the log bar is focused.
 - Favorites: any entry can be starred.
 - Quick add and favorites remember the last weighed amount for that food, and never call the AI model.
-- Optional meal tag on an entry (breakfast, lunch, dinner, snack). Not required.
+- Every entry has a meal: breakfast, lunch, dinner or snack. It is assigned from the entry's local time (F3 windows) and shown as a meal chip on the confirmation card and in edit, where one tap changes it.
 - Edit and delete any entry (swipe on the timeline).
 - Each entry stores raw input, model output, confidence, method, and timestamps.
 - Offline: quick add, favorites, cached barcodes, and manual entries save locally and sync later. Text and photo parsing queue as "pending" and resolve when back online.
@@ -122,16 +122,21 @@ Acceptance
 - Target: a repeat meal logs in under 5 seconds; a new described meal in under 20 seconds.
 
 ### F3. Today (free)
-Story: as a user, I see in one glance what I have left today.
+Story: as a user, I see in one glance what I have left today, how my week is going, and log in the right place fast.
+
+Full spec: `docs/TODAY_SPEC.md` (Today v2, approved by Sean 2026-10-15). Layout top to bottom: header and week strip, summary card, week insight row with logging streak, coach or check-in card, meal sections, weight row, log bar.
 
 Acceptance
-- Calories remaining and protein remaining as large numbers with thin progress bars. Carbs and fat smaller below.
-- Over target shows "+120 over" in muted gray. Never red, never a warning tone.
-- Timeline of today's entries in time order with calories and protein; optional meal tags shown. Each row is titled with what the user typed (raw input, first line, truncated to one line); entries without typed input use their item names. Quick add and favorites log with the title of the entry they came from. Tapping a row shows its items. Estimated entries show a subtle "est." marker. Totals are unchanged.
-- Log bar pinned above the tab bar: text field, camera icon, barcode icon.
-- Paid users: assigned habits as one-tap checkboxes; check-in card appears when due.
-- Free users: one quiet coaching card linking to the upgrade screen.
-- Day switcher to view or log past days.
+- Header: "Today" when today is selected, else the weekday and date ("Wed, Oct 15"). A Monday to Sunday week strip with a status dot per past or current day: filled `accent-strong` when logged and on target (calories within the app_config adherence range), outline `text-muted` when logged but not on target, none when nothing was logged. Swipe for earlier weeks, tap the title for a date picker, future days disabled, a "Today" text button when another day is selected.
+- Summary card: calories remaining as a large number with "left", a thin bar and "1,450 eaten of 2,100"; protein remaining with "g left" and a bar; carbs and fat as a small pair with mini bars. Over target shows "+120 over" in muted gray. Never red, never a warning tone. Tap toggles Remaining and Eaten, remembered on the device. Before targets exist: eaten totals only and "Set your targets".
+- Week insight row: "This week: 4 of 6 days on target. Protein 5 of 6." counting Monday through the selected day (protein day hit at 90% of target, app_config). Hidden until the user has logged on a day this week. Tap opens a Week sheet: calories per day against the target line, protein markers, and a text summary for screen readers.
+- Logging streak at the right of the insight row ("6 day streak"): consecutive local days with at least one food entry; today without an entry yet does not break it. Earned moment at 7, 14, 30, 60 and 100 days, at most once per day.
+- Paid users: check-in card when due. Free users: one quiet coaching card linking to the upgrade screen.
+- Meal sections replace the timeline: Breakfast, Lunch, Dinner, Snacks, always shown, each with subtotal calories and protein and a 44pt "+" that focuses the log bar with that meal selected. Entries in time order inside a section; each row is titled with what the user typed (raw input, first line, truncated to one line), or the item names when there was no typed input; quick add and favorites log with the title of the entry they came from. Rows show calories, protein, "est." and "Check this"; tap or swipe to edit.
+- Meals auto-assign from the entry's local time: Breakfast 4:00 to 10:59, Lunch 11:00 to 15:59, Dinner 16:00 to 21:59, else Snacks (windows in app_config). The card and edit change it with one tap.
+- Copy a meal from a section's menu: "Copy to today" on a past day, "Copy yesterday's {meal}" on today. Copies are new entries at the current time with the same items, amounts and amount sources; no model call; "Copied."
+- Weight row: today's weigh-in or "Log weight", plus "Trend 182.4 lb, down 0.6 this week" (EWMA per app_config). Tap opens a weight sheet with entry and the last 7 days.
+- Log bar pinned above the tab bar per Q47. It logs to the selected day; the meal defaults to the window of the current time of day, editable on the card.
 - Times and days follow the user's profile timezone (ARCHITECTURE.md "Local days").
 
 ### F4. Weight and trend (free)
@@ -259,7 +264,7 @@ Acceptance
 
 ## 8. Non-goals for v1
 
-Meal plans, recipes, micronutrients, wearables and Apple Health sync, social features, native App Store apps, smart adaptive targets, progress photo comparison timeline, AI-drafted messages outside the weekly review, multiple coaches, workout delivery, billing migration, multi-factor authentication (sign in stays passwordless email OTP).
+Meal plans, recipes, micronutrients, wearables and Apple Health sync, social features, native App Store apps, smart adaptive targets, progress photo comparison timeline, AI-drafted messages outside the weekly review, multiple coaches, workout delivery, billing migration, multi-factor authentication (sign in stays passwordless email OTP), exercise calorie add-back (activity is built into targets). Water tracking is post-MVP and stays a paid habit in the library, not a tracker.
 
 ## 9. Open items
 

@@ -93,7 +93,13 @@ Stacks for drill-ins, bottom sheets for short tasks (log confirm, weight entry, 
   - One signal per row, by cause: the `caution` dot and "Check this" only when the food match is uncertain. A clear food with an estimated amount shows "Estimated" in `text-muted` plus an inline "Weigh it" text button that focuses the amount field in grams, with no caution dot. No-scale users get a hand portion picker in its place. One line, never a modal.
   - Hand portion row: small "Hand portion" tag in `text-muted`. Not flagged.
   - Meat, fish, grains and pasta: one-tap segmented toggle Raw / Cooked, plus Dry for grains and pasta. 44pt segments.
-- **Entry row:** time, title (the user's raw input on one line, truncated; item names when there was none), calories, protein. Tap to show the items. Swipe left for edit and delete. Optional meal tag pill. Estimated entries show "est." in `caption` style, `text-muted`.
+- **Entry row:** inside a meal section. Title (the user's raw input on one line, truncated; item names when there was none), calories, protein. Tap to show the items. Swipe left for edit and delete. Estimated entries show "est." in `caption` style, `text-muted`.
+- **Week strip:** 7 day cells, Monday to Sunday: weekday letter (`label`) over date number. Selected day has `accent` fill with `on-accent` text. Status dot under past and current days: filled `accent-strong` (logged, on target), outline `text-muted` (logged, not on target), none (nothing logged). Future days disabled. Each cell is at least 44pt and labeled for screen readers ("Wednesday, October 15, logged, on target").
+- **Summary card:** `surface` card. Calories remaining in `display` with "left" (`label`), a thin `accent-strong` bar on a `border` track and the caption "1,450 eaten of 2,100". Protein remaining in `number-lg` with "g left" and a bar. Carbs and fat as a small stat pair with mini bars. Over target: "+120 over" in `text-muted`, bar full, never red. Tap toggles Remaining and Eaten.
+- **Insight row:** one `body` line ("This week: 4 of 6 days on target. Protein 5 of 6.") with the streak ("6 day streak", `text-muted`) at the right. Opens the Week sheet: 7 bars of calories with the target as a line, protein markers, and a text summary for screen readers.
+- **Meal section:** header with the meal name (`headline`), subtotal calories and protein (`caption`, `text-muted`), an overflow menu (copy) and a 44pt "+" icon button. Entry rows below. Empty sections show only the header.
+- **Meal chip row:** on the confirmation card and in edit. Four pill chips (Breakfast, Lunch, Dinner, Snack), single select, selected chip in `accent` fill. 44pt targets.
+- **Weight row:** "Weight" with today's weigh-in (`headline`) or a "Log weight" text button, and "Trend 182.4 lb, down 0.6 this week" in `caption`. Opens the weight sheet.
 - **Habit row:** checkbox (44pt), habit name, streak count.
 - **Locked element:** standard component with a small lock icon and muted overlay; tapping opens the upgrade screen. Report preview is blurred.
 - **Review card (coach):** full-screen card with sections: summary, flags, numbers, check-in, suggestion (accept or ignore), editable draft, Send button. Swipe or Send to advance.
@@ -106,15 +112,16 @@ Stacks for drill-ins, bottom sheets for short tasks (log confirm, weight entry, 
 "Do you have a food scale?" with two large buttons, Yes and Not yet. Not yet opens one skippable screen with the copy below and a 4 row hand portion guide (palm, fist, cupped hand, thumb), each row an outline icon, the hand portion name and what it measures.
 
 ### Today
-1. Date and day switcher
-2. Calories remaining (display) with bar
-3. Protein remaining (number-lg) with bar; carbs and fat as small stat pair
+Spec: `docs/TODAY_SPEC.md` (Today v2).
+1. Header ("Today", or "Wed, Oct 15" on another day; tap for a date picker; "Today" text button when another day is selected) and week strip
+2. Summary card (calories and protein remaining, carbs and fat)
+3. Insight row with logging streak
 4. Check-in card when due (paid) or quiet coaching card (free)
-5. Habits (paid)
-6. Timeline of entries
+5. Meal sections: Breakfast, Lunch, Dinner, Snacks
+6. Weight row
 7. Log bar pinned above tab bar
 
-New user: targets shown, timeline empty, log bar focused with placeholder "2 eggs and toast". No tutorial.
+New user: targets shown, sections empty, log bar focused with placeholder "2 eggs and toast". No tutorial. Before targets exist, the summary card shows eaten totals and "Set your targets".
 
 ### Log confirmation
 Bottom sheet over Today. Items, edits, flags, "Log it." Pending offline items show "Pending, will finish when you're online." An unconfirmed card (draft) is kept on the device and reopens with the app. Barcode results carry the caption "Food data from Open Food Facts" (`caption` style, links to openfoodfacts.org).
@@ -164,6 +171,14 @@ Examples
 | Estimated item hint | Weigh it |
 | Estimated item tag | Estimated |
 | Estimated entry marker | est. |
+| Calories label | left |
+| Week insight | This week: 4 of 6 days on target. Protein 5 of 6. |
+| Streak | 6 day streak |
+| Streak milestone | 7 days straight. That's the habit. |
+| Copy meal action | Copy yesterday's lunch |
+| Copy meal done | Copied. |
+| Weight empty | Log weight |
+| No targets | Set your targets |
 | Hand portion tag | Hand portion |
 | Report and Progress stat label | Weighed |
 | Onboarding scale question | Do you have a food scale? |

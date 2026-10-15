@@ -13,7 +13,7 @@ Every MVP step emits the PRD section 5 events for the features it ships.
 
 ## MVP
 
-Build in this order.
+Build in this order: 1, then 3, then 2, then 4 to 6 (PM 2026-10-15: Sean tests the full daily experience before the accuracy gate). The accuracy gate (2) still blocks MVP exit.
 
 ### 1. Finish logging (F2 minus photo and offline)
 - Offline in MVP (Q46): the draft stays on the phone, Log it waits until the phone is back online
@@ -22,7 +22,8 @@ Build in this order.
 - Raw / Cooked / Dry toggle for meat, fish, grains and pasta, recalculating from the matching food
 - Barcode with the log bar icon: Open Food Facts lookup, "Food data from Open Food Facts" attribution, fallback to search or manual entry
 - Quick add chips (most frequent foods for the time of day, last weighed amount) and favorites; neither calls a model
-- Events: `food_logged` for every method, `food_entry_corrected`, `food_entry_deleted`
+- Today v2 (`docs/TODAY_SPEC.md`) part 1: meal sections replace the timeline, meal auto-assigned by local time, meal chip on the card and in edit, copy a meal. Includes the `food_entries` meal migration and backfill (approved by the PM before it runs on hosted)
+- Events: `food_logged` for every method (with meal), `food_entry_corrected`, `food_entry_deleted`, `meal_copied`
 
 ### 2. Accuracy gate
 - Local FDC import (QUESTIONS.md Q40): Foundation, SR Legacy and FNDDS in Postgres, searched locally
@@ -31,15 +32,15 @@ Build in this order.
 
 Done when: the parsing eval meets every pass bar in `evals/README.md`, including holdout meal calories 80% or higher on the PM's fresh holdout cases.
 
-### 3. Member basics (F1, F3 core, F4)
+### 3. Member basics (F1, F3, F4)
 - Onboarding: goal, sex, date of birth with the 18+ gate, height, weight, optional goal weight, activity level, units, food scale question
 - Targets from the seeded formula with the BMR floor and the protein cap
 - Medical screening question; yes flags the coach
 - Signup consents: terms, privacy, disclaimer, coach visibility
 - Required install step and push permission
-- Today: calories and protein remaining against targets with progress bars, carbs and fat, day switcher to view and log past days
+- Today v2 (`docs/TODAY_SPEC.md`) part 2: header and week strip with status dots (view and log past days), summary card, week insight row and Week sheet, logging streak with earned moments, weight row and weight sheet
 - Weight logging and the EWMA trend with 7 and 28 day change
-- Events: `signup_started`, `signup_completed`, `onboarding_completed`, `pwa_installed`, `push_enabled`, `weight_logged`
+- Events: `signup_started`, `signup_completed`, `onboarding_completed`, `pwa_installed`, `push_enabled`, `weight_logged`, `day_switched`, `streak_milestone`
 
 ### 4. Client loop (F5, F12, F16 disclosure)
 - Coach invite by email with the paid flag set to comped or external; the invited client skips any upgrade step

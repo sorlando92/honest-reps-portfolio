@@ -34,6 +34,21 @@ Recommendation: when a check-in arrives after prep has run, rerun P3 for that cl
 **Q35. [M1] Real meals versus the synthetic eval set.** `evals/README.md` v0.2 says the synthetic set replaces "Sean supplies 20 real meals" for M1. The PM decisions round 2 say Sean will supply 20 real meals.
 Recommendation: v0.2 is the M1 gate. When Sean's meals arrive they are added as p025 onward (set v0.3), split between dev and holdout, and count toward the 50 case beta target. They do not block M1. Blocks: nothing.
 
+**Q49. [TODAY_SPEC Data] The meal column and its backfill.** `food_entries.meal_tag` exists (nullable, the PRD's old optional tag, never set by the app so far).
+Recommendation: one migration that renames `meal_tag` to `meal`, backfills every row from `logged_at` in the owner's profile timezone with the spec's windows, then sets it not null. Also adds `copied_from_entry_id` and the meal windows in `app_config`. The rename and the backfill rewrite existing rows, so it waits for PM approval before hosted (listed in the update). Blocks: MVP step 1 meal sections on hosted only.
+
+**Q50. [TODAY_SPEC 6, PRD section 5] Method and events for copied meals.** Entries methods are text, photo, barcode, search, manual and quick_add.
+Recommendation: copies save with `method: quick_add` and `copied_from_entry_id`, emit one `meal_copied` (meal, from_date, entries) and no `food_logged`, so `food_logged` keeps meaning "the user logged something". The north star counts logging days from `food_entries`, so a copied meal still counts as a logged day. Blocks: nothing.
+
+**Q51. [TODAY_SPEC 1] Week strip dots before targets exist.** A dot is "on target" only against a target, which arrives with onboarding (step 3).
+Recommendation: before targets exist, every logged day shows the outline dot. Blocks: nothing.
+
+**Q52. [TODAY_SPEC 8] Time stamped on a past day log.** The log bar logs to the selected day.
+Recommendation: `logged_at` is the selected local date at the current local clock time, so the meal window and the order inside a section behave as they would have on that day. Copies to today use the current time. Blocks: nothing.
+
+**Q53. [TODAY_SPEC layout, PRD F6] Where habits go.** The v2 layout drops the Habits block that was between the check-in card and the timeline (habits are post-MVP).
+Recommendation: when habits ship, they sit between the coach or check-in card and the meal sections. Blocks: nothing in MVP.
+
 ### Resolved by the PM (MVP round 3, 2026-10-15)
 
 - **Q47** Keep Search on the log bar. At 375px, an empty field shows text field, search and barcode; once the user types, search and barcode collapse and send appears. Never more than 3 controls. In DESIGN_SYSTEM "Log bar".

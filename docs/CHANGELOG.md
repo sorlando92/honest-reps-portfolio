@@ -239,3 +239,8 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
 - Generic food search now runs on our copy for text logging, food search, the Raw / Cooked / Dry toggle and common portions. The FDC API is called only for branded foods. `FDC_SEARCH=api` switches back, for comparing in the eval.
 - Eval v0.4, Sonnet 5.5, 3 runs, local search: every bar passes except meal calories (dev 82%, holdout 67%, bar 80%), the same as the API search. P1 latency median 1.9 s. Generic matching no longer depends on the USDA hourly quota.
 - Holdout meal calorie misses by kind (not tuned on): one uncovered chain (McDonald's), one curated chain, one weighed generic meal, one vague portion that flips between runs.
+
+### 2026-10-15: Today v2 spec applied to docs
+
+- `docs/TODAY_SPEC.md` (approved by Sean) added. PRD F2 (meal on every entry) and F3 (Today v2), section 5 events (`food_logged` meal and manual method, `meal_copied`, `day_switched`, `streak_milestone`), non-goals (no exercise calorie add-back; water post-MVP as a habit). DESIGN_SYSTEM Today layout, components (week strip, summary card, insight row, meal section, meal chip row, weight row) and copy. ARCHITECTURE `food_entries.meal`, `title`, `copied_from_entry_id`. MILESTONES: meal sections, meal chip and copy meal in step 1; the rest of Today v2 in step 3; build order 1, 3, 2.
+- New questions Q49 (meal column and backfill), Q50 (copied meal method and events), Q51 (dots before targets), Q52 (past day timestamps), Q53 (habits placement).
