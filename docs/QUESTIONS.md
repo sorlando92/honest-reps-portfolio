@@ -34,9 +34,22 @@ Recommendation: when a check-in arrives after prep has run, rerun P3 for that cl
 **Q35. [M1] Real meals versus the synthetic eval set.** `evals/README.md` v0.2 says the synthetic set replaces "Sean supplies 20 real meals" for M1. The PM decisions round 2 say Sean will supply 20 real meals.
 Recommendation: v0.2 is the M1 gate. When Sean's meals arrive they are added as p025 onward (set v0.3), split between dev and holdout, and count toward the 50 case beta target. They do not block M1. Blocks: nothing.
 
-**Q43. [F3, F17, core] Where the profile timezone comes from.** Sean's entries showed UTC times because the profile timezone is set only at signup from the device; accounts created another way (the seeded coach) stay on the `UTC` default and nothing ever corrects them. There is no timezone setting in Me.
-Applied as an interim fix (bug, before alpha): when the app opens and the device timezone differs from the profile, the profile is updated to the device timezone and the screen refreshes. A traveling user's days and reminders follow them.
-Recommendation: keep this. Days already logged keep their instants; only how they group into local days changes while traveling, which matches what the user sees on their phone. If the PM prefers a fixed home timezone, add a Me setting in M2 and stop auto-updating. Blocks: nothing.
+**Q44. [MVP 5, F9] What "unread reply" means on the roster.** MVP has no messaging thread, only the coach's reply to each check-in. The PRD flag is "unread message" (a client message the coach has not read).
+Recommendation: in MVP the flag means "check-in submitted, coach has not replied yet". When the messaging thread ships post-MVP it becomes the PRD's unread message flag. Blocks: MVP step 5, not earlier steps.
+
+**Q45. [MVP 3 to 5, F1] Coach-set targets in MVP.** PRD F1 says paid clients' targets are set by the coach, and invited clients start on formula targets. The MVP coach view lists no target editing, and the "targets not reviewed" flag is post-MVP.
+Recommendation: add a small target edit (calories, protein, carbs, fat, BMR floor note with a confirm to override) to the client week view in MVP step 5, saved as `set_by = coach`. Without it Sean has to ask engineering to change a client's targets. Blocks: MVP step 5, not earlier steps.
+
+**Q46. [MVP 1, CLAUDE.md rule 4] Offline is post-MVP.** CLAUDE.md rule 4 says offline entries queue locally and sync. With the offline queue post-MVP, logging offline shows "You are offline. Try again when you are back online." and keeps the draft card on the device; nothing is lost but nothing saves until online.
+Recommendation: accept for MVP and note the exception against rule 4 until the offline queue ships. Blocks: nothing.
+
+### Resolved by the PM (MVP scope, 2026-10-15)
+
+- **Scope change:** M1 to M5 paused. MVP then Post-MVP per MILESTONES.md v2.
+- **Q43** Keep the profile timezone following the phone.
+- **Camera lock** moves with photo logging (post-MVP).
+- **Events:** instrument every PRD section 5 event for MVP features as they ship.
+- **Settings:** coach-configurable values stay seeded; Sean asks engineering to change them until the settings screen ships.
 
 ### Resolved by the PM (2026-10-15, commit "docs: PM decisions 2026-10-15")
 

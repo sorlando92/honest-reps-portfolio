@@ -169,3 +169,8 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
 - Tests: unit tests for 11:30 PM Central (summer and winter), midnight rollover, half hour zones and DST days; a database test that an 11:30 PM Central log lands on that Central day at "11:30 PM".
 - Timeline rows are titled with the raw input on one line; tapping a row shows its items. Entries without typed input use the item names. PRD F3 and DESIGN_SYSTEM "Entry row" updated; quick add and favorites will reuse the title.
 - Tracking confirmed in MILESTONES: targets with remaining and day switcher (M2), barcode with the log bar icon (M1, after phone testing), camera icon locked for free users (moved from M5 to M3 with photo logging). The log bar shows neither icon yet.
+
+## MVP (scope change, PM 2026-10-15)
+
+- MILESTONES.md v2: M1 to M5 paused; MVP in six steps (finish logging, accuracy gate, member basics, client loop, coach view, trust), then Post-MVP before the gym beta. MVP exit: Sean plus at least 3 clients log for 7 days, complete one check-in each, and Sean reviews all of them in the app with no Google Form.
+- Q43 resolved (timezone follows the phone). New questions Q44 (unread reply flag in MVP), Q45 (coach target edit in MVP), Q46 (offline is post-MVP against CLAUDE.md rule 4).
