@@ -180,3 +180,20 @@ test("offline, the draft waits on the phone and logs once back online", async ({
   await expect(card).toHaveCount(0)
   await expect(page.getByRole("list", { name: "Today's entries" })).toContainText("white rice, chicken")
 })
+
+test("swiping a row left opens the editor", async ({ page }, info) => {
+  await signInWithCode(page, `e2e-swipe-${info.project.name}-${Date.now()}@example.test`)
+  await stubParse(page)
+  const card = await describeMeal(page)
+  await card.getByRole("button", { name: "Log it" }).click()
+  await expect(card).toHaveCount(0)
+
+  const row = page.getByRole("list", { name: "Today's entries" }).locator("summary").first()
+  await row.evaluate((el) => {
+    const r = el.getBoundingClientRect()
+    const touch = (x: number) => new Touch({ identifier: 1, target: el, clientX: x, clientY: r.top + 10 })
+    el.dispatchEvent(new TouchEvent("touchstart", { bubbles: true, touches: [touch(r.right - 20)], changedTouches: [touch(r.right - 20)] }))
+    el.dispatchEvent(new TouchEvent("touchend", { bubbles: true, touches: [], changedTouches: [touch(r.right - 140)] }))
+  })
+  await expect(page.getByRole("dialog", { name: "Edit entry" })).toBeVisible()
+})

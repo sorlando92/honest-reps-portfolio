@@ -188,3 +188,14 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
 - Hosted migration applied: 20261015000001_entry_edit (additive: one function). Edit and delete deployed.
 - Resolved Q44, Q45, Q46; MILESTONES v2 approved. MVP step 5 gains the coach target edit (Q45). CLAUDE.md rule 4 notes the MVP offline exception.
 - Offline card (Q46): when the phone goes offline with a card open, the card says "You're offline. Your draft is saved on this phone. Log it when you're back online." and Log it is disabled; it enables again when the phone reconnects. e2e covers it.
+
+### 2026-10-15: MVP step 1, food search, Add item, manual entry, swipe
+
+- Food search (`GET /api/foods/search`, 120 per user per hour): curated chain items first when the query names a curated chain (ranked by the text logging matcher, chain name ignored), then USDA generic foods ranked the same way and cached in `food_items`. Runs on submit, not as you type, to protect the shared USDA quota until the local FDC import (Q40).
+- Entry points: a "Search foods" button on the log bar (Q47), "Add item" on the card and in the editor, and the P1 fallback, which now opens search prefilled with what was typed (AI_PROMPTS P1 fallback).
+- A searched generic food starts at 100 g marked Estimated with "Weigh it"; a curated chain item starts at its published serving as label. Manual entry ("Enter it yourself"): name, weight in the card's unit, calories, protein, carbs, fat; saved as weighed.
+- "Change food" on every card row (new meal and editor): pick from search, the row keeps its amount and the user's name, and "Check this" clears. This is how a saved item swaps to another food.
+- Entries started from search log as `method: search`, from manual entry as `manual`; `food_logged` counts them by method.
+- Swipe left on a timeline row opens the editor; the Edit button in the opened row stays as the keyboard and screen reader path.
+- Tests: unit (search and manual items, weighing, scaling), database (chain detection, curated search with USDA off), e2e at 375px light and dark (search and weigh, Change food, Add item curated and manual, parse fallback, swipe) with axe and 44pt checks.
+- Left out: curated servings without a weight in search (Q48).

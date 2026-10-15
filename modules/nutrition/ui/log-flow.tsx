@@ -2,26 +2,32 @@
 
 import { useId, useMemo, useState, useSyncExternalStore, useTransition } from "react"
 import { useRouter } from "next/navigation"
-import { ArrowUp } from "lucide-react"
+import { ArrowUp, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useOnline } from "@/lib/use-online"
-import type { DraftResult } from "../parsing/service"
+import type { DraftItem, DraftResult } from "../parsing/service"
 import { totals, type WeightUnit } from "./amounts"
-import { clearDraft, draftSnapshot, parseDraft, saveDraft, subscribeDraft, type StoredDraft } from "./draft-store"
 import { CardSheet } from "./card-sheet"
+import { clearDraft, draftSnapshot, parseDraft, saveDraft, subscribeDraft, type StoredDraft } from "./draft-store"
 import { toEntryItem } from "./entry-items"
+import { FoodSearch } from "./food-search"
 import { ItemRow } from "./item-row"
+import { changedFood } from "./new-items"
 
 type Phase = { kind: "idle" } | { kind: "reading"; text: string } | { kind: "error"; text: string; message: string }
 
+/** Food search inside the card: add a row, or change the food on row `index`. */
+type Searching = { query: string; target: "add" } | { query: string; target: "change"; index: number }
+
 /**
- * The log loop on Today: describe a meal, check the card, tap Log it
- * (PRD F2, DESIGN_SYSTEM.md "Log bar" and "Log confirmation").
+ * The log loop on Today: describe a meal or search for foods, check the
+ * card, tap Log it (PRD F2, DESIGN_SYSTEM.md "Log bar" and "Log confirmation").
  */
 export function LogFlow({ units }: { units: "imperial" | "metric" }) {
   const router = useRouter()
   const online = useOnline()
   const [phase, setPhase] = useState<Phase>({ kind: "idle" })
+  const [searching, setSearching] = useState<Searching | null>(null)
   const [unit, setUnit] = useState<WeightUnit>(units === "metric" ? "g" : "oz")
   const [announce, setAnnounce] = useState("")
   const [saving, startSaving] = useTransition()
@@ -35,6 +41,7 @@ export function LogFlow({ units }: { units: "imperial" | "metric" }) {
 
   async function read(text: string) {
     setPhase({ kind: "reading", text })
+    setSearching(null)
     setSaveError(null)
     try {
       const now = new Date()
@@ -47,11 +54,14 @@ export function LogFlow({ units }: { units: "imperial" | "metric" }) {
       if (res.status === 429) throw new Error("Too many meals in an hour. Try again in a few minutes.")
       if (!res.ok) throw new Error("We could not read that meal. Try again.")
       const result = (await res.json()) as DraftResult
-      if (result.fallback || result.items.length === 0) {
-        throw new Error(result.fallback ? "We could not read that meal. Try different words." : "No food found in that. Try naming what you ate.")
+      // AI_PROMPTS.md P1 fallback: search, prefilled with what they typed.
+      if (result.fallback) {
+        setPhase({ kind: "idle" })
+        startSearch({ query: text, target: "add" })
+        return
       }
-      const draft: StoredDraft = { text, aiCallId: result.aiCallId, items: result.items, clientUuid: crypto.randomUUID(), createdAt: Date.now() }
-      saveDraft(draft)
+      if (result.items.length === 0) throw new Error("No food found in that. Try naming what you ate.")
+      saveDraft({ text, method: "text", aiCallId: result.aiCallId, items: result.items, clientUuid: crypto.randomUUID(), createdAt: Date.now() })
       setPhase({ kind: "idle" })
       setSheetOpen(true)
     } catch (error) {
@@ -59,12 +69,24 @@ export function LogFlow({ units }: { units: "imperial" | "metric" }) {
       setPhase({
         kind: "error",
         text,
-        message: offline ? "You are offline. Try again when you are back online." : error instanceof Error ? error.message : "Something went wrong. Try again.",
+        message: offline ? "You're offline. Try again when you're back online." : error instanceof Error ? error.message : "Something went wrong. Try again.",
       })
     }
   }
 
-  const update = saveDraft
+  function startSearch(next: Searching) {
+    setSearching(next)
+    setSheetOpen(true)
+  }
+
+  function picked(item: DraftItem, from: Searching, manual: boolean, apply: (items: DraftItem[]) => DraftItem[]) {
+    if (draft) {
+      saveDraft({ ...draft, items: apply(draft.items) })
+    } else if (from.target === "add") {
+      saveDraft({ text: "", method: manual ? "manual" : "search", aiCallId: null, items: [item], clientUuid: crypto.randomUUID(), createdAt: Date.now() })
+    }
+    setSearching(null)
+  }
 
   function logIt(draft: StoredDraft) {
     setSaveError(null)
@@ -75,7 +97,7 @@ export function LogFlow({ units }: { units: "imperial" | "metric" }) {
         body: JSON.stringify({
           clientUuid: draft.clientUuid,
           loggedAt: new Date().toISOString(),
-          method: "text",
+          method: draft.aiCallId ? "text" : (draft.method ?? "search"),
           mealTag: null,
           aiCallId: draft.aiCallId,
           items: draft.items.map((i) => toEntryItem(i)),
@@ -95,15 +117,17 @@ export function LogFlow({ units }: { units: "imperial" | "metric" }) {
 
   function discard() {
     clearDraft()
+    setSearching(null)
     setPhase({ kind: "idle" })
   }
 
-  const open = phase.kind !== "idle" || (draft !== null && sheetOpen)
-  const sum = draft && phase.kind === "idle" ? totals(draft.items) : null
+  const showCard = draft !== null && phase.kind === "idle" && searching === null
+  const open = phase.kind !== "idle" || searching !== null || (draft !== null && sheetOpen)
+  const sum = showCard ? totals(draft.items) : null
 
   return (
     <>
-      <LogBar disabled={phase.kind === "reading"} onSubmit={read} />
+      <LogBar disabled={phase.kind === "reading"} onSubmit={read} onSearch={(query) => startSearch({ query, target: "add" })} />
       <p role="status" aria-live="polite" className="sr-only">
         {announce}
       </p>
@@ -114,13 +138,21 @@ export function LogFlow({ units }: { units: "imperial" | "metric" }) {
           // Closing keeps the draft on the device; it reopens with the app.
           if (next || phase.kind === "reading") return
           setPhase({ kind: "idle" })
+          setSearching(null)
           setSheetOpen(false)
         }}
-        title="Your meal"
-        summary={sum ? `${sum.calories} cal · ${sum.proteinG} g protein` : phase.kind === "reading" ? "Reading your meal." : " "}
+        title={searching ? (searching.target === "change" ? "Change food" : "Add food") : "Your meal"}
+        summary={
+          sum
+            ? `${sum.calories} cal · ${sum.proteinG} g protein`
+            : searching
+              ? "Search, or enter a food yourself."
+              : phase.kind === "reading"
+                ? "Reading your meal."
+                : " "
+        }
         footer={
-          draft &&
-          phase.kind === "idle" && (
+          showCard && (
             <>
               {/* QUESTIONS.md Q46: no offline queue in MVP; the draft waits on the phone. */}
               {!online && (
@@ -135,6 +167,9 @@ export function LogFlow({ units }: { units: "imperial" | "metric" }) {
               )}
               <Button onClick={() => logIt(draft)} disabled={saving || !online}>
                 {saving ? "Logging" : "Log it"}
+              </Button>
+              <Button variant="secondary" onClick={() => startSearch({ query: "", target: "add" })} disabled={saving}>
+                Add item
               </Button>
               <Button variant="text" onClick={discard} disabled={saving}>
                 Discard
@@ -156,7 +191,25 @@ export function LogFlow({ units }: { units: "imperial" | "metric" }) {
             </Button>
           </div>
         )}
-        {draft && phase.kind === "idle" && (
+        {searching && phase.kind === "idle" && (
+          <FoodSearch
+            key={`${searching.target}-${searching.query}`}
+            initialQuery={searching.query}
+            unit={unit}
+            allowManual={searching.target === "add"}
+            cancelLabel={draft ? "Back to your meal" : "Cancel"}
+            onCancel={() => setSearching(null)}
+            onPick={({ item, result }) => {
+              const from = searching
+              if (from.target === "change" && result) {
+                picked(item, from, false, (items) => items.map((it, i) => (i === from.index ? changedFood(it, result) : it)))
+              } else {
+                picked(item, from, result === null, (items) => [...items, item])
+              }
+            }}
+          />
+        )}
+        {showCard && (
           <ul className="flex flex-col gap-3 pb-3">
             {draft.items.map((item, index) => (
               <ItemRow
@@ -164,12 +217,13 @@ export function LogFlow({ units }: { units: "imperial" | "metric" }) {
                 item={item}
                 unit={unit}
                 onUnitChange={setUnit}
-                onChange={(next) => update({ ...draft, items: draft.items.map((it, i) => (i === index ? next : it)) })}
+                onChange={(next) => saveDraft({ ...draft, items: draft.items.map((it, i) => (i === index ? next : it)) })}
                 onRemove={() => {
                   const items = draft.items.filter((_, i) => i !== index)
-                  if (items.length) update({ ...draft, items })
+                  if (items.length) saveDraft({ ...draft, items })
                   else discard()
                 }}
+                onChangeFood={() => startSearch({ query: item.name, target: "change", index })}
               />
             ))}
           </ul>
@@ -180,7 +234,7 @@ export function LogFlow({ units }: { units: "imperial" | "metric" }) {
 }
 
 /** Pinned above the tab bar, always within thumb reach. */
-function LogBar({ disabled, onSubmit }: { disabled: boolean; onSubmit: (text: string) => void }) {
+function LogBar({ disabled, onSubmit, onSearch }: { disabled: boolean; onSubmit: (text: string) => void; onSearch: (query: string) => void }) {
   const id = useId()
   const [text, setText] = useState("")
   return (
@@ -209,6 +263,20 @@ function LogBar({ disabled, onSubmit }: { disabled: boolean; onSubmit: (text: st
           maxLength={2000}
           className="h-12 min-w-0 flex-1 rounded-md border border-border bg-surface px-4 text-body text-text placeholder:text-text-muted"
         />
+        <Button
+          type="button"
+          variant="secondary"
+          size="icon"
+          aria-label="Search foods"
+          disabled={disabled}
+          onClick={() => {
+            onSearch(text.trim())
+            setText("")
+          }}
+          className="size-12"
+        >
+          <Search aria-hidden />
+        </Button>
         <Button type="submit" size="icon" aria-label="Log meal" disabled={disabled || !text.trim()} className="size-12">
           <ArrowUp aria-hidden />
         </Button>

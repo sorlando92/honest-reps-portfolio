@@ -17,12 +17,15 @@ export function ItemRow({
   onUnitChange,
   onChange,
   onRemove,
+  onChangeFood,
 }: {
   item: DraftItem
   unit: WeightUnit
   onUnitChange: (unit: WeightUnit) => void
   onChange: (item: DraftItem) => void
   onRemove: () => void
+  /** Opens food search to pick a different food for this row. */
+  onChangeFood?: () => void
 }) {
   const id = useId()
   const amountRef = useRef<HTMLInputElement>(null)
@@ -97,6 +100,12 @@ export function ItemRow({
       <p className="text-caption text-text-muted tabular-nums">
         {item.calories} cal · {item.proteinG} g protein · {item.carbsG} g carbs · {item.fatG} g fat
       </p>
+
+      {onChangeFood && (
+        <Button variant="text" onClick={onChangeFood} aria-label={`Change food for ${item.name}`} className="h-11 self-start px-0 text-accent-strong">
+          Change food
+        </Button>
+      )}
 
       {item.flagReason === "match" && item.alternatives.length > 0 && (
         <div className="flex flex-col gap-1">
