@@ -54,6 +54,6 @@ function redirectKeepingCookies(request: NextRequest, from: NextResponse, path: 
 export const config = {
   matcher: [
     // Everything except static assets, the service worker, manifest and icons.
-    "/((?!_next/static|_next/image|favicon.ico|sw.js|manifest.webmanifest|pwa-icon|.*\\.(?:png|svg|ico|webp)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|sw.js|manifest.webmanifest|pwa-icon|vendor/|.*\\.(?:png|svg|ico|webp)$).*)",
   ],
 }
