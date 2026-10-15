@@ -207,3 +207,9 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
 - A generic food from search starts at USDA's first common portion: FNDDS portions come with the search; SR Legacy and Foundation foods look theirs up once on pick (`GET /api/foods/[id]/portion`, one USDA request, cached in `food_items.serving`). Else 100 g. Still Estimated with Weigh it.
 - Scale users (`nutrition_profiles.has_scale`) get grams by default; others get their units' weight.
 - DESIGN_SYSTEM "Log bar" and "Confirmation card", PRD F2: Q47 layout (3 controls at most), servings stepper, starting portion. The log bar layout ships with the barcode button.
+
+### 2026-10-15: MVP step 1, Raw / Cooked / Dry toggle
+
+- Meat, fish, grains and pasta rows show a Raw / Cooked toggle, plus Dry for grains and pasta (44pt segments). Flipping it fetches the USDA entry in that state (`GET /api/foods/state`, ranked like text logging with the state forced, cached in `food_items`) and recalculates at the same weight. When no entry in that state exists, the row stays and says "No raw entry found. Kept as it was."
+- Label items (servings) have no toggle; their nutrition is the published serving.
+- Tests: unit (which foods get which states), e2e flip to Dry and a missing Raw entry at 375px light and dark.

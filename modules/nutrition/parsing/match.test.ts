@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { describedState, rank, rankMenu, searchText, wantedState } from "./match"
+import { describedState, rank, rankMenu, searchText, stateOptions, wantedState } from "./match"
 
 const foods = (...descriptions: string[]) =>
   descriptions.map((description, i) => ({ id: String(i), description, dataType: "SR Legacy", brand: null }))
@@ -95,5 +95,15 @@ describe("menu sizes, brands and skin", () => {
     const thighs = ["Chicken thigh, NS as to cooking method, skin eaten", "Chicken, broilers or fryers, thigh, meat only, cooked, roasted"]
     expect(best("chicken thigh", null, ...thighs)).toContain("meat only")
     expect(best("chicken thigh with skin", null, ...thighs)).toContain("skin eaten")
+  })
+})
+
+describe("stateOptions", () => {
+  it("gives meat and fish Raw and Cooked, grains and pasta also Dry, other foods none", () => {
+    expect(stateOptions("chicken breast")).toEqual(["raw", "cooked"])
+    expect(stateOptions("salmon")).toEqual(["raw", "cooked"])
+    expect(stateOptions("white rice")).toEqual(["raw", "cooked", "dry"])
+    expect(stateOptions("penne pasta")).toEqual(["raw", "cooked", "dry"])
+    expect(stateOptions("banana")).toBeNull()
   })
 })

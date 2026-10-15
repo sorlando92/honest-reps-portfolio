@@ -159,3 +159,43 @@ test("when parsing fails, search opens with what was typed", async ({ page }, in
   const sheet = page.getByRole("dialog", { name: "Add food" })
   await expect(sheet.getByLabel("Search foods")).toHaveValue("chicken thing")
 })
+
+test("Raw, Cooked or Dry recalculates from the food in that state", async ({ page }, info) => {
+  await signInWithCode(page, `e2e-state-${info.project.name}-${Date.now()}@example.test`)
+  await stubSearch(page)
+  await page.route("**/api/foods/state?*", (route) => {
+    const state = new URL(route.request().url()).searchParams.get("state")
+    route.fulfill({
+      json: {
+        result:
+          state === "dry"
+            ? { ...chicken, sourceId: "169756", name: "Rice, white, long-grain, regular, raw, enriched", state: "dry", per100g: { kcal: 365, protein_g: 7.1, carbs_g: 80, fat_g: 0.7 } }
+            : null,
+      },
+    })
+  })
+  await page.route("**/api/foods/search?*", (route) =>
+    route.fulfill({ json: { results: [{ ...chicken, sourceId: "168878", name: "Rice, white, long-grain, regular, cooked", per100g: { kcal: 130, protein_g: 2.7, carbs_g: 28, fat_g: 0.3 }, portion: { label: "1 cup", grams: 158 } }] } })
+  )
+  await page.getByLabel("What did you eat?").fill("white rice")
+  await page.getByRole("button", { name: "Search foods" }).click()
+  const add = page.getByRole("dialog", { name: "Add food" })
+  await add.getByRole("button", { name: "Search", exact: true }).click()
+  await add.getByRole("button", { name: /Rice, white/ }).click()
+
+  // Starts at the common portion: 1 cup, 158 g cooked.
+  const card = page.getByRole("dialog", { name: "Your meal" })
+  await expect(card.getByText("205 cal · 4.3 g protein", { exact: true })).toBeVisible()
+  const toggle = card.getByRole("radiogroup", { name: /Raw, cooked or dry/ })
+  await expect(toggle.getByRole("radio", { name: "Cooked" })).toHaveAttribute("aria-checked", "true")
+  await expectTapTargets(page)
+
+  await toggle.getByRole("radio", { name: "Dry" }).click()
+  await expect(toggle.getByRole("radio", { name: "Dry" })).toHaveAttribute("aria-checked", "true")
+  await expect(card.getByText("577 cal · 11.2 g protein", { exact: true })).toBeVisible()
+
+  // No raw entry: the row stays as it was and says so.
+  await toggle.getByRole("radio", { name: "Raw" }).click()
+  await expect(card.getByText("No raw entry found. Kept as it was.")).toBeVisible()
+  await expect(toggle.getByRole("radio", { name: "Dry" })).toHaveAttribute("aria-checked", "true")
+})

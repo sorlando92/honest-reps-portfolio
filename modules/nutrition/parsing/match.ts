@@ -192,3 +192,13 @@ export function searchText(name: string): string {
     .replace(/\s+/g, " ")
     .trim()
 }
+
+/**
+ * The Raw / Cooked / Dry choices for a food (PRD F2): meat, fish, grains and
+ * pasta get Raw and Cooked, grains and pasta also Dry. Null for other foods.
+ */
+export function stateOptions(name: string): FoodState[] | null {
+  const n = name.toLowerCase()
+  if (!STATEFUL.test(n)) return null
+  return DRY_CAPABLE.test(n) ? ["raw", "cooked", "dry"] : ["raw", "cooked"]
+}

@@ -1,12 +1,15 @@
 "use client"
 
-import { useId, useRef } from "react"
+import { useId, useRef, useState } from "react"
 import { Minus, Plus, X } from "lucide-react"
 import { ToggleGroup } from "radix-ui"
 import { cn } from "cn"
 import { Button } from "@/components/ui/button"
+import type { FoodResult } from "../foods/search"
+import { stateOptions } from "../parsing/match"
 import type { DraftItem } from "../parsing/service"
 import { fromUnit, swapped, toUnit, weighed, withServings, type WeightUnit } from "./amounts"
+import { changedFood } from "./new-items"
 
 const STATE_LABEL = { raw: "Raw", cooked: "Cooked", dry: "Dry" } as const
 
@@ -81,7 +84,7 @@ export function ItemRow({
             </ToggleGroup.Root>
           </>
         )}
-        {item.state && <span className="pb-3 text-caption text-text-muted">{STATE_LABEL[item.state]}</span>}
+        {!item.serving && <StateToggle item={item} onChange={onChange} />}
       </div>
 
       <p className="text-caption text-text-muted tabular-nums">
@@ -113,6 +116,57 @@ export function ItemRow({
         </div>
       )}
     </li>
+  )
+}
+
+/**
+ * Raw / Cooked / Dry for meat, fish, grains and pasta (PRD F2). Flipping it
+ * fetches the food entry in that state and recalculates at the same weight.
+ */
+function StateToggle({ item, onChange }: { item: DraftItem; onChange: (item: DraftItem) => void }) {
+  const [busy, setBusy] = useState(false)
+  const [note, setNote] = useState("")
+  const options = stateOptions(item.name) ?? (item.match ? stateOptions(item.match.name) : null)
+  if (!options) return null
+
+  async function choose(state: "raw" | "cooked" | "dry") {
+    if (state === item.state || busy) return
+    setBusy(true)
+    setNote("")
+    const res = await fetch(`/api/foods/state?name=${encodeURIComponent(item.name)}&state=${state}`).catch(() => null)
+    const result = res?.ok ? ((await res.json()) as { result: FoodResult | null }).result : null
+    setBusy(false)
+    if (result) onChange({ ...changedFood(item, result), state })
+    else setNote(`No ${STATE_LABEL[state].toLowerCase()} entry found. Kept as it was.`)
+  }
+
+  return (
+    <div className="flex flex-col gap-1">
+      <ToggleGroup.Root
+        type="single"
+        value={item.state ?? ""}
+        onValueChange={(value) => value && choose(value as "raw" | "cooked" | "dry")}
+        aria-label={`Raw, cooked${options.includes("dry") ? " or dry" : ""} for ${item.name}`}
+        aria-busy={busy}
+        disabled={busy}
+        className="flex rounded-md border border-border"
+      >
+        {options.map((state) => (
+          <ToggleGroup.Item
+            key={state}
+            value={state}
+            className="h-11 min-w-11 px-3 text-body text-text-muted first:rounded-l-md last:rounded-r-md disabled:opacity-50 data-[state=on]:bg-accent data-[state=on]:text-on-accent"
+          >
+            {STATE_LABEL[state]}
+          </ToggleGroup.Item>
+        ))}
+      </ToggleGroup.Root>
+      {note && (
+        <p role="status" className="text-caption text-text-muted">
+          {note}
+        </p>
+      )}
+    </div>
   )
 }
 
