@@ -4,7 +4,7 @@ import type { SupabaseClient } from "@supabase/supabase-js"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { AMOUNT_SOURCES } from "@/lib/ai/p1"
 
-const item = z.object({
+export const entryItem = z.object({
   name: z.string().trim().min(1).max(300),
   foodItemId: z.uuid().nullable(),
   amount: z.number().min(0).max(100000),
@@ -28,7 +28,7 @@ export const saveEntryBody = z.object({
   mealTag: z.enum(["breakfast", "lunch", "dinner", "snack"]).nullable(),
   /** The parse that produced the card; its input and output become the audit trail. */
   aiCallId: z.uuid().nullable(),
-  items: z.array(item).min(1).max(30),
+  items: z.array(entryItem).min(1).max(30),
 })
 
 export type SaveEntryBody = z.infer<typeof saveEntryBody>

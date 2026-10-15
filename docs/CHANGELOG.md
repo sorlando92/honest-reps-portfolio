@@ -174,3 +174,11 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
 
 - MILESTONES.md v2: M1 to M5 paused; MVP in six steps (finish logging, accuracy gate, member basics, client loop, coach view, trust), then Post-MVP before the gym beta. MVP exit: Sean plus at least 3 clients log for 7 days, complete one check-in each, and Sean reviews all of them in the app with no Google Form.
 - Q43 resolved (timezone follows the phone). New questions Q44 (unread reply flag in MVP), Q45 (coach target edit in MVP), Q46 (offline is post-MVP against CLAUDE.md rule 4).
+
+### 2026-10-15: MVP step 1, edit and delete
+
+- Tap a timeline row, then Edit: the entry opens in the same card as a new meal (amount stepper, g/oz, Weigh it, remove items). Save replaces the items in one transaction (`replace_food_entry_items`, migration 20261015000001, security invoker so RLS applies). Delete entry asks once inline, then deletes the entry and its items.
+- Saving from the editor is the user confirming the entry (PRD F2 "Flagged"), so "Check this" clears. The timeline "est." marker now follows the amount source (estimated) instead of the flag, so a confirmed estimate still shows "est.".
+- Events: `food_entry_corrected` (items before and after, calorie change, flags before and after) and `food_entry_deleted` (method), both from the server.
+- Tests: database suite for the edit function (owner only, coach and other users refused, invalid items leave the entry unchanged, empty list refused); e2e edit then delete at 375px light and dark with axe and 44pt checks.
+- Deferred: swipe left on a row for edit and delete (DESIGN_SYSTEM "Entry row"). The Edit button in the opened row is the accessible path either way. Saved items keep no alternatives, so "Did you mean" does not appear in the editor; the Raw / Cooked / Dry toggle and food search will give saved items a way to change food.

@@ -3,11 +3,12 @@
 import { useId, useMemo, useState, useSyncExternalStore, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { ArrowUp } from "lucide-react"
-import { Dialog } from "radix-ui"
 import { Button } from "@/components/ui/button"
 import type { DraftResult } from "../parsing/service"
 import { totals, type WeightUnit } from "./amounts"
 import { clearDraft, draftSnapshot, parseDraft, saveDraft, subscribeDraft, type StoredDraft } from "./draft-store"
+import { CardSheet } from "./card-sheet"
+import { toEntryItem } from "./entry-items"
 import { ItemRow } from "./item-row"
 
 type Phase = { kind: "idle" } | { kind: "reading"; text: string } | { kind: "error"; text: string; message: string }
@@ -18,7 +19,6 @@ type Phase = { kind: "idle" } | { kind: "reading"; text: string } | { kind: "err
  */
 export function LogFlow({ units }: { units: "imperial" | "metric" }) {
   const router = useRouter()
-  const id = useId()
   const [phase, setPhase] = useState<Phase>({ kind: "idle" })
   const [unit, setUnit] = useState<WeightUnit>(units === "metric" ? "g" : "oz")
   const [announce, setAnnounce] = useState("")
@@ -76,21 +76,7 @@ export function LogFlow({ units }: { units: "imperial" | "metric" }) {
           method: "text",
           mealTag: null,
           aiCallId: draft.aiCallId,
-          items: draft.items.map((i) => ({
-            name: i.name,
-            foodItemId: i.foodItemId,
-            amount: i.quantity,
-            unit: i.unit,
-            grams: i.grams,
-            amountSource: i.amountSource,
-            state: i.state,
-            calories: i.calories,
-            proteinG: i.proteinG,
-            carbsG: i.carbsG,
-            fatG: i.fatG,
-            flagReason: i.flagReason,
-            confidence: i.confidence,
-          })),
+          items: draft.items.map((i) => toEntryItem(i)),
         }),
       }).catch(() => null)
       if (!res || !res.ok) {
@@ -120,7 +106,7 @@ export function LogFlow({ units }: { units: "imperial" | "metric" }) {
         {announce}
       </p>
 
-      <Dialog.Root
+      <CardSheet
         open={open}
         onOpenChange={(next) => {
           // Closing keeps the draft on the device; it reopens with the app.
@@ -128,72 +114,59 @@ export function LogFlow({ units }: { units: "imperial" | "metric" }) {
           setPhase({ kind: "idle" })
           setSheetOpen(false)
         }}
-      >
-        <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 z-50 bg-bg/70" />
-          <Dialog.Content
-            aria-describedby={`${id}-summary`}
-            className="fixed inset-x-0 bottom-0 z-50 mx-auto flex max-h-[88dvh] w-full max-w-[720px] flex-col rounded-t-lg border-t border-border bg-bg pb-[env(safe-area-inset-bottom)] data-[state=open]:animate-in data-[state=open]:slide-in-from-bottom data-[state=open]:duration-250 motion-reduce:animate-none"
-          >
-            <div className="flex flex-col gap-1 px-4 pt-4 pb-3">
-              <Dialog.Title className="text-title">Your meal</Dialog.Title>
-              <Dialog.Description id={`${id}-summary`} className="text-body text-text-muted tabular-nums">
-                {sum ? `${sum.calories} cal · ${sum.proteinG} g protein` : phase.kind === "reading" ? "Reading your meal." : " "}
-              </Dialog.Description>
-            </div>
-
-            <div className="flex-1 overflow-y-auto px-4">
-              {phase.kind === "reading" && (
-                <p role="status" className="py-6 text-body text-text-muted">
-                  Matching &ldquo;{phase.text}&rdquo; to foods.
+        title="Your meal"
+        summary={sum ? `${sum.calories} cal · ${sum.proteinG} g protein` : phase.kind === "reading" ? "Reading your meal." : " "}
+        footer={
+          draft &&
+          phase.kind === "idle" && (
+            <>
+              {saveError && (
+                <p role="alert" className="text-body text-caution">
+                  {saveError}
                 </p>
               )}
-              {phase.kind === "error" && (
-                <div role="alert" className="flex flex-col gap-3 py-4">
-                  <p className="text-body">{phase.message}</p>
-                  <Button variant="secondary" onClick={() => read(phase.text)}>
-                    Try again
-                  </Button>
-                </div>
-              )}
-              {draft && phase.kind === "idle" && (
-                <ul className="flex flex-col gap-3 pb-3">
-                  {draft.items.map((item, index) => (
-                    <ItemRow
-                      key={index}
-                      item={item}
-                      unit={unit}
-                      onUnitChange={setUnit}
-                      onChange={(next) => update({ ...draft, items: draft.items.map((it, i) => (i === index ? next : it)) })}
-                      onRemove={() => {
-                        const items = draft.items.filter((_, i) => i !== index)
-                        if (items.length) update({ ...draft, items })
-                        else discard()
-                      }}
-                    />
-                  ))}
-                </ul>
-              )}
-            </div>
-
-            {draft && phase.kind === "idle" && (
-              <div className="flex flex-col gap-2 border-t border-border px-4 pt-3 pb-4">
-                {saveError && (
-                  <p role="alert" className="text-body text-caution">
-                    {saveError}
-                  </p>
-                )}
-                <Button onClick={() => logIt(draft)} disabled={saving}>
-                  {saving ? "Logging" : "Log it"}
-                </Button>
-                <Button variant="text" onClick={discard} disabled={saving}>
-                  Discard
-                </Button>
-              </div>
-            )}
-          </Dialog.Content>
-        </Dialog.Portal>
-      </Dialog.Root>
+              <Button onClick={() => logIt(draft)} disabled={saving}>
+                {saving ? "Logging" : "Log it"}
+              </Button>
+              <Button variant="text" onClick={discard} disabled={saving}>
+                Discard
+              </Button>
+            </>
+          )
+        }
+      >
+        {phase.kind === "reading" && (
+          <p role="status" className="py-6 text-body text-text-muted">
+            Matching &ldquo;{phase.text}&rdquo; to foods.
+          </p>
+        )}
+        {phase.kind === "error" && (
+          <div role="alert" className="flex flex-col gap-3 py-4">
+            <p className="text-body">{phase.message}</p>
+            <Button variant="secondary" onClick={() => read(phase.text)}>
+              Try again
+            </Button>
+          </div>
+        )}
+        {draft && phase.kind === "idle" && (
+          <ul className="flex flex-col gap-3 pb-3">
+            {draft.items.map((item, index) => (
+              <ItemRow
+                key={index}
+                item={item}
+                unit={unit}
+                onUnitChange={setUnit}
+                onChange={(next) => update({ ...draft, items: draft.items.map((it, i) => (i === index ? next : it)) })}
+                onRemove={() => {
+                  const items = draft.items.filter((_, i) => i !== index)
+                  if (items.length) update({ ...draft, items })
+                  else discard()
+                }}
+              />
+            ))}
+          </ul>
+        )}
+      </CardSheet>
     </>
   )
 }

@@ -124,3 +124,43 @@ test("an unconfirmed card comes back after reopening the app", async ({ page }, 
   await page.reload()
   await expect(page.getByRole("dialog", { name: "Your meal" })).toHaveCount(0)
 })
+
+test("edit a logged entry, then delete it", async ({ page }, info) => {
+  await signInWithCode(page, `e2e-edit-${info.project.name}-${Date.now()}@example.test`)
+  await stubParse(page)
+  const card = await describeMeal(page)
+  await card.getByRole("button", { name: "Log it" }).click()
+  await expect(card).toHaveCount(0)
+
+  // Logged with an estimated amount and an uncertain match: Check this wins.
+  const timeline = page.getByRole("list", { name: "Today's entries" })
+  await expect(timeline.getByText("Check this")).toBeVisible()
+  await timeline.getByText("white rice, chicken").click()
+  await timeline.getByRole("button", { name: "Edit white rice, chicken" }).click()
+
+  const editor = page.getByRole("dialog", { name: "Edit entry" })
+  await expect(editor).toBeVisible()
+  await expectNoAxeViolations(page)
+  await expectTapTargets(page)
+  // Remove the chicken and weigh the rice. The stub has no food_items row, so
+  // the editor scales the saved values: 205 cal x 200 / 158 g.
+  await editor.getByRole("button", { name: "Remove chicken" }).click()
+  await editor.getByRole("radio", { name: "g" }).click()
+  await editor.getByRole("spinbutton").fill("200")
+  await editor.getByRole("button", { name: "Save" }).click()
+  await expect(editor).toHaveCount(0)
+
+  // Saving confirms the entry: no Check this, no est. now that it is weighed.
+  await expect(timeline).toContainText("259 cal")
+  await expect(timeline.getByText("Check this")).toHaveCount(0)
+  await expect(timeline.getByText("est.")).toHaveCount(0)
+  await page.screenshot({ path: info.outputPath("edited.png"), fullPage: true })
+
+  // The row stays open after saving.
+  const edit = timeline.getByRole("button", { name: "Edit white rice" })
+  if (!(await edit.isVisible())) await timeline.locator("summary").first().click()
+  await edit.click()
+  await editor.getByRole("button", { name: "Delete entry" }).click()
+  await editor.getByRole("button", { name: "Delete", exact: true }).click()
+  await expect(page.getByText("Nothing logged yet. Start with your last meal.")).toBeVisible()
+})
