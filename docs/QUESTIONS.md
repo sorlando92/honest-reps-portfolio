@@ -34,14 +34,14 @@ Recommendation: when a check-in arrives after prep has run, rerun P3 for that cl
 **Q35. [M1] Real meals versus the synthetic eval set.** `evals/README.md` v0.2 says the synthetic set replaces "Sean supplies 20 real meals" for M1. The PM decisions round 2 say Sean will supply 20 real meals.
 Recommendation: v0.2 is the M1 gate. When Sean's meals arrive they are added as p025 onward (set v0.3), split between dev and holdout, and count toward the 50 case beta target. They do not block M1. Blocks: nothing.
 
-**Q44. [MVP 5, F9] What "unread reply" means on the roster.** MVP has no messaging thread, only the coach's reply to each check-in. The PRD flag is "unread message" (a client message the coach has not read).
-Recommendation: in MVP the flag means "check-in submitted, coach has not replied yet". When the messaging thread ships post-MVP it becomes the PRD's unread message flag. Blocks: MVP step 5, not earlier steps.
+### Resolved by the PM (MVP round 2, 2026-10-15)
 
-**Q45. [MVP 3 to 5, F1] Coach-set targets in MVP.** PRD F1 says paid clients' targets are set by the coach, and invited clients start on formula targets. The MVP coach view lists no target editing, and the "targets not reviewed" flag is post-MVP.
-Recommendation: add a small target edit (calories, protein, carbs, fat, BMR floor note with a confirm to override) to the client week view in MVP step 5, saved as `set_by = coach`. Without it Sean has to ask engineering to change a client's targets. Blocks: MVP step 5, not earlier steps.
-
-**Q46. [MVP 1, CLAUDE.md rule 4] Offline is post-MVP.** CLAUDE.md rule 4 says offline entries queue locally and sync. With the offline queue post-MVP, logging offline shows "You are offline. Try again when you are back online." and keeps the draft card on the device; nothing is lost but nothing saves until online.
-Recommendation: accept for MVP and note the exception against rule 4 until the offline queue ships. Blocks: nothing.
+- **MILESTONES v2** approved as written.
+- **Q44** MVP "unread reply" means a check-in was submitted and the coach has not replied. It becomes the unread message flag when messaging ships.
+- **Q45** Target edit (calories, protein, carbs, fat) in the client week view, respecting the BMR floor with a coach override confirmation. Saves a `targets` row with `set_by = coach`.
+- **Q46** Accepted. CLAUDE.md rule 4 notes the MVP exception. Offline in MVP: the draft stays on the phone, the card shows "You're offline. Your draft is saved on this phone. Log it when you're back online.", and Log it is disabled until back online, then works with no retyping.
+- **Swipe to edit** and **swapping a saved item to another food** land with Add item and food search.
+- **Standing approval:** engineering deploys and applies hosted migrations without asking when the migration is additive only (new tables, columns, functions, indexes, policies that do not reduce access). Anything that drops, renames, rewrites or deletes data, or loosens RLS, is asked first. Every applied migration is listed in the update.
 
 ### Resolved by the PM (MVP scope, 2026-10-15)
 

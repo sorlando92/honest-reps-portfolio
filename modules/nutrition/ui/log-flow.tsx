@@ -4,6 +4,7 @@ import { useId, useMemo, useState, useSyncExternalStore, useTransition } from "r
 import { useRouter } from "next/navigation"
 import { ArrowUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useOnline } from "@/lib/use-online"
 import type { DraftResult } from "../parsing/service"
 import { totals, type WeightUnit } from "./amounts"
 import { clearDraft, draftSnapshot, parseDraft, saveDraft, subscribeDraft, type StoredDraft } from "./draft-store"
@@ -19,6 +20,7 @@ type Phase = { kind: "idle" } | { kind: "reading"; text: string } | { kind: "err
  */
 export function LogFlow({ units }: { units: "imperial" | "metric" }) {
   const router = useRouter()
+  const online = useOnline()
   const [phase, setPhase] = useState<Phase>({ kind: "idle" })
   const [unit, setUnit] = useState<WeightUnit>(units === "metric" ? "g" : "oz")
   const [announce, setAnnounce] = useState("")
@@ -120,12 +122,18 @@ export function LogFlow({ units }: { units: "imperial" | "metric" }) {
           draft &&
           phase.kind === "idle" && (
             <>
-              {saveError && (
+              {/* QUESTIONS.md Q46: no offline queue in MVP; the draft waits on the phone. */}
+              {!online && (
+                <p role="status" className="text-body text-text-muted">
+                  You&rsquo;re offline. Your draft is saved on this phone. Log it when you&rsquo;re back online.
+                </p>
+              )}
+              {online && saveError && (
                 <p role="alert" className="text-body text-caution">
                   {saveError}
                 </p>
               )}
-              <Button onClick={() => logIt(draft)} disabled={saving}>
+              <Button onClick={() => logIt(draft)} disabled={saving || !online}>
                 {saving ? "Logging" : "Log it"}
               </Button>
               <Button variant="text" onClick={discard} disabled={saving}>

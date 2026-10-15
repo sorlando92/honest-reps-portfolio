@@ -16,6 +16,7 @@ Every MVP step emits the PRD section 5 events for the features it ships.
 Build in this order.
 
 ### 1. Finish logging (F2 minus photo and offline)
+- Offline in MVP (Q46): the draft stays on the phone, Log it waits until the phone is back online
 - Manual entry (grams default for scale users) and "Add item" on the confirmation card
 - Edit and delete any entry from the timeline
 - Raw / Cooked / Dry toggle for meat, fish, grains and pasta, recalculating from the matching food
@@ -52,6 +53,7 @@ Done when: the parsing eval meets every pass bar in `evals/README.md`, including
 - Roster sorted by flags: logged under 4 of the last 7 days, check-in overdue, medical flag, unread reply
 - Client week view: daily totals against targets, entries, weight trend, check-in answers and photos
 - Reply composer on the check-in
+- Target edit for each client (calories, protein, carbs, fat) with the BMR floor and a coach override confirmation, saved with `set_by = coach` (Q45)
 - Events: `review_card_opened`, `review_reply_sent` (server only)
 
 ### 6. Trust (F16)

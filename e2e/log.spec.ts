@@ -164,3 +164,19 @@ test("edit a logged entry, then delete it", async ({ page }, info) => {
   await editor.getByRole("button", { name: "Delete", exact: true }).click()
   await expect(page.getByText("Nothing logged yet. Start with your last meal.")).toBeVisible()
 })
+
+test("offline, the draft waits on the phone and logs once back online", async ({ page, context }, info) => {
+  await signInWithCode(page, `e2e-offline-${info.project.name}-${Date.now()}@example.test`)
+  await stubParse(page)
+  const card = await describeMeal(page)
+  await expect(card).toBeVisible()
+
+  await context.setOffline(true)
+  await expect(card.getByText("You’re offline. Your draft is saved on this phone. Log it when you’re back online.")).toBeVisible()
+  await expect(card.getByRole("button", { name: "Log it" })).toBeDisabled()
+
+  await context.setOffline(false)
+  await card.getByRole("button", { name: "Log it" }).click()
+  await expect(card).toHaveCount(0)
+  await expect(page.getByRole("list", { name: "Today's entries" })).toContainText("white rice, chicken")
+})

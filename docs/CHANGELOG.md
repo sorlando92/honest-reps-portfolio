@@ -182,3 +182,9 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
 - Events: `food_entry_corrected` (items before and after, calorie change, flags before and after) and `food_entry_deleted` (method), both from the server.
 - Tests: database suite for the edit function (owner only, coach and other users refused, invalid items leave the entry unchanged, empty list refused); e2e edit then delete at 375px light and dark with axe and 44pt checks.
 - Deferred: swipe left on a row for edit and delete (DESIGN_SYSTEM "Entry row"). The Edit button in the opened row is the accessible path either way. Saved items keep no alternatives, so "Did you mean" does not appear in the editor; the Raw / Cooked / Dry toggle and food search will give saved items a way to change food.
+
+### 2026-10-15: PM decisions (MVP round 2), offline card
+
+- Hosted migration applied: 20261015000001_entry_edit (additive: one function). Edit and delete deployed.
+- Resolved Q44, Q45, Q46; MILESTONES v2 approved. MVP step 5 gains the coach target edit (Q45). CLAUDE.md rule 4 notes the MVP offline exception.
+- Offline card (Q46): when the phone goes offline with a card open, the card says "You're offline. Your draft is saved on this phone. Log it when you're back online." and Log it is disabled; it enables again when the phone reconnects. e2e covers it.
