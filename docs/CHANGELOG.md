@@ -259,3 +259,11 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
 - Hosted `food_entries` exported before migrating (data only, outside the repo). Applied to hosted: 20261015000004_meals, 20261015000005_copy_meal, 20261015000006_today_events. Backfill: 4 rows before (meal null), 4 after (3 breakfast, 1 lunch), checked against the owner's timezone (America/Chicago).
 - Hosted seed rerun: `app_config.meal_windows` and `meal_anchors` (Q52) added; existing settings untouched.
 - Q49 to Q53 resolved; Q52 changed to meal anchor times for past days (used by the day switcher in step 3).
+
+## MVP step 3 (in progress)
+
+### 2026-10-15: data and target formula
+
+- Migration 20261015000007_member_basics (additive), applied to hosted: `nutrition_profiles.has_scale` (fixes a bug: Today already read it, the column never existed, so grams by default for scale users never took effect), `profiles.onboarding_completed_at`, `targets` (history; formula rows for anyone, user rows only for free members, coach rows only for assigned users; never updated or deleted) and `weights` (one per local day; owner writes, coach reads). RLS suites added.
+- Target formula (`modules/nutrition/targets/formula.ts`): Mifflin St Jeor, activity multiplier, goal adjustment, rounded to 10 and never below BMR; protein per lb of goal weight (current weight if none), capped; fat and carbs per Q54's recommendation until decided; age from date of birth for the 18+ gate. Unit tested.
+- New questions: Q54 (fat and carb split), Q55 (signup consents before the legal documents), Q56 (onboarding weight as the first weigh-in).

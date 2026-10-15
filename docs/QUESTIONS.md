@@ -34,6 +34,15 @@ Recommendation: when a check-in arrives after prep has run, rerun P3 for that cl
 **Q35. [M1] Real meals versus the synthetic eval set.** `evals/README.md` v0.2 says the synthetic set replaces "Sean supplies 20 real meals" for M1. The PM decisions round 2 say Sean will supply 20 real meals.
 Recommendation: v0.2 is the M1 gate. When Sean's meals arrive they are added as p025 onward (set v0.3), split between dev and holdout, and count toward the 50 case beta target. They do not block M1. Blocks: nothing.
 
+**Q54. [F1, ARCHITECTURE "Target formula defaults"] How fat and carbs split the remainder.** The specs say "fat and carbs fill the remainder" after protein, with no split.
+Recommendation: fat at 25% of target calories, carbs take what is left, with fat never under 0.3 g per lb of body weight (carbs absorb the difference). Both values live in `coach_settings.target_defaults` (\`fat_pct_of_calories: 25\`, \`fat_min_g_per_lb: 0.3\`) and are editable later in Coach settings. Engineering builds with these as seeded defaults until the PM decides. Blocks: final targets in MVP step 3.
+
+**Q55. [F1, F16, MVP 3 and 6] Signup consents before the legal documents exist.** Step 3 has signup consents (terms, privacy, disclaimer, coach visibility); the privacy policy and terms templates are step 6.
+Recommendation: step 3 builds the consent step and records acceptance against version "draft-2026-10", linking to the template pages built early as clearly marked drafts. When Sean approves the final text in step 6, bump the versions in `app_config.consent_versions` and ask existing users to accept again on next open. Blocks: the consent screen in step 3.
+
+**Q56. [F1] Where weight goes in onboarding, and the weigh-in day.** Onboarding asks current weight; F4 logs weights by day.
+Recommendation: onboarding saves the current weight as today's weigh-in in \`weights\` (one row per local day, re-logging the same day replaces it), so the trend starts at onboarding and nutrition_profiles keeps no weight copy (as ARCHITECTURE says). Blocks: nothing.
+
 ### Resolved by the PM (Today v2, 2026-10-15)
 
 - **Q49** Approved: `meal_tag` renamed to `meal`, backfilled from local time, not null, plus `copied_from_entry_id`. Applied to hosted after an export of `food_entries` (kept outside the repo): 4 rows before (meal null), 4 after (3 breakfast, 1 lunch).
