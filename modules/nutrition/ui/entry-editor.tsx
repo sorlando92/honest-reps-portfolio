@@ -4,7 +4,7 @@ import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import type { DraftItem } from "../parsing/service"
-import { totals, type WeightUnit } from "./amounts"
+import { defaultUnit, totals, type WeightUnit } from "./amounts"
 import { CardSheet } from "./card-sheet"
 import { FoodSearch } from "./food-search"
 import { ItemRow } from "./item-row"
@@ -21,19 +21,21 @@ export function EntryEditor({
   entryId,
   items: saved,
   units,
+  hasScale,
   open,
   onOpenChange,
 }: {
   entryId: string
   items: DraftItem[]
   units: "imperial" | "metric"
+  hasScale: boolean | null
   open: boolean
   onOpenChange: (open: boolean) => void
 }) {
   const router = useRouter()
   const setOpen = onOpenChange
   const [items, setItems] = useState(saved)
-  const [unit, setUnit] = useState<WeightUnit>(units === "metric" ? "g" : "oz")
+  const [unit, setUnit] = useState<WeightUnit>(defaultUnit(units, hasScale))
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [busy, start] = useTransition()

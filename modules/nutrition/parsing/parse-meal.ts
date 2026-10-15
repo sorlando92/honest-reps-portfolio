@@ -16,6 +16,19 @@ const CONFIDENCE_FLAG = 0.7
 // Amount source caps (AI_PROMPTS.md P1), for amounts this code re-labels.
 const ESTIMATED_CAP = 0.6
 
+/**
+ * A published serving (chain menus, product labels) or a common portion
+ * (USDA "1 medium"). Label items step in these servings on the card (PRD F2).
+ */
+export interface Serving {
+  label: string
+  grams: number | null
+  kcal: number
+  protein_g: number
+  carbs_g: number
+  fat_g: number
+}
+
 export interface MatchedFood {
   source: "usda" | "custom"
   sourceId: string
@@ -24,6 +37,8 @@ export interface MatchedFood {
   dataType: string
   state: FoodState | null
   per100g: Per100g
+  /** Curated chain items: the published serving. */
+  serving?: Serving
 }
 
 export interface ParsedItem {
@@ -47,6 +62,11 @@ export interface ParsedItem {
   /** "match": food uncertain, show "Check this". "amount": amount estimated, show "Estimated". */
   flagReason: "match" | "amount" | null
   alternatives: MatchedFood[]
+  /**
+   * Label items with a known serving: the card steps in servings, quantity is
+   * the number of servings and unit is "serving".
+   */
+  serving?: Serving
 }
 
 export interface ParseResult {
@@ -130,6 +150,7 @@ function matchCurated(item: P1Item, chain: ChainData, ctx: MatchContext): Parsed
     dataType: "Curated",
     state: null,
     per100g: per100(r.item.ci, item.grams),
+    serving: servingOf(r.item.ci),
   })
   const ci = best.item.ci
   // Whole servings: "double chicken" or "2 slices" is the serving times two.
@@ -142,8 +163,9 @@ function matchCurated(item: P1Item, chain: ChainData, ctx: MatchContext): Parsed
   return {
     name: item.name,
     brand: chain.chain,
-    quantity: item.quantity,
-    unit: item.unit,
+    quantity: servings,
+    unit: "serving",
+    serving: servingOf(ci),
     grams: ci.serving_grams ? round(ci.serving_grams * servings, 1) : item.grams,
     amountSource: "label",
     state: null,
@@ -222,6 +244,10 @@ function flags(
 }
 
 const WEIGHT_UNITS = new Set(["g", "oz", "lb", "ml", "fl_oz", "cup"])
+
+function servingOf(ci: { serving_label?: string; serving_grams: number | null; kcal: number; protein_g: number; carbs_g: number; fat_g: number }): Serving {
+  return { label: ci.serving_label ?? "1 serving", grams: ci.serving_grams, kcal: ci.kcal, protein_g: ci.protein_g, carbs_g: ci.carbs_g, fat_g: ci.fat_g }
+}
 
 /** Per 100 g of a curated item; a serving without a weight uses the estimated grams. */
 function per100(ci: { serving_grams: number | null; kcal: number; protein_g: number; carbs_g: number; fat_g: number }, estimatedGrams: number): Per100g {

@@ -24,7 +24,7 @@ const SWIPE_SLOPE = 0.6
  * user typed, tap to see its items, swipe left or tap Edit to change or
  * delete it. The Edit button is the path for keyboards and screen readers.
  */
-export function TimelineRow({ entry: e, units }: { entry: TimelineRowEntry; units: "imperial" | "metric" }) {
+export function TimelineRow({ entry: e, units, hasScale }: { entry: TimelineRowEntry; units: "imperial" | "metric"; hasScale: boolean | null }) {
   const [open, setOpen] = useState(false)
   const [session, setSession] = useState(0)
   const start = useRef<{ x: number; y: number } | null>(null)
@@ -95,7 +95,7 @@ export function TimelineRow({ entry: e, units }: { entry: TimelineRowEntry; unit
           </Button>
         </div>
       </details>
-      <EntryEditor key={session} entryId={e.id} items={e.items} units={units} open={open} onOpenChange={setOpen} />
+      <EntryEditor key={session} entryId={e.id} items={e.items} units={units} hasScale={hasScale} open={open} onOpenChange={setOpen} />
     </>
   )
 }

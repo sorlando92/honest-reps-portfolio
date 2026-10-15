@@ -51,8 +51,18 @@ export function weighed(item: DraftItem, grams: number): DraftItem {
 export function swapped(item: DraftItem, alternative: DraftAlternative): DraftItem {
   const { foodItemId, ...food } = alternative
   // The user's own name for the food stays; the matched food shows beneath it.
-  const next = withGrams({ ...item, match: food, foodItemId, state: food.state ?? item.state }, item.grams)
-  const amountFlag = item.flagReason === "amount" || (item.flagReason === "match" && item.amountSource === "estimated")
+  const base: DraftItem = { ...item, match: food, foodItemId, state: food.state ?? item.state, serving: food.serving }
+  let next: DraftItem
+  let amountFlag = item.flagReason === "amount" || (item.flagReason === "match" && item.amountSource === "estimated")
+  if (food.serving) {
+    // A food with a published serving: keep the serving count, or start from
+    // the servings closest to the current weight.
+    const count = item.serving ? item.quantity : food.serving.grams ? Math.max(0.5, Math.round((item.grams / food.serving.grams) * 2) / 2) : 1
+    next = { ...withServings(base, count), amountSource: "label" }
+    amountFlag = false
+  } else {
+    next = withGrams({ ...base, serving: undefined, quantity: item.serving ? item.grams : item.quantity, unit: item.serving ? "g" : item.unit }, item.grams)
+  }
   return {
     ...next,
     alternatives: [...(item.match ? [{ ...item.match, foodItemId: item.foodItemId }] : []), ...item.alternatives].filter((a) => a.sourceId !== alternative.sourceId),
@@ -61,6 +71,33 @@ export function swapped(item: DraftItem, alternative: DraftAlternative): DraftIt
   }
 }
 
+/**
+ * A label item at a number of servings (PRD F2 servings stepper). Nutrition
+ * comes from the published serving; grams follow when the serving has a
+ * weight, else they scale from what the item had.
+ */
+export function withServings(item: DraftItem, servings: number): DraftItem {
+  const s = item.serving
+  if (!s) return item
+  const n = Math.max(0, Math.round(servings * 100) / 100)
+  const grams = s.grams ? s.grams * n : item.quantity > 0 ? (item.grams * n) / item.quantity : item.grams
+  return {
+    ...item,
+    quantity: n,
+    unit: "serving",
+    grams: round1(grams),
+    calories: Math.round(s.kcal * n),
+    proteinG: round1(s.protein_g * n),
+    carbsG: round1(s.carbs_g * n),
+    fatG: round1(s.fat_g * n),
+  }
+}
+
 export function totals(items: Pick<DraftItem, "calories" | "proteinG">[]): { calories: number; proteinG: number } {
   return items.reduce((t, i) => ({ calories: t.calories + i.calories, proteinG: round1(t.proteinG + i.proteinG) }), { calories: 0, proteinG: 0 })
+}
+
+/** PRD F2: scale users see amounts in grams; others in their units' weight. */
+export function defaultUnit(units: "imperial" | "metric", hasScale: boolean | null): WeightUnit {
+  return hasScale || units === "metric" ? "g" : "oz"
 }

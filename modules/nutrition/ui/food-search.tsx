@@ -6,13 +6,14 @@ import { Button } from "@/components/ui/button"
 import type { FoodResult } from "../foods/search"
 import type { DraftItem } from "../parsing/service"
 import { fromUnit, type WeightUnit } from "./amounts"
-import { fromManual, fromSearchResult, usableResults } from "./new-items"
+import { fromManual, fromSearchResult } from "./new-items"
 
 type State =
   | { kind: "idle" }
   | { kind: "searching" }
   | { kind: "results"; results: FoodResult[] }
   | { kind: "error"; message: string }
+  | { kind: "adding"; results: FoodResult[] }
 
 /**
  * Search for a food, or enter one by hand (PRD F2). Used by Add item, the log
@@ -46,11 +47,24 @@ export function FoodSearch({
       if (res.status === 429) throw new Error("Too many searches in an hour. Try again in a few minutes.")
       if (!res.ok) throw new Error("Search did not work. Try again.")
       const { results } = (await res.json()) as { results: FoodResult[] }
-      setState({ kind: "results", results: usableResults(results) })
+      setState({ kind: "results", results })
     } catch (error) {
       const offline = !navigator.onLine
       setState({ kind: "error", message: offline ? "You're offline. Search works when you're back online." : error instanceof Error ? error.message : "Search did not work. Try again." })
     }
+  }
+
+  // A generic USDA food starts at its common portion; SR Legacy and Foundation
+  // foods look it up once (cached on the server). Falls back to 100 g.
+  async function pick(r: FoodResult, results: FoodResult[]) {
+    let result = r
+    if (r.source === "usda" && !r.portion) {
+      setState({ kind: "adding", results })
+      const res = await fetch(`/api/foods/${r.foodItemId}/portion`, { signal: AbortSignal.timeout(4000) }).catch(() => null)
+      const portion = res?.ok ? ((await res.json()) as { portion: FoodResult["portion"] }).portion : null
+      result = { ...r, portion }
+    }
+    onPick({ item: fromSearchResult(result), result })
   }
 
   if (manual) {
@@ -101,13 +115,18 @@ export function FoodSearch({
           No foods found. Try other words{allowManual ? " or enter it yourself" : ""}.
         </p>
       )}
+      {state.kind === "adding" && (
+        <p role="status" className="text-body text-text-muted">
+          Adding.
+        </p>
+      )}
       {state.kind === "results" && state.results.length > 0 && (
         <ul aria-label="Foods" className="flex flex-col gap-1">
           {state.results.map((r) => (
             <li key={r.foodItemId}>
               <button
                 type="button"
-                onClick={() => onPick({ item: fromSearchResult(r), result: r })}
+                onClick={() => pick(r, state.results)}
                 className="flex min-h-11 w-full flex-col items-start gap-0.5 rounded-md bg-surface px-3 py-2 text-left"
               >
                 <span className="text-body break-words">{r.name}</span>
@@ -131,8 +150,9 @@ export function FoodSearch({
 }
 
 function describe(r: FoodResult): string {
-  if (r.source === "custom" && r.serving?.grams) {
-    return `${r.brand ?? ""} · ${r.serving.label}, ${Math.round(r.serving.kcal)} cal, ${Math.round(r.serving.protein_g)} g protein`
+  if (r.serving) {
+    const grams = r.serving.grams ? ` (${Math.round(r.serving.grams)} g)` : ""
+    return `${r.brand ? `${r.brand} · ` : ""}${r.serving.label}${grams}: ${Math.round(r.serving.kcal)} cal, ${Math.round(r.serving.protein_g)} g protein`
   }
   const per = r.per100g as { kcal?: number; protein_g?: number }
   return `${r.brand ? `${r.brand} · ` : ""}per 100 g: ${Math.round(per.kcal ?? 0)} cal, ${Math.round(per.protein_g ?? 0)} g protein`

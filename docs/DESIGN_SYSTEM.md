@@ -80,11 +80,16 @@ Stacks for drill-ins, bottom sheets for short tasks (log confirm, weight entry, 
 
 ## Components
 
-- **Log bar:** pinned above the tab bar on Today. Text field ("What did you eat?") with camera and barcode icon buttons. On focus, shows quick add chips above it.
+- **Log bar:** pinned above the tab bar on Today. Never more than 3 controls at 375px (PM 2026-10-15, Q47):
+  - Empty field: text field ("What did you eat?"), "Search foods" icon button, barcode icon button.
+  - Once the user types: search and barcode collapse and the send button appears (text field plus send).
+  - On focus, shows quick add chips above it. The camera icon arrives with photo logging (post-MVP) and must fit the 3 control rule.
 - **Quick add chip:** pill, `surface` fill, food name plus calories. One tap logs it.
 - **Stat block:** big number + label + thin progress bar.
 - **Confirmation card (bottom sheet):** list of parsed items. Each row: name, amount stepper, macros line, swap and remove. Flagged rows have a `caution` dot and "Check this" label with alternatives. Primary button "Log it." Secondary "Add item."
-  - Amount defaults to grams (or oz per units) for scale users, with a quick unit toggle (g or oz, cups, servings, hand).
+  - Amount defaults to grams for scale users (oz or g per units otherwise), with a g / oz toggle.
+  - Label items (chain menu items and packaged products with a published serving) use a servings stepper in steps of 0.5, with the serving label and the grams when known beside it.
+  - A generic food added from search starts at USDA's first common portion ("1 medium", "1 cup"), else 100 g, shown as "Estimated" with "Weigh it".
   - One signal per row, by cause: the `caution` dot and "Check this" only when the food match is uncertain. A clear food with an estimated amount shows "Estimated" in `text-muted` plus an inline "Weigh it" text button that focuses the amount field in grams, with no caution dot. No-scale users get a hand portion picker in its place. One line, never a modal.
   - Hand portion row: small "Hand portion" tag in `text-muted`. Not flagged.
   - Meat, fish, grains and pasta: one-tap segmented toggle Raw / Cooked, plus Dry for grains and pasta. 44pt segments.

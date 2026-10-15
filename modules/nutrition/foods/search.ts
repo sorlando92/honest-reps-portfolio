@@ -3,7 +3,8 @@ import type { SupabaseClient } from "@supabase/supabase-js"
 import type { FoodState } from "@/lib/ai/p1"
 import { CURATED_CHAINS, normalizeBrand, type ChainData } from "../data/chains/index"
 import { rank, searchText, tokens } from "../parsing/match"
-import { searchUsda, type Per100g, type UsdaFood } from "../parsing/usda"
+import type { Serving } from "../parsing/parse-meal"
+import { fetchUsdaPortion, searchUsda, type Per100g, type Portion, type UsdaFood } from "../parsing/usda"
 
 /** One food search result: a food_items row the user can add to a card. */
 export interface FoodResult {
@@ -16,8 +17,10 @@ export interface FoodResult {
   state: FoodState | null
   /** Empty for curated servings published without a weight. */
   per100g: Per100g | Record<string, never>
-  /** Curated chain items: the published serving. */
-  serving: { label: string; grams: number | null; kcal: number; protein_g: number; carbs_g: number; fat_g: number } | null
+  /** Label foods (curated chain items, products): the published serving. */
+  serving: Serving | null
+  /** Generic USDA foods: the first common portion, when known ("1 medium"). */
+  portion: { label: string; grams: number } | null
 }
 
 const CURATED_LIMIT = 8
@@ -93,6 +96,15 @@ async function searchGeneric(admin: SupabaseClient, query: string): Promise<Food
     })),
     { onConflict: "source,source_id" }
   )
+  // FNDDS results carry their common portion; written separately so a portion
+  // cached from a detail lookup is never overwritten with nothing.
+  const withPortion = top.filter((r) => r.candidate.portion)
+  if (withPortion.length) {
+    await admin.from("food_items").upsert(
+      withPortion.map((r) => ({ source: "usda", source_id: r.candidate.id, name: r.candidate.description, per_100g: r.candidate.per100g, serving: portionServing(r.candidate.portion!, r.candidate.per100g) })),
+      { onConflict: "source,source_id" }
+    )
+  }
   const { data } = await admin
     .from("food_items")
     .select("id, source, source_id, name, brand, data_type, state, per_100g, serving")
@@ -115,6 +127,38 @@ function toResult(row: Record<string, unknown>): FoodResult {
     dataType: (row.data_type as string | null) ?? "",
     state: (row.state as FoodState | null) ?? null,
     per100g: (row.per_100g as FoodResult["per100g"]) ?? {},
-    serving: (row.serving as FoodResult["serving"]) ?? null,
+    // food_items.serving is the published serving for label foods and the
+    // common portion for USDA foods.
+    serving: row.source === "usda" ? null : ((row.serving as Serving | null) ?? null),
+    portion: row.source === "usda" && row.serving ? portionOf(row.serving as Serving) : null,
   }
+}
+
+function portionOf(s: Serving): FoodResult["portion"] {
+  return s.grams ? { label: s.label, grams: s.grams } : null
+}
+
+/** A USDA portion stored in food_items.serving, with its nutrition. */
+export function portionServing(portion: Portion, per: Per100g): Serving {
+  const f = portion.grams / 100
+  return { label: portion.label, grams: portion.grams, kcal: per.kcal * f, protein_g: per.protein_g * f, carbs_g: per.carbs_g * f, fat_g: per.fat_g * f }
+}
+
+/**
+ * The common portion for a USDA food the user picked. SR Legacy and Foundation
+ * foods need one detail request, cached in food_items.serving; a food with no
+ * portion is cached as such so it is not fetched again. Null for other foods.
+ */
+export async function portionForFood(admin: SupabaseClient, foodItemId: string): Promise<FoodResult["portion"]> {
+  const { data: row } = await admin.from("food_items").select("source, source_id, per_100g, serving").eq("id", foodItemId).maybeSingle()
+  if (!row || row.source !== "usda") return null
+  if (row.serving) return portionOf(row.serving as Serving)
+  const portion = await fetchUsdaPortion(row.source_id).catch(() => undefined)
+  if (portion === undefined) return null
+  const per = row.per_100g as Per100g
+  await admin
+    .from("food_items")
+    .update({ serving: portion ? portionServing(portion, per) : { label: "", grams: null, kcal: 0, protein_g: 0, carbs_g: 0, fat_g: 0 } })
+    .eq("id", foodItemId)
+  return portion
 }

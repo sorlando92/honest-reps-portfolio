@@ -4,6 +4,7 @@ import { dayBounds } from "@/core/time/local-day"
 import type { AmountSource, FoodState } from "@/lib/ai/p1"
 import type { Per100g } from "../parsing/usda"
 import type { DraftItem } from "../parsing/service"
+import type { Serving } from "../parsing/parse-meal"
 
 export interface TimelineEntry {
   id: string
@@ -28,6 +29,7 @@ interface FoodRow {
   data_type: string | null
   state: FoodState | null
   per_100g: Per100g | null
+  serving: Serving | null
 }
 
 interface ItemRow {
@@ -55,7 +57,7 @@ interface Row {
 }
 
 const ITEM_COLUMNS =
-  "name, amount, unit, grams, amount_source, state, calories, protein_g, carbs_g, fat_g, flag_reason, position, food_item_id, food_items(source, source_id, name, brand, data_type, state, per_100g)"
+  "name, amount, unit, grams, amount_source, state, calories, protein_g, carbs_g, fat_g, flag_reason, position, food_item_id, food_items(source, source_id, name, brand, data_type, state, per_100g, serving)"
 
 /**
  * The user's final entries on one local date in their profile timezone,
@@ -131,6 +133,8 @@ function toDraftItem(row: ItemRow): DraftItem {
     flagReason: row.flag_reason,
     foodItemId: row.food_item_id,
     alternatives: [],
+    // Label items saved in servings step in servings again in the editor.
+    ...(row.amount_source === "label" && row.unit === "serving" && food?.serving?.label ? { serving: food.serving } : {}),
   }
 }
 

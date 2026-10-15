@@ -26,7 +26,11 @@ export default function TodayPage() {
 async function Timeline() {
   const user = await getCurrentUser()
   const supabase = await createClient()
-  const { data: profile } = await supabase.from("profiles").select("units, timezone").eq("id", user.id).single()
+  const [{ data: profile }, { data: nutrition }] = await Promise.all([
+    supabase.from("profiles").select("units, timezone").eq("id", user.id).single(),
+    supabase.from("nutrition_profiles").select("has_scale").eq("user_id", user.id).maybeSingle(),
+  ])
+  const hasScale = (nutrition?.has_scale as boolean | null | undefined) ?? null
   const timezone = profile?.timezone ?? "UTC"
   const entries = await dayEntries(supabase, user.id, timezone, localToday(timezone))
   const units = profile?.units === "metric" ? "metric" : "imperial"
@@ -39,12 +43,12 @@ async function Timeline() {
         <ul aria-label="Today's entries" className="flex flex-col divide-y divide-border">
           {entries.map((e) => (
             <li key={e.id}>
-              <TimelineRow entry={e} units={units} />
+              <TimelineRow entry={e} units={units} hasScale={hasScale} />
             </li>
           ))}
         </ul>
       )}
-      <LogFlow units={units} />
+      <LogFlow units={units} hasScale={hasScale} />
     </>
   )
 }

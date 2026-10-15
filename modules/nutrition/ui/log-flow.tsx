@@ -6,7 +6,7 @@ import { ArrowUp, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useOnline } from "@/lib/use-online"
 import type { DraftItem, DraftResult } from "../parsing/service"
-import { totals, type WeightUnit } from "./amounts"
+import { defaultUnit, totals, type WeightUnit } from "./amounts"
 import { CardSheet } from "./card-sheet"
 import { clearDraft, draftSnapshot, parseDraft, saveDraft, subscribeDraft, type StoredDraft } from "./draft-store"
 import { toEntryItem } from "./entry-items"
@@ -23,12 +23,12 @@ type Searching = { query: string; target: "add" } | { query: string; target: "ch
  * The log loop on Today: describe a meal or search for foods, check the
  * card, tap Log it (PRD F2, DESIGN_SYSTEM.md "Log bar" and "Log confirmation").
  */
-export function LogFlow({ units }: { units: "imperial" | "metric" }) {
+export function LogFlow({ units, hasScale }: { units: "imperial" | "metric"; hasScale: boolean | null }) {
   const router = useRouter()
   const online = useOnline()
   const [phase, setPhase] = useState<Phase>({ kind: "idle" })
   const [searching, setSearching] = useState<Searching | null>(null)
-  const [unit, setUnit] = useState<WeightUnit>(units === "metric" ? "g" : "oz")
+  const [unit, setUnit] = useState<WeightUnit>(defaultUnit(units, hasScale))
   const [announce, setAnnounce] = useState("")
   const [saving, startSaving] = useTransition()
   const [saveError, setSaveError] = useState<string | null>(null)

@@ -19,6 +19,14 @@ export interface UsdaFood {
   dataType: string
   brand: string | null
   per100g: Per100g
+  /** FNDDS results only: the first common portion from the search response. */
+  portion?: Portion
+}
+
+/** A common household portion, for example "1 medium" at 118 g. */
+export interface Portion {
+  label: string
+  grams: number
 }
 
 interface SearchResponse {
@@ -29,6 +37,7 @@ interface SearchResponse {
     brandName?: string
     brandOwner?: string
     foodNutrients?: { nutrientNumber?: string; unitName?: string; value?: number }[]
+    foodMeasures?: { disseminationText?: string; gramWeight?: number; rank?: number }[]
   }[]
 }
 
@@ -64,7 +73,8 @@ async function searchOnce(query: string, dataType: string | null, pageSize: numb
     if (keep && f.dataType !== keep) return []
     const per100g = nutrients(f.foodNutrients ?? [])
     if (!per100g) return []
-    return [{ fdcId: f.fdcId, description: f.description, dataType: f.dataType, brand: f.brandName || f.brandOwner || null, per100g }]
+    const portion = measurePortion(f.foodMeasures ?? [])
+    return [{ fdcId: f.fdcId, description: f.description, dataType: f.dataType, brand: f.brandName || f.brandOwner || null, per100g, ...(portion ? { portion } : {}) }]
   })
 }
 
@@ -126,4 +136,55 @@ function nutrients(list: { nutrientNumber?: string; unitName?: string; value?: n
   const kcal = value("208") ?? value("958") ?? value("957")
   if (kcal === undefined) return null
   return { kcal, protein_g: value("203") ?? 0, carbs_g: value("205") ?? 0, fat_g: value("204") ?? 0 }
+}
+
+// FNDDS measures carry a rank; 1 is the most common household portion.
+// "Quantity not specified" is a survey default, not a portion anyone names.
+export function measurePortion(measures: { disseminationText?: string; gramWeight?: number; rank?: number }[]): Portion | null {
+  const usable = measures
+    .filter((m) => m.disseminationText && m.gramWeight && m.gramWeight > 0 && !/quantity not specified/i.test(m.disseminationText))
+    .sort((a, b) => (a.rank ?? 999) - (b.rank ?? 999))
+  const m = usable[0]
+  return m ? { label: m.disseminationText!, grams: m.gramWeight! } : null
+}
+
+export interface DetailPortion {
+  amount?: number
+  modifier?: string | null
+  portionDescription?: string | null
+  measureUnit?: { name?: string } | null
+  gramWeight?: number
+  sequenceNumber?: number
+}
+
+/**
+ * The first common portion of an SR Legacy or Foundation food, from the food
+ * detail endpoint (search results do not include them). Lowest sequence
+ * number first; labels drop USDA's size notes in parentheses.
+ */
+export function detailPortion(portions: DetailPortion[]): Portion | null {
+  const usable = portions
+    .filter((p) => p.gramWeight && p.gramWeight > 0)
+    .map((p) => ({ p, label: portionLabel(p) }))
+    .filter((x) => x.label && !/\b(racc|nlea serving|quantity not specified)\b/i.test(x.label))
+    .sort((a, b) => (a.p.sequenceNumber ?? 999) - (b.p.sequenceNumber ?? 999))
+  const first = usable[0]
+  return first ? { label: first.label, grams: first.p.gramWeight! } : null
+}
+
+function portionLabel(p: DetailPortion): string {
+  if (p.portionDescription && !/quantity not specified/i.test(p.portionDescription)) return clean(p.portionDescription)
+  const unit = p.measureUnit?.name && p.measureUnit.name !== "undetermined" ? p.measureUnit.name : ""
+  return clean([p.amount ?? 1, unit, p.modifier ?? ""].join(" "))
+}
+
+const clean = (s: string) => s.replace(/\([^)]*\)/g, "").replace(/\s+/g, " ").trim()
+
+/** One food's portions from FDC (one request; the caller caches the result). */
+export async function fetchUsdaPortion(fdcId: string): Promise<Portion | null> {
+  const key = process.env.USDA_API_KEY
+  if (!key) throw new Error("Missing environment variable USDA_API_KEY. See .env.example.")
+  const res = await fetchWithRetry(`https://api.nal.usda.gov/fdc/v1/food/${encodeURIComponent(fdcId)}?api_key=${key}`)
+  const body = (await res.json()) as { foodPortions?: DetailPortion[] }
+  return detailPortion(body.foodPortions ?? [])
 }

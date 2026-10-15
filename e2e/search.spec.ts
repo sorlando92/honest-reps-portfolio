@@ -122,6 +122,13 @@ test("add a curated item and a food entered by hand to a described meal", async 
   await add.getByRole("button", { name: "Search", exact: true }).click()
   await add.getByRole("button", { name: /Chick-fil-A Nuggets/ }).click()
   await expect(card.getByText("531 cal · 79.7 g protein", { exact: true })).toBeVisible()
+  // Label items step in their published serving (PM 2026-10-15): half a serving more, then back.
+  await expect(card.getByLabel("Servings")).toHaveValue("1")
+  await expect(card.getByText(/^8 ct, /)).toBeVisible()
+  await card.getByRole("button", { name: "More Chick-fil-A Nuggets" }).click()
+  await expect(card.getByText("656 cal · 93.2 g protein", { exact: true })).toBeVisible()
+  await card.getByRole("button", { name: "Less Chick-fil-A Nuggets" }).click()
+  await expect(card.getByText("531 cal · 79.7 g protein", { exact: true })).toBeVisible()
 
   // Add item, entered by hand.
   await card.getByRole("button", { name: "Add item" }).click()

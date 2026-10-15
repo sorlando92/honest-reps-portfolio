@@ -199,3 +199,11 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
 - Swipe left on a timeline row opens the editor; the Edit button in the opened row stays as the keyboard and screen reader path.
 - Tests: unit (search and manual items, weighing, scaling), database (chain detection, curated search with USDA off), e2e at 375px light and dark (search and weigh, Change food, Add item curated and manual, parse fallback, swipe) with axe and 44pt checks.
 - Left out: curated servings without a weight in search (Q48).
+
+### 2026-10-15: servings stepper and common portions (PM MVP round 3)
+
+- Label items step in servings (Q48, generalized): curated chain items from text logging and search, and later barcode products. The stepper moves in halves; the serving label and grams (when known) sit beside it. Panera servings without a weight are now in search; their grams are recorded as 0.
+- Change food between a label item and a generic food converts between servings and grams at the closest amount.
+- A generic food from search starts at USDA's first common portion: FNDDS portions come with the search; SR Legacy and Foundation foods look theirs up once on pick (`GET /api/foods/[id]/portion`, one USDA request, cached in `food_items.serving`). Else 100 g. Still Estimated with Weigh it.
+- Scale users (`nutrition_profiles.has_scale`) get grams by default; others get their units' weight.
+- DESIGN_SYSTEM "Log bar" and "Confirmation card", PRD F2: Q47 layout (3 controls at most), servings stepper, starting portion. The log bar layout ships with the barcode button.

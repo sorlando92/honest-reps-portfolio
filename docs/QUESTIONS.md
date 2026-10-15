@@ -34,12 +34,11 @@ Recommendation: when a check-in arrives after prep has run, rerun P3 for that cl
 **Q35. [M1] Real meals versus the synthetic eval set.** `evals/README.md` v0.2 says the synthetic set replaces "Sean supplies 20 real meals" for M1. The PM decisions round 2 say Sean will supply 20 real meals.
 Recommendation: v0.2 is the M1 gate. When Sean's meals arrive they are added as p025 onward (set v0.3), split between dev and holdout, and count toward the 50 case beta target. They do not block M1. Blocks: nothing.
 
-**Q47. [F2, DESIGN_SYSTEM "Log bar"] A search button on the log bar.** PRD F2 lists food search as an input, but the log bar spec has only the text field, camera and barcode. Without an entry point, search was reachable only from Add item on an open card or the parse fallback.
-Applied (reversible): a "Search foods" icon button sits between the text field and the send button. Whatever is typed in the field becomes the search query. When the barcode icon lands, the bar has text, search, barcode and send at 375px (the camera stays post-MVP).
-Recommendation: keep it, and add it to the DESIGN_SYSTEM log bar spec. Blocks: nothing.
+### Resolved by the PM (MVP round 3, 2026-10-15)
 
-**Q48. [F2, Q36] Curated items published without a weight.** Panera publishes some servings ("1 Bagel", "Cup") without grams. Text logging handles them with P1's gram estimate, but search has no estimate, and the card's amount stepper works in grams.
-Applied: search leaves those items out for now (Panera only). Recommendation: add a servings stepper for weightless servings with the MVP quick add work, then include them. Blocks: nothing.
+- **Q47** Keep Search on the log bar. At 375px, an empty field shows text field, search and barcode; once the user types, search and barcode collapse and send appears. Never more than 3 controls. In DESIGN_SYSTEM "Log bar".
+- **Q48** Generalized: every label item (chain and packaged) gets a servings stepper, with grams shown when known.
+- **Generic starting amount:** USDA's first common portion when available (1 medium, 1 cup), else 100 g, still Estimated with Weigh it. Scale users see the amount field in grams.
 
 ### Resolved by the PM (MVP round 2, 2026-10-15)
 

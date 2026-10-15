@@ -4,7 +4,7 @@
 import type { FoodResult } from "../foods/search"
 import type { DraftAlternative, DraftItem } from "../parsing/service"
 import type { Per100g } from "../parsing/usda"
-import { swapped } from "./amounts"
+import { swapped, withServings } from "./amounts"
 
 const round1 = (n: number) => Math.round(n * 10) / 10
 
@@ -14,47 +14,63 @@ function per100g(r: FoodResult): Per100g {
   return { kcal: p.kcal ?? 0, protein_g: p.protein_g ?? 0, carbs_g: p.carbs_g ?? 0, fat_g: p.fat_g ?? 0 }
 }
 
-/** A search result as a food the card can match to. */
+/** A search result as a food the card can match to. Only label foods carry a serving. */
 function toAlternative(r: FoodResult): DraftAlternative {
-  return { foodItemId: r.foodItemId, source: r.source, sourceId: r.sourceId, name: r.name, brand: r.brand, dataType: r.dataType, state: r.state, per100g: per100g(r) }
+  return {
+    foodItemId: r.foodItemId,
+    source: r.source,
+    sourceId: r.sourceId,
+    name: r.name,
+    brand: r.brand,
+    dataType: r.dataType,
+    state: r.state,
+    per100g: per100g(r),
+    ...(r.serving ? { serving: r.serving } : {}),
+  }
 }
 
-/** Grams assumed for a searched food until the user weighs it. */
+/** Grams for a generic food with no common portion, until the user weighs it. */
 export const SEARCH_DEFAULT_GRAMS = 100
 
 /**
- * A searched food as a card row. A curated chain item starts at its published
- * serving (label). A generic food starts at 100 g marked estimated, so the
- * row shows "Estimated" and "Weigh it" until the user enters the real amount.
+ * A searched food as a card row (PRD F2, PM 2026-10-15). A food with a
+ * published serving (chain menu, product label) starts at one serving and
+ * steps in servings. A generic food starts at USDA's first common portion
+ * ("1 medium", "1 cup"), else 100 g, marked estimated, so the row shows
+ * "Estimated" and "Weigh it" until the user enters the real amount.
  */
 export function fromSearchResult(r: FoodResult): DraftItem {
   const { foodItemId, ...match } = toAlternative(r)
-  const serving = r.serving
   const base = { name: r.name, brand: r.brand, state: r.state, match, matchScore: 1, foodItemId, alternatives: [] }
 
-  if (r.source === "custom" && serving?.grams) {
-    return {
-      ...base,
-      quantity: 1,
-      unit: "serving",
-      grams: serving.grams,
-      amountSource: "label",
-      confidence: 1,
-      calories: Math.round(serving.kcal),
-      proteinG: round1(serving.protein_g),
-      carbsG: round1(serving.carbs_g),
-      fatG: round1(serving.fat_g),
-      flagged: false,
-      flagReason: null,
-    }
+  if (r.serving) {
+    return withServings(
+      {
+        ...base,
+        serving: r.serving,
+        quantity: 1,
+        unit: "serving",
+        grams: r.serving.grams ?? 0,
+        amountSource: "label",
+        confidence: 1,
+        calories: 0,
+        proteinG: 0,
+        carbsG: 0,
+        fatG: 0,
+        flagged: false,
+        flagReason: null,
+      },
+      1
+    )
   }
 
-  const f = SEARCH_DEFAULT_GRAMS / 100
+  const grams = r.portion?.grams ?? SEARCH_DEFAULT_GRAMS
+  const f = grams / 100
   return {
     ...base,
-    quantity: SEARCH_DEFAULT_GRAMS,
+    quantity: grams,
     unit: "g",
-    grams: SEARCH_DEFAULT_GRAMS,
+    grams,
     amountSource: "estimated",
     confidence: 0.6,
     calories: Math.round(match.per100g.kcal * f),
@@ -101,10 +117,6 @@ export function fromManual(m: ManualFood): DraftItem {
   }
 }
 
-/** Search results the card can use: curated servings without a weight are left out for now. */
-export function usableResults(results: FoodResult[]): FoodResult[] {
-  return results.filter((r) => r.source !== "custom" || Boolean(r.serving?.grams))
-}
 
 /**
  * Change food on a row: the picked food replaces the match at the row's

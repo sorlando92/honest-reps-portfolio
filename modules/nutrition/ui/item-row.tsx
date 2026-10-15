@@ -6,7 +6,7 @@ import { ToggleGroup } from "radix-ui"
 import { cn } from "cn"
 import { Button } from "@/components/ui/button"
 import type { DraftItem } from "../parsing/service"
-import { fromUnit, swapped, toUnit, weighed, type WeightUnit } from "./amounts"
+import { fromUnit, swapped, toUnit, weighed, withServings, type WeightUnit } from "./amounts"
 
 const STATE_LABEL = { raw: "Raw", cooked: "Cooked", dry: "Dry" } as const
 
@@ -50,50 +50,37 @@ export function ItemRow({
       <Signal item={item} onWeigh={() => amountRef.current?.focus()} />
 
       <div className="flex flex-wrap items-end gap-3">
-        <div className="flex flex-col gap-1">
-          <label htmlFor={`${id}-amount`} className="text-label text-text-muted uppercase">
-            Amount
-          </label>
-          <div className="flex items-center gap-1">
-            <Button variant="secondary" size="icon" aria-label={`Less ${item.name}`} onClick={() => setAmount(shown - step)} className="bg-bg">
-              <Minus aria-hidden />
-            </Button>
-            <input
-              ref={amountRef}
-              id={`${id}-amount`}
-              type="number"
-              inputMode="decimal"
-              min={0}
-              step="any"
-              value={shown}
-              onChange={(e) => {
-                const value = Number(e.target.value)
-                if (Number.isFinite(value)) setAmount(value)
-              }}
-              className="h-11 w-20 rounded-md border border-border bg-bg px-2 text-center text-body tabular-nums text-text"
-            />
-            <Button variant="secondary" size="icon" aria-label={`More ${item.name}`} onClick={() => setAmount(shown + step)} className="bg-bg">
-              <Plus aria-hidden />
-            </Button>
-          </div>
-        </div>
-        <ToggleGroup.Root
-          type="single"
-          value={unit}
-          onValueChange={(value) => value && onUnitChange(value as WeightUnit)}
-          aria-label="Weight unit"
-          className="flex rounded-md border border-border"
-        >
-          {(["g", "oz"] as const).map((u) => (
-            <ToggleGroup.Item
-              key={u}
-              value={u}
-              className="h-11 min-w-11 px-3 text-body text-text-muted first:rounded-l-md last:rounded-r-md data-[state=on]:bg-accent data-[state=on]:text-on-accent"
+        {item.serving ? (
+          // PRD F2 (PM 2026-10-15): label items step in their published serving.
+          <>
+            <Stepper id={`${id}-amount`} label="Servings" name={item.name} value={item.quantity} step={0.5} onSet={(n) => onChange(withServings(item, n))} />
+            <span className="pb-3 text-caption text-text-muted tabular-nums">
+              {item.serving.label}
+              {item.serving.grams ? `, ${toUnit(item.grams, unit)} ${unit}` : ""}
+            </span>
+          </>
+        ) : (
+          <>
+            <Stepper id={`${id}-amount`} inputRef={amountRef} label="Amount" name={item.name} value={shown} step={step} onSet={setAmount} />
+            <ToggleGroup.Root
+              type="single"
+              value={unit}
+              onValueChange={(value) => value && onUnitChange(value as WeightUnit)}
+              aria-label="Weight unit"
+              className="flex rounded-md border border-border"
             >
-              {u}
-            </ToggleGroup.Item>
-          ))}
-        </ToggleGroup.Root>
+              {(["g", "oz"] as const).map((u) => (
+                <ToggleGroup.Item
+                  key={u}
+                  value={u}
+                  className="h-11 min-w-11 px-3 text-body text-text-muted first:rounded-l-md last:rounded-r-md data-[state=on]:bg-accent data-[state=on]:text-on-accent"
+                >
+                  {u}
+                </ToggleGroup.Item>
+              ))}
+            </ToggleGroup.Root>
+          </>
+        )}
         {item.state && <span className="pb-3 text-caption text-text-muted">{STATE_LABEL[item.state]}</span>}
       </div>
 
@@ -126,6 +113,55 @@ export function ItemRow({
         </div>
       )}
     </li>
+  )
+}
+
+/** Minus, a typed number, plus. Each control is at least 44 by 44. */
+function Stepper({
+  id,
+  inputRef,
+  label,
+  name,
+  value,
+  step,
+  onSet,
+}: {
+  id: string
+  inputRef?: React.Ref<HTMLInputElement>
+  label: string
+  name: string
+  value: number
+  step: number
+  onSet: (value: number) => void
+}) {
+  return (
+    <div className="flex flex-col gap-1">
+      <label htmlFor={id} className="text-label text-text-muted uppercase">
+        {label}
+      </label>
+      <div className="flex items-center gap-1">
+        <Button variant="secondary" size="icon" aria-label={`Less ${name}`} onClick={() => onSet(Math.max(0, value - step))} className="bg-bg">
+          <Minus aria-hidden />
+        </Button>
+        <input
+          ref={inputRef}
+          id={id}
+          type="number"
+          inputMode="decimal"
+          min={0}
+          step="any"
+          value={value}
+          onChange={(e) => {
+            const next = Number(e.target.value)
+            if (Number.isFinite(next)) onSet(Math.max(0, next))
+          }}
+          className="h-11 w-20 rounded-md border border-border bg-bg px-2 text-center text-body tabular-nums text-text"
+        />
+        <Button variant="secondary" size="icon" aria-label={`More ${name}`} onClick={() => onSet(value + step)} className="bg-bg">
+          <Plus aria-hidden />
+        </Button>
+      </div>
+    </div>
   )
 }
 
