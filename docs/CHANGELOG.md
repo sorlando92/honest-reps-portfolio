@@ -154,3 +154,10 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
 - Hosted auth settings script (Supabase Management API, apply and verify-only modes) recorded in ARCHITECTURE.md.
 - MILESTONES M1 build order extended through the FDC import and the PM's final holdout measurement.
 - PRD F2 lists the 6 curated chains that ship (Q41); the other 5 are added if holdout meal calories stay under 80% after the FDC import. AI_PROMPTS eval section corrected to v0.4, 29 cases.
+
+### 2026-10-15: M1 log bar and confirmation card deployed
+
+- Hosted Supabase: migrations 20261014000001 to 20261014000003 applied; seed run (coach settings, hand portions, 1,549 curated chain items from 6 chains). No sample users on hosted.
+- Production deploy from `main` (85afe03). P1 runs on Sonnet 5.5 (code default; `ANTHROPIC_MODEL` is not set in Vercel).
+- Checks before deploy: typecheck, lint, 111 unit and RLS tests pass.
+- Waiting on Sean's phone test of the log bar and confirmation card.
