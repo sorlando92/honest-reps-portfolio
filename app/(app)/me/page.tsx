@@ -13,6 +13,17 @@ export default function MePage() {
       <Suspense fallback={<div className="h-6" />}>
         <SignedInAs />
       </Suspense>
+      <section aria-labelledby="about" className="flex flex-col gap-1 rounded-lg bg-surface p-4">
+        <h2 id="about" className="text-label text-text-muted uppercase">
+          About
+        </h2>
+        <p className="text-body">
+          Food data from{" "}
+          <a href="https://openfoodfacts.org" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center text-accent-strong underline">
+            Open Food Facts
+          </a>
+        </p>
+      </section>
       <form action={signOut}>
         <Button type="submit" variant="secondary" className="w-full">
           Sign out

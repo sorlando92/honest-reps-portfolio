@@ -56,3 +56,4 @@ next-env.d.ts
 
 # Official chain nutrition pages saved by hand (source material for modules/nutrition/data/chains)
 /.chain-sources/
+/public/vendor/

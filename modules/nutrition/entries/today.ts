@@ -113,7 +113,7 @@ function toDraftItem(row: ItemRow): DraftItem {
     state: row.state,
     confidence: 1,
     match:
-      food && food.per_100g && food.source !== "off"
+      food && food.per_100g
         ? {
             source: food.source,
             sourceId: food.source_id,

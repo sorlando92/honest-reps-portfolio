@@ -2,22 +2,31 @@
 
 import { useId, useMemo, useState, useSyncExternalStore, useTransition } from "react"
 import { useRouter } from "next/navigation"
-import { ArrowUp, Search } from "lucide-react"
+import { ArrowUp, ScanBarcode, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useOnline } from "@/lib/use-online"
 import type { DraftItem, DraftResult } from "../parsing/service"
 import { defaultUnit, totals, type WeightUnit } from "./amounts"
+import { BarcodeScanner } from "./barcode-scanner"
 import { CardSheet } from "./card-sheet"
 import { clearDraft, draftSnapshot, parseDraft, saveDraft, subscribeDraft, type StoredDraft } from "./draft-store"
 import { toEntryItem } from "./entry-items"
 import { FoodSearch } from "./food-search"
 import { ItemRow } from "./item-row"
-import { changedFood } from "./new-items"
+import { changedFood, fromSearchResult } from "./new-items"
 
 type Phase = { kind: "idle" } | { kind: "reading"; text: string } | { kind: "error"; text: string; message: string }
 
-/** Food search inside the card: add a row, or change the food on row `index`. */
-type Searching = { query: string; target: "add" } | { query: string; target: "change"; index: number }
+/**
+ * A panel inside the card: search to add a row (optionally opening on manual
+ * entry), search to change the food on row `index`, or scan a barcode.
+ */
+type Searching =
+  | { query: string; target: "add"; manual?: boolean }
+  | { query: string; target: "change"; index: number }
+  | { query: ""; target: "scan" }
+
+type Method = "text" | "search" | "manual" | "barcode"
 
 /**
  * The log loop on Today: describe a meal or search for foods, check the
@@ -79,11 +88,11 @@ export function LogFlow({ units, hasScale }: { units: "imperial" | "metric"; has
     setSheetOpen(true)
   }
 
-  function picked(item: DraftItem, from: Searching, manual: boolean, apply: (items: DraftItem[]) => DraftItem[]) {
+  function picked(item: DraftItem, from: Searching, method: Method, apply: (items: DraftItem[]) => DraftItem[]) {
     if (draft) {
       saveDraft({ ...draft, items: apply(draft.items) })
-    } else if (from.target === "add") {
-      saveDraft({ text: "", method: manual ? "manual" : "search", aiCallId: null, items: [item], clientUuid: crypto.randomUUID(), createdAt: Date.now() })
+    } else if (from.target !== "change") {
+      saveDraft({ text: "", method, aiCallId: null, items: [item], clientUuid: crypto.randomUUID(), createdAt: Date.now() })
     }
     setSearching(null)
   }
@@ -127,7 +136,12 @@ export function LogFlow({ units, hasScale }: { units: "imperial" | "metric"; has
 
   return (
     <>
-      <LogBar disabled={phase.kind === "reading"} onSubmit={read} onSearch={(query) => startSearch({ query, target: "add" })} />
+      <LogBar
+        disabled={phase.kind === "reading"}
+        onSubmit={read}
+        onSearch={() => startSearch({ query: "", target: "add" })}
+        onScan={() => startSearch({ query: "", target: "scan" })}
+      />
       <p role="status" aria-live="polite" className="sr-only">
         {announce}
       </p>
@@ -141,12 +155,14 @@ export function LogFlow({ units, hasScale }: { units: "imperial" | "metric"; has
           setSearching(null)
           setSheetOpen(false)
         }}
-        title={searching ? (searching.target === "change" ? "Change food" : "Add food") : "Your meal"}
+        title={searching ? (searching.target === "change" ? "Change food" : searching.target === "scan" ? "Scan a barcode" : "Add food") : "Your meal"}
         summary={
           sum
             ? `${sum.calories} cal · ${sum.proteinG} g protein`
             : searching
-              ? "Search, or enter a food yourself."
+              ? searching.target === "scan"
+                ? "Packaged foods from Open Food Facts."
+                : "Search, or enter a food yourself."
               : phase.kind === "reading"
                 ? "Reading your meal."
                 : " "
@@ -191,8 +207,20 @@ export function LogFlow({ units, hasScale }: { units: "imperial" | "metric"; has
             </Button>
           </div>
         )}
-        {searching && phase.kind === "idle" && (
+        {searching?.target === "scan" && phase.kind === "idle" && (
+          <BarcodeScanner
+            onFound={(result) => {
+              const item = fromSearchResult(result)
+              picked(item, searching, "barcode", (items) => [...items, item])
+            }}
+            onSearch={() => setSearching({ query: "", target: "add" })}
+            onManual={() => setSearching({ query: "", target: "add", manual: true })}
+            onCancel={() => setSearching(null)}
+          />
+        )}
+        {searching && searching.target !== "scan" && phase.kind === "idle" && (
           <FoodSearch
+            startManual={searching.target === "add" && searching.manual}
             key={`${searching.target}-${searching.query}`}
             initialQuery={searching.query}
             unit={unit}
@@ -202,9 +230,9 @@ export function LogFlow({ units, hasScale }: { units: "imperial" | "metric"; has
             onPick={({ item, result }) => {
               const from = searching
               if (from.target === "change" && result) {
-                picked(item, from, false, (items) => items.map((it, i) => (i === from.index ? changedFood(it, result) : it)))
+                picked(item, from, "search", (items) => items.map((it, i) => (i === from.index ? changedFood(it, result) : it)))
               } else {
-                picked(item, from, result === null, (items) => [...items, item])
+                picked(item, from, result === null ? "manual" : "search", (items) => [...items, item])
               }
             }}
           />
@@ -228,15 +256,29 @@ export function LogFlow({ units, hasScale }: { units: "imperial" | "metric"; has
             ))}
           </ul>
         )}
+        {showCard && draft.items.some((i) => i.match?.source === "off") && (
+          // PRD F2: attribution on barcode results.
+          <p className="pb-3 text-caption text-text-muted">
+            Food data from{" "}
+            <a href="https://openfoodfacts.org" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center text-accent-strong underline">
+              Open Food Facts
+            </a>
+          </p>
+        )}
       </CardSheet>
     </>
   )
 }
 
-/** Pinned above the tab bar, always within thumb reach. */
-function LogBar({ disabled, onSubmit, onSearch }: { disabled: boolean; onSubmit: (text: string) => void; onSearch: (query: string) => void }) {
+/**
+ * Pinned above the tab bar, always within thumb reach. Never more than three
+ * controls (DESIGN_SYSTEM "Log bar", Q47): an empty field shows search and
+ * barcode; once the user types, they give way to send.
+ */
+function LogBar({ disabled, onSubmit, onSearch, onScan }: { disabled: boolean; onSubmit: (text: string) => void; onSearch: () => void; onScan: () => void }) {
   const id = useId()
   const [text, setText] = useState("")
+  const typing = text.trim().length > 0
   return (
     <form
       onSubmit={(e) => {
@@ -263,23 +305,20 @@ function LogBar({ disabled, onSubmit, onSearch }: { disabled: boolean; onSubmit:
           maxLength={2000}
           className="h-12 min-w-0 flex-1 rounded-md border border-border bg-surface px-4 text-body text-text placeholder:text-text-muted"
         />
-        <Button
-          type="button"
-          variant="secondary"
-          size="icon"
-          aria-label="Search foods"
-          disabled={disabled}
-          onClick={() => {
-            onSearch(text.trim())
-            setText("")
-          }}
-          className="size-12"
-        >
-          <Search aria-hidden />
-        </Button>
-        <Button type="submit" size="icon" aria-label="Log meal" disabled={disabled || !text.trim()} className="size-12">
-          <ArrowUp aria-hidden />
-        </Button>
+        {typing ? (
+          <Button type="submit" size="icon" aria-label="Log meal" disabled={disabled} className="size-12">
+            <ArrowUp aria-hidden />
+          </Button>
+        ) : (
+          <>
+            <Button type="button" variant="secondary" size="icon" aria-label="Search foods" disabled={disabled} onClick={onSearch} className="size-12">
+              <Search aria-hidden />
+            </Button>
+            <Button type="button" variant="secondary" size="icon" aria-label="Scan a barcode" disabled={disabled} onClick={onScan} className="size-12">
+              <ScanBarcode aria-hidden />
+            </Button>
+          </>
+        )}
       </div>
     </form>
   )

@@ -10,7 +10,7 @@ const MAX_AGE_MS = 24 * 60 * 60 * 1000
 export interface StoredDraft {
   text: string
   /** How the card started; a parsed card stays "text" when items are added. */
-  method?: "text" | "search" | "manual"
+  method?: "text" | "search" | "manual" | "barcode"
   aiCallId: string | null
   items: DraftItem[]
   /** Stable across retries, so a save sent twice is stored once. */

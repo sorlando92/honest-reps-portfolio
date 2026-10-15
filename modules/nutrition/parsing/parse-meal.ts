@@ -30,7 +30,7 @@ export interface Serving {
 }
 
 export interface MatchedFood {
-  source: "usda" | "custom"
+  source: "usda" | "custom" | "off"
   sourceId: string
   name: string
   brand: string | null

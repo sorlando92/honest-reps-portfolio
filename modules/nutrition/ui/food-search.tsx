@@ -26,7 +26,10 @@ export function FoodSearch({
   onPick,
   onCancel,
   cancelLabel,
+  startManual = false,
 }: {
+  /** Opens straight on "Enter it yourself" (barcode not found). */
+  startManual?: boolean
   initialQuery?: string
   unit: WeightUnit
   allowManual?: boolean
@@ -37,7 +40,7 @@ export function FoodSearch({
   const id = useId()
   const [query, setQuery] = useState(initialQuery)
   const [state, setState] = useState<State>({ kind: "idle" })
-  const [manual, setManual] = useState(false)
+  const [manual, setManual] = useState(startManual)
 
   async function search(q: string) {
     if (q.trim().length < 2) return

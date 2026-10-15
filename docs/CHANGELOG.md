@@ -213,3 +213,13 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
 - Meat, fish, grains and pasta rows show a Raw / Cooked toggle, plus Dry for grains and pasta (44pt segments). Flipping it fetches the USDA entry in that state (`GET /api/foods/state`, ranked like text logging with the state forced, cached in `food_items`) and recalculates at the same weight. When no entry in that state exists, the row stays and says "No raw entry found. Kept as it was."
 - Label items (servings) have no toggle; their nutrition is the published serving.
 - Tests: unit (which foods get which states), e2e flip to Dry and a missing Raw entry at 375px light and dark.
+
+### 2026-10-15: MVP step 1, barcode and the log bar layout
+
+- Log bar per Q47: an empty field shows "Search foods" and "Scan a barcode"; typing swaps them for send. Never more than 3 controls.
+- Scan a barcode: the camera opens in the card sheet and reads EAN-13, EAN-8, UPC-A and UPC-E. Chrome on Android uses its built-in detector; iPhone Safari uses the ZXing WebAssembly reader (`barcode-detector` 3.2.2, `zxing-wasm` 3.1.3), served from our own domain (`public/vendor`, copied at dev and build time, not committed). The camera stops as soon as a code is read or the sheet closes. "Barcode number" lets anyone type the digits instead, and is the path when the camera is blocked.
+- Lookup (`GET /api/foods/barcode/[code]`, 120 per user per hour): `food_items` by barcode first, then the Open Food Facts v2 product API. Found products are cached in `food_items` (source `off`, barcode, per 100 g, label serving, product page URL). A product with a label serving steps in servings; one without starts at 100 g, Estimated with Weigh it. Unknown products offer Search foods and Enter it yourself.
+- Attribution: "Food data from Open Food Facts" linking to openfoodfacts.org on cards with a barcode item and in Me, About (Q9b).
+- Entries started from a barcode log as `method: barcode`.
+- Tests: unit (barcode normalizing, reading Open Food Facts products), e2e (log bar layout; typed barcode not found, then found, servings, attribution, log) at 375px light and dark with axe and 44pt checks. One live Open Food Facts lookup checked by hand.
+- Not yet: cached barcodes offline (post-MVP offline queue).

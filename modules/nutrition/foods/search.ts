@@ -9,7 +9,7 @@ import { fetchUsdaPortion, searchUsda, type Per100g, type Portion, type UsdaFood
 /** One food search result: a food_items row the user can add to a card. */
 export interface FoodResult {
   foodItemId: string
-  source: "usda" | "custom"
+  source: "usda" | "custom" | "off"
   sourceId: string
   name: string
   brand: string | null
@@ -120,7 +120,7 @@ async function searchGeneric(admin: SupabaseClient, query: string): Promise<Food
 function toResult(row: Record<string, unknown>): FoodResult {
   return {
     foodItemId: row.id as string,
-    source: row.source as "usda" | "custom",
+    source: row.source as FoodResult["source"],
     sourceId: row.source_id as string,
     name: row.name as string,
     brand: (row.brand as string | null) ?? null,

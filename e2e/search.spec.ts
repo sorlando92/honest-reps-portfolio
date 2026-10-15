@@ -177,9 +177,9 @@ test("Raw, Cooked or Dry recalculates from the food in that state", async ({ pag
   await page.route("**/api/foods/search?*", (route) =>
     route.fulfill({ json: { results: [{ ...chicken, sourceId: "168878", name: "Rice, white, long-grain, regular, cooked", per100g: { kcal: 130, protein_g: 2.7, carbs_g: 28, fat_g: 0.3 }, portion: { label: "1 cup", grams: 158 } }] } })
   )
-  await page.getByLabel("What did you eat?").fill("white rice")
   await page.getByRole("button", { name: "Search foods" }).click()
   const add = page.getByRole("dialog", { name: "Add food" })
+  await add.getByLabel("Search foods").fill("white rice")
   await add.getByRole("button", { name: "Search", exact: true }).click()
   await add.getByRole("button", { name: /Rice, white/ }).click()
 
@@ -198,4 +198,63 @@ test("Raw, Cooked or Dry recalculates from the food in that state", async ({ pag
   await toggle.getByRole("radio", { name: "Raw" }).click()
   await expect(card.getByText("No raw entry found. Kept as it was.")).toBeVisible()
   await expect(toggle.getByRole("radio", { name: "Dry" })).toHaveAttribute("aria-checked", "true")
+})
+
+test("the log bar shows search and barcode until the user types, then send", async ({ page }, info) => {
+  await signInWithCode(page, `e2e-bar-${info.project.name}-${Date.now()}@example.test`)
+  const bar = page.locator("form").filter({ has: page.getByLabel("What did you eat?") })
+  await expect(bar.getByRole("button")).toHaveCount(2)
+  await expect(bar.getByRole("button", { name: "Search foods" })).toBeVisible()
+  await expect(bar.getByRole("button", { name: "Scan a barcode" })).toBeVisible()
+  await page.getByLabel("What did you eat?").fill("2 eggs")
+  await expect(bar.getByRole("button")).toHaveCount(1)
+  await expect(bar.getByRole("button", { name: "Log meal" })).toBeVisible()
+})
+
+test("a typed barcode logs the product by the serving, with attribution", async ({ page }, info) => {
+  await signInWithCode(page, `e2e-barcode-${info.project.name}-${Date.now()}@example.test`)
+  await stubSearch(page)
+  await page.route("**/api/foods/barcode/*", (route) => {
+    const code = route.request().url().split("/").pop()
+    route.fulfill({
+      json: {
+        result:
+          code === "0894700010045"
+            ? {
+                foodItemId: "00000000-0000-4000-8000-000000000003",
+                source: "off",
+                sourceId: code,
+                name: "Greek Yogurt Plain",
+                brand: "Fage",
+                dataType: "Open Food Facts",
+                state: null,
+                per100g: { kcal: 97, protein_g: 9, carbs_g: 3.9, fat_g: 5 },
+                serving: { label: "1 container (170 g)", grams: 170, kcal: 165, protein_g: 15.3, carbs_g: 6.6, fat_g: 8.5 },
+                portion: null,
+              }
+            : null,
+      },
+    })
+  })
+
+  await page.getByRole("button", { name: "Scan a barcode" }).click()
+  const scan = page.getByRole("dialog", { name: "Scan a barcode" })
+  // Headless browsers have no camera: the sheet says so and the number works.
+  await expect(scan.getByText("The camera is not available. Type the number under the barcode instead.")).toBeVisible()
+  await expectNoAxeViolations(page)
+  await expectTapTargets(page)
+
+  await scan.getByLabel("Barcode number").fill("1234 5678 9")
+  await scan.getByRole("button", { name: "Look up" }).click()
+  await expect(scan.getByText("We do not have that product yet. Search for it or enter it yourself.")).toBeVisible()
+  await scan.getByLabel("Barcode number").fill("0894700010045")
+  await scan.getByRole("button", { name: "Look up" }).click()
+
+  const card = page.getByRole("dialog", { name: "Your meal" })
+  await expect(card.getByLabel("Servings")).toHaveValue("1")
+  await expect(card.getByText("165 cal · 15.3 g protein", { exact: true })).toBeVisible()
+  await expect(card.getByRole("link", { name: "Open Food Facts" })).toHaveAttribute("href", "https://openfoodfacts.org")
+  await page.screenshot({ path: info.outputPath("barcode.png"), fullPage: true })
+  await card.getByRole("button", { name: "Log it" }).click()
+  await expect(page.getByRole("list", { name: "Today's entries" })).toContainText("Greek Yogurt Plain")
 })
