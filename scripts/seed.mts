@@ -30,6 +30,8 @@ const APP_CONFIG: Record<string, unknown> = {
   parsing: { match_threshold: 0.5 },
   // docs/TODAY_SPEC.md 6: local hour windows, start inclusive, end exclusive; the rest is snack.
   meal_windows: { breakfast: [4, 11], lunch: [11, 16], dinner: [16, 22] },
+  // Q52: a log on a past day with a chosen meal is stamped at its anchor (local time).
+  meal_anchors: { breakfast: "08:00", lunch: "12:30", dinner: "18:30", snack: "15:00" },
 }
 
 const COACH_SETTINGS = {

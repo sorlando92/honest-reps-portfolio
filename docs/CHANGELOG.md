@@ -253,3 +253,9 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
 - Copy a meal: the section menu shows "Copy yesterday's lunch" when yesterday had that meal. `copy_meal()` copies entries and items in one transaction as the user (RLS), at the current time, with the source's title and a link back. "Copied." `meal_copied` (meal, from_date, entries); copies save as `quick_add` and emit no `food_logged` (Q50 recommendation). "Copy to today" from a past day comes with the week strip in step 3.
 - `food_logged` carries `meal`; `food_entry_corrected` carries `meal_changed`.
 - Tests: unit (meal windows, 11:30 PM Central is a snack), database (copy_meal: items, title, order, link; never copies another user's entries; signed out refused), e2e (sections, + preselects, chip changes the meal, edit moves it, copy yesterday's lunch) at 375px light and dark with axe and 44pt checks.
+
+### 2026-10-15: Today v2 part 1 deployed
+
+- Hosted `food_entries` exported before migrating (data only, outside the repo). Applied to hosted: 20261015000004_meals, 20261015000005_copy_meal, 20261015000006_today_events. Backfill: 4 rows before (meal null), 4 after (3 breakfast, 1 lunch), checked against the owner's timezone (America/Chicago).
+- Hosted seed rerun: `app_config.meal_windows` and `meal_anchors` (Q52) added; existing settings untouched.
+- Q49 to Q53 resolved; Q52 changed to meal anchor times for past days (used by the day switcher in step 3).
