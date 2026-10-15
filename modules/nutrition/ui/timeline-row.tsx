@@ -5,9 +5,11 @@ import { useRouter } from "next/navigation"
 import { Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import type { DraftItem } from "../parsing/service"
+import type { Meal } from "../entries/meals"
 import { EntryEditor } from "./entry-editor"
 
 export interface TimelineRowEntry {
+  meal: Meal
   id: string
   time: string
   title: string
@@ -122,7 +124,7 @@ export function TimelineRow({ entry: e, units, hasScale }: { entry: TimelineRowE
           </Button>
         </div>
       </details>
-      <EntryEditor key={session} entryId={e.id} items={e.items} units={units} hasScale={hasScale} open={open} onOpenChange={setOpen} />
+      <EntryEditor key={session} entryId={e.id} meal={e.meal} items={e.items} units={units} hasScale={hasScale} open={open} onOpenChange={setOpen} />
     </>
   )
 }

@@ -7,7 +7,9 @@ import type { DraftItem } from "../parsing/service"
 import { defaultUnit, totals, type WeightUnit } from "./amounts"
 import { CardSheet } from "./card-sheet"
 import { FoodSearch } from "./food-search"
+import type { Meal } from "../entries/meals"
 import { ItemRow } from "./item-row"
+import { MealChips } from "./meal-chips"
 import { changedFood } from "./new-items"
 import { toEntryItem } from "./entry-items"
 
@@ -19,6 +21,7 @@ import { toEntryItem } from "./entry-items"
  */
 export function EntryEditor({
   entryId,
+  meal: savedMeal,
   items: saved,
   units,
   hasScale,
@@ -26,6 +29,7 @@ export function EntryEditor({
   onOpenChange,
 }: {
   entryId: string
+  meal: Meal
   items: DraftItem[]
   units: "imperial" | "metric"
   hasScale: boolean | null
@@ -35,6 +39,7 @@ export function EntryEditor({
   const router = useRouter()
   const setOpen = onOpenChange
   const [items, setItems] = useState(saved)
+  const [meal, setMeal] = useState(savedMeal)
   const [unit, setUnit] = useState<WeightUnit>(defaultUnit(units, hasScale))
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -54,6 +59,7 @@ export function EntryEditor({
         body:
           method === "PATCH"
             ? JSON.stringify({
+                meal,
                 items: items.map((i) => toEntryItem({ ...i, flagReason: null }, null)),
               })
             : undefined,
@@ -126,6 +132,7 @@ export function EntryEditor({
             }}
           />
         )}
+        {!searching && <MealChips value={meal} onChange={setMeal} />}
         {!searching && (
           <ul className="flex flex-col gap-3 pb-3">
             {items.map((item, index) => (

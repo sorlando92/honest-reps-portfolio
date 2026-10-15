@@ -1,10 +1,13 @@
 import "server-only"
 import { z } from "zod"
 import type { SupabaseClient } from "@supabase/supabase-js"
+import { MEALS } from "./meals"
 import { entryItem } from "./save"
 
 export const editEntryBody = z.object({
   items: z.array(entryItem).min(1).max(30),
+  /** Moves the entry to another meal section (docs/TODAY_SPEC.md 6). */
+  meal: z.enum(MEALS).optional(),
 })
 
 export type EditEntryBody = z.infer<typeof editEntryBody>
@@ -41,6 +44,11 @@ export async function editEntry(supabase: SupabaseClient, entryId: string, body:
     })),
   })
   if (error) return { ok: false, status: error.code === "42501" ? 404 : 400 }
+  let mealChanged = false
+  if (body.meal) {
+    const { data: moved } = await supabase.from("food_entries").update({ meal: body.meal }).eq("id", entryId).neq("meal", body.meal).select("id")
+    mealChanged = Boolean(moved?.length)
+  }
 
   const kcal = (rows: { calories: number | string }[]) => Math.round(rows.reduce((s, r) => s + Number(r.calories), 0))
   return {
@@ -52,6 +60,7 @@ export async function editEntry(supabase: SupabaseClient, entryId: string, body:
       calories_delta: kcal(body.items) - kcal(before),
       flags_before: before.filter((r) => r.flagged).length,
       flags_after: body.items.filter((i) => i.flagReason !== null).length,
+      meal_changed: mealChanged ? 1 : 0,
     },
   }
 }

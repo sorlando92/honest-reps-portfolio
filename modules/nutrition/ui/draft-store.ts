@@ -1,5 +1,6 @@
 "use client"
 
+import type { Meal } from "../entries/meals"
 import type { DraftItem } from "../parsing/service"
 
 // PRD F2 "Draft": an unconfirmed card lives only on the device and reopens
@@ -11,6 +12,8 @@ export interface StoredDraft {
   text: string
   /** How the card started; a parsed card stays "text" when items are added. */
   method?: "text" | "search" | "manual" | "barcode"
+  /** The section it files under; set when the card opens (docs/TODAY_SPEC.md 6). */
+  meal?: Meal
   aiCallId: string | null
   items: DraftItem[]
   /** Stable across retries, so a save sent twice is stored once. */

@@ -3,6 +3,7 @@ import { z } from "zod"
 import type { SupabaseClient } from "@supabase/supabase-js"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { AMOUNT_SOURCES } from "@/lib/ai/p1"
+import { MEALS, mealFor, mealWindows, type Meal } from "./meals"
 
 export const entryItem = z.object({
   name: z.string().trim().min(1).max(300),
@@ -25,7 +26,8 @@ export const saveEntryBody = z.object({
   clientUuid: z.uuid(),
   loggedAt: z.iso.datetime({ offset: true }),
   method: z.enum(["text", "photo", "barcode", "search", "quick_add", "manual"]),
-  mealTag: z.enum(["breakfast", "lunch", "dinner", "snack"]).nullable(),
+  /** Today v2: the meal the card shows; the server assigns one from the local time when missing. */
+  meal: z.enum(MEALS).optional(),
   /** The parse that produced the card; its input and output become the audit trail. */
   aiCallId: z.uuid().nullable(),
   items: z.array(entryItem).min(1).max(30),
@@ -37,7 +39,7 @@ export const saveEntryBody = z.object({
 
 export type SaveEntryBody = z.infer<typeof saveEntryBody>
 
-export type SaveResult = { ok: true; entryId: string; duplicate: boolean } | { ok: false; error: string }
+export type SaveResult = { ok: true; entryId: string; duplicate: boolean; meal: Meal } | { ok: false; error: string }
 
 /**
  * Saves a confirmed card as the signed in user (RLS applies). The raw input
@@ -56,13 +58,14 @@ export async function saveEntry(supabase: SupabaseClient, userId: string, body: 
     audit = { input: data.input, output: data.output }
   }
 
+  const meal = body.meal ?? (await defaultMeal(supabase, userId, body.loggedAt))
   const confidences = body.items.map((i) => i.confidence).filter((c): c is number => c !== null)
   const { data: entry, error } = await supabase
     .from("food_entries")
     .insert({
       user_id: userId,
       logged_at: body.loggedAt,
-      meal_tag: body.mealTag,
+      meal,
       method: body.method,
       title: body.title ?? null,
       raw_input: audit.input,
@@ -83,7 +86,7 @@ export async function saveEntry(supabase: SupabaseClient, userId: string, body: 
       .eq("user_id", userId)
       .eq("client_uuid", body.clientUuid)
       .single()
-    return existing ? { ok: true, entryId: existing.id, duplicate: true } : { ok: false, error: "Save failed" }
+    return existing ? { ok: true, entryId: existing.id, duplicate: true, meal } : { ok: false, error: "Save failed" }
   }
   if (error || !entry) return { ok: false, error: "Save failed" }
 
@@ -111,15 +114,25 @@ export async function saveEntry(supabase: SupabaseClient, userId: string, body: 
     await supabase.from("food_entries").delete().eq("id", entry.id)
     return { ok: false, error: "Save failed" }
   }
-  return { ok: true, entryId: entry.id, duplicate: false }
+  return { ok: true, entryId: entry.id, duplicate: false, meal }
+}
+
+/** The meal for an entry by its local time in the user's timezone (docs/TODAY_SPEC.md 6). */
+export async function defaultMeal(supabase: SupabaseClient, userId: string, loggedAt: string): Promise<Meal> {
+  const [{ data: profile }, { data: config }] = await Promise.all([
+    supabase.from("profiles").select("timezone").eq("id", userId).single(),
+    supabase.from("app_config").select("value").eq("key", "meal_windows").maybeSingle(),
+  ])
+  return mealFor(loggedAt, profile?.timezone ?? "UTC", mealWindows(config?.value))
 }
 
 /** food_logged props (PRD section 5), including counts per amount source. */
-export function foodLoggedProps(body: SaveEntryBody, offline: boolean): Record<string, string | number | boolean> {
+export function foodLoggedProps(body: SaveEntryBody & { meal: Meal }, offline: boolean): Record<string, string | number | boolean> {
   const counts = Object.fromEntries(AMOUNT_SOURCES.map((s) => [`source_${s}`, body.items.filter((i) => i.amountSource === s).length]))
   const confidences = body.items.map((i) => i.confidence).filter((c): c is number => c !== null)
   return {
     method: body.method,
+    meal: body.meal,
     confidence: confidences.length ? Math.min(...confidences) : 1,
     offline,
     items: body.items.length,

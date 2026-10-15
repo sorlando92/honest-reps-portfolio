@@ -17,6 +17,6 @@ export async function POST(request: Request) {
 
   const result = await saveEntry(supabase, userId, parsed.data)
   if (!result.ok) return NextResponse.json({ error: result.error }, { status: 400 })
-  if (!result.duplicate) await track("food_logged", foodLoggedProps(parsed.data, offline))
+  if (!result.duplicate) await track("food_logged", foodLoggedProps({ ...parsed.data, meal: result.meal }, offline))
   return NextResponse.json({ entryId: result.entryId }, { status: result.duplicate ? 200 : 201 })
 }

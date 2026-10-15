@@ -20,6 +20,7 @@ async function entryFor(user: TestUser) {
       raw_input: "2 eggs",
       model_output: { items: [] },
       confidence: 0.9,
+      meal: "lunch",
       client_uuid: randomUUID(),
     })
     .select("id")
@@ -67,7 +68,7 @@ describe("food_entries and food_entry_items RLS", () => {
   it("nobody writes entries or items for someone else", async () => {
     const insert = await cast.b.client
       .from("food_entries")
-      .insert({ user_id: cast.a.id, logged_at: new Date().toISOString(), method: "text", client_uuid: randomUUID() })
+      .insert({ user_id: cast.a.id, logged_at: new Date().toISOString(), method: "text", meal: "lunch", client_uuid: randomUUID() })
     expect(insert.error?.code).toBe(PERMISSION_DENIED)
 
     // An item pointing at someone else's entry is refused, even as your own row.
@@ -75,7 +76,7 @@ describe("food_entries and food_entry_items RLS", () => {
     const sneaky = await cast.b.client.from("food_entry_items").insert(item(theirs, cast.b.id))
     expect(sneaky.error?.code).toBe(PERMISSION_DENIED)
 
-    const coachEdit = await cast.coach.client.from("food_entries").update({ meal_tag: "lunch" }).eq("id", theirs).select()
+    const coachEdit = await cast.coach.client.from("food_entries").update({ meal: "lunch" }).eq("id", theirs).select()
     expect(coachEdit.data).toEqual([])
   })
 
@@ -83,13 +84,13 @@ describe("food_entries and food_entry_items RLS", () => {
     const id = await entryFor(cast.a)
     const audit = await cast.a.client.from("food_entries").update({ raw_input: "edited" }).eq("id", id)
     expect(audit.error?.code).toBe(PERMISSION_DENIED)
-    const tag = await cast.a.client.from("food_entries").update({ meal_tag: "breakfast" }).eq("id", id).select("meal_tag")
-    expect(tag.data).toEqual([{ meal_tag: "breakfast" }])
+    const tag = await cast.a.client.from("food_entries").update({ meal: "breakfast" }).eq("id", id).select("meal")
+    expect(tag.data).toEqual([{ meal: "breakfast" }])
   })
 
   it("an offline entry synced twice is saved once", async () => {
     const client_uuid = randomUUID()
-    const row = { user_id: cast.a.id, logged_at: new Date().toISOString(), method: "quick_add", client_uuid }
+    const row = { user_id: cast.a.id, logged_at: new Date().toISOString(), method: "quick_add", meal: "snack", client_uuid }
     expect((await cast.a.client.from("food_entries").insert(row)).error).toBeNull()
     expect((await cast.a.client.from("food_entries").insert(row)).error?.code).toBe("23505")
   })

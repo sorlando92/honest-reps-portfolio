@@ -1,6 +1,7 @@
 import "server-only"
 import type { SupabaseClient } from "@supabase/supabase-js"
 import { dayBounds } from "@/core/time/local-day"
+import type { Meal } from "./meals"
 import type { AmountSource, FoodState } from "@/lib/ai/p1"
 import type { Per100g } from "../parsing/usda"
 import type { DraftItem } from "../parsing/service"
@@ -9,6 +10,7 @@ import type { Serving } from "../parsing/parse-meal"
 export interface TimelineEntry {
   id: string
   loggedAt: string
+  meal: Meal
   /** Local time, for example "7:42 AM". */
   time: string
   /** What the user typed, one line; item names when there was no typed input. */
@@ -52,6 +54,7 @@ interface ItemRow {
 interface Row {
   id: string
   logged_at: string
+  meal: Meal
   title: string | null
   raw_input: string | null
   food_entry_items: ItemRow[]
@@ -73,7 +76,7 @@ export async function dayEntries(
   const { start, end } = dayBounds(date, timezone)
   const { data } = await supabase
     .from("food_entries")
-    .select(`id, logged_at, title, raw_input, food_entry_items(${ITEM_COLUMNS})`)
+    .select(`id, logged_at, meal, title, raw_input, food_entry_items(${ITEM_COLUMNS})`)
     .eq("user_id", userId)
     .eq("status", "final")
     .gte("logged_at", start.toISOString())
@@ -87,6 +90,7 @@ export async function dayEntries(
     return {
       id: row.id,
       loggedAt: row.logged_at,
+      meal: row.meal,
       time: time.format(new Date(row.logged_at)),
       title: entryTitle(row.title ?? row.raw_input, items),
       items,

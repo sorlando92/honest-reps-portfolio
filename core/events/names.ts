@@ -21,6 +21,9 @@ export const EVENT_NAMES = [
   "subscription_canceled",
   "review_card_opened",
   "review_reply_sent",
+  "meal_copied",
+  "day_switched",
+  "streak_milestone",
 ] as const
 
 export type EventName = (typeof EVENT_NAMES)[number]

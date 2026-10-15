@@ -28,7 +28,7 @@ const item = (name: string, calories: number, flag_reason: string | null = null)
 async function entryWithItems(user: TestUser): Promise<string> {
   const { data, error } = await user.client
     .from("food_entries")
-    .insert({ user_id: user.id, logged_at: new Date().toISOString(), method: "text", raw_input: "eggs", client_uuid: randomUUID() })
+    .insert({ user_id: user.id, logged_at: new Date().toISOString(), method: "text", raw_input: "eggs", meal: "lunch", client_uuid: randomUUID() })
     .select("id")
     .single()
   if (error) throw error

@@ -20,7 +20,7 @@ afterAll(async () => {
 async function log(loggedAt: string, rawInput: string | null) {
   const { data, error } = await cast.a.client
     .from("food_entries")
-    .insert({ user_id: cast.a.id, logged_at: loggedAt, method: rawInput ? "text" : "manual", raw_input: rawInput, client_uuid: randomUUID() })
+    .insert({ user_id: cast.a.id, logged_at: loggedAt, method: rawInput ? "text" : "manual", raw_input: rawInput, meal: "lunch", client_uuid: randomUUID() })
     .select("id")
     .single()
   if (error) throw error

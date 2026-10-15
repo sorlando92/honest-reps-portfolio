@@ -28,6 +28,8 @@ const APP_CONFIG: Record<string, unknown> = {
   weight_trend: { method: "ewma", alpha: 0.1 },
   // QUESTIONS.md Q11: food match score below this flags the item.
   parsing: { match_threshold: 0.5 },
+  // docs/TODAY_SPEC.md 6: local hour windows, start inclusive, end exclusive; the rest is snack.
+  meal_windows: { breakfast: [4, 11], lunch: [11, 16], dinner: [16, 22] },
 }
 
 const COACH_SETTINGS = {

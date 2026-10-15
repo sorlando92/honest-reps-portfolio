@@ -162,7 +162,7 @@ test("edit a logged entry, then delete it", async ({ page }, info) => {
   await edit.click()
   await editor.getByRole("button", { name: "Delete entry" }).click()
   await editor.getByRole("button", { name: "Delete", exact: true }).click()
-  await expect(page.getByText("Nothing logged yet. Start with your last meal.")).toBeVisible()
+  await expect(page.getByRole("list", { name: "Today's entries" }).locator("summary")).toHaveCount(0)
 })
 
 test("offline, the draft waits on the phone and logs once back online", async ({ page, context }, info) => {

@@ -1,10 +1,11 @@
 "use client"
 
-import { useId, useMemo, useState, useSyncExternalStore, useTransition } from "react"
+import { useEffect, useId, useMemo, useRef, useState, useSyncExternalStore, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { ArrowUp, ScanBarcode, Search, Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useOnline } from "@/lib/use-online"
+import { mealFor, type Meal, type MealWindows } from "../entries/meals"
 import type { QuickAddChip } from "../entries/quick-add"
 import type { DraftItem, DraftResult } from "../parsing/service"
 import { defaultUnit, totals, type WeightUnit } from "./amounts"
@@ -14,6 +15,8 @@ import { clearDraft, draftSnapshot, parseDraft, saveDraft, subscribeDraft, type 
 import { toEntryItem } from "./entry-items"
 import { FoodSearch } from "./food-search"
 import { ItemRow } from "./item-row"
+import { MealChips } from "./meal-chips"
+import { LOG_MEAL_EVENT } from "./meal-section-controls"
 import { changedFood, fromSearchResult } from "./new-items"
 
 type Phase = { kind: "idle" } | { kind: "reading"; text: string } | { kind: "error"; text: string; message: string }
@@ -33,7 +36,19 @@ type Method = "text" | "search" | "manual" | "barcode"
  * The log loop on Today: describe a meal or search for foods, check the
  * card, tap Log it (PRD F2, DESIGN_SYSTEM.md "Log bar" and "Log confirmation").
  */
-export function LogFlow({ units, hasScale, chips }: { units: "imperial" | "metric"; hasScale: boolean | null; chips: QuickAddChip[] }) {
+export function LogFlow({
+  units,
+  hasScale,
+  chips,
+  timezone,
+  mealWindows,
+}: {
+  units: "imperial" | "metric"
+  hasScale: boolean | null
+  chips: QuickAddChip[]
+  timezone: string
+  mealWindows: MealWindows
+}) {
   const router = useRouter()
   const online = useOnline()
   const [phase, setPhase] = useState<Phase>({ kind: "idle" })
@@ -48,6 +63,20 @@ export function LogFlow({ units, hasScale, chips }: { units: "imperial" | "metri
   const raw = useSyncExternalStore(subscribeDraft, draftSnapshot, () => null)
   const draft = useMemo(() => parseDraft(raw), [raw])
   const [sheetOpen, setSheetOpen] = useState(true)
+
+  // A section's "+" picks the meal for the next log and focuses the bar.
+  const [pendingMeal, setPendingMeal] = useState<Meal | null>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+  useEffect(() => {
+    const onMeal = (e: Event) => {
+      setPendingMeal((e as CustomEvent<Meal>).detail)
+      inputRef.current?.focus()
+    }
+    window.addEventListener(LOG_MEAL_EVENT, onMeal)
+    return () => window.removeEventListener(LOG_MEAL_EVENT, onMeal)
+  }, [])
+  /** The meal a new card or quick add files under: the chosen section, else the time of day. */
+  const nextMeal = (): Meal => pendingMeal ?? mealFor(new Date(), timezone, mealWindows)
 
   async function read(text: string) {
     setPhase({ kind: "reading", text })
@@ -71,7 +100,7 @@ export function LogFlow({ units, hasScale, chips }: { units: "imperial" | "metri
         return
       }
       if (result.items.length === 0) throw new Error("No food found in that. Try naming what you ate.")
-      saveDraft({ text, method: "text", aiCallId: result.aiCallId, items: result.items, clientUuid: crypto.randomUUID(), createdAt: Date.now() })
+      saveDraft({ text, method: "text", meal: nextMeal(), aiCallId: result.aiCallId, items: result.items, clientUuid: crypto.randomUUID(), createdAt: Date.now() })
       setPhase({ kind: "idle" })
       setSheetOpen(true)
     } catch (error) {
@@ -93,7 +122,7 @@ export function LogFlow({ units, hasScale, chips }: { units: "imperial" | "metri
     if (draft) {
       saveDraft({ ...draft, items: apply(draft.items) })
     } else if (from.target !== "change") {
-      saveDraft({ text: "", method, aiCallId: null, items: [item], clientUuid: crypto.randomUUID(), createdAt: Date.now() })
+      saveDraft({ text: "", method, meal: nextMeal(), aiCallId: null, items: [item], clientUuid: crypto.randomUUID(), createdAt: Date.now() })
     }
     setSearching(null)
   }
@@ -108,7 +137,7 @@ export function LogFlow({ units, hasScale, chips }: { units: "imperial" | "metri
           clientUuid: draft.clientUuid,
           loggedAt: new Date().toISOString(),
           method: draft.aiCallId ? "text" : (draft.method ?? "search"),
-          mealTag: null,
+          meal: draft.meal ?? nextMeal(),
           aiCallId: draft.aiCallId,
           items: draft.items.map((i) => toEntryItem(i)),
         }),
@@ -118,6 +147,7 @@ export function LogFlow({ units, hasScale, chips }: { units: "imperial" | "metri
         return
       }
       clearDraft()
+      setPendingMeal(null)
       setPhase({ kind: "idle" })
       setAnnounce("Logged.")
       navigator.vibrate?.(10)
@@ -136,7 +166,7 @@ export function LogFlow({ units, hasScale, chips }: { units: "imperial" | "metri
           clientUuid: crypto.randomUUID(),
           loggedAt: new Date().toISOString(),
           method: "quick_add",
-          mealTag: null,
+          meal: nextMeal(),
           aiCallId: null,
           title: chip.kind === "favorite" ? chip.title : null,
           quickAddSource: chip.kind,
@@ -147,6 +177,7 @@ export function LogFlow({ units, hasScale, chips }: { units: "imperial" | "metri
         setAnnounce("Not logged. Try again.")
         return
       }
+      setPendingMeal(null)
       setAnnounce(`Logged ${chip.title}.`)
       navigator.vibrate?.(10)
       router.refresh()
@@ -173,6 +204,8 @@ export function LogFlow({ units, hasScale, chips }: { units: "imperial" | "metri
         chips={chips}
         onChip={quickAdd}
         chipsDisabled={quickBusy || !online}
+        inputRef={inputRef}
+        placeholder={pendingMeal ? `What did you have for ${pendingMeal === "snack" ? "a snack" : pendingMeal}?` : "What did you eat?"}
       />
       <p role="status" aria-live="polite" className="sr-only">
         {announce}
@@ -269,6 +302,7 @@ export function LogFlow({ units, hasScale, chips }: { units: "imperial" | "metri
             }}
           />
         )}
+        {showCard && <MealChips value={draft.meal ?? nextMeal()} onChange={(meal) => saveDraft({ ...draft, meal })} />}
         {showCard && (
           <ul className="flex flex-col gap-3 pb-3">
             {draft.items.map((item, index) => (
@@ -315,7 +349,11 @@ function LogBar({
   chips,
   onChip,
   chipsDisabled,
+  inputRef,
+  placeholder,
 }: {
+  inputRef: React.Ref<HTMLInputElement>
+  placeholder: string
   disabled: boolean
   onSubmit: (text: string) => void
   onSearch: () => void
@@ -373,10 +411,11 @@ function LogBar({
           What did you eat?
         </label>
         <input
+          ref={inputRef}
           id={`${id}-meal`}
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="What did you eat?"
+          placeholder={placeholder}
           autoComplete="off"
           enterKeyHint="send"
           maxLength={2000}
