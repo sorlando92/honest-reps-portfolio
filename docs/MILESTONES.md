@@ -15,7 +15,7 @@ Done when: Sean can sign in on his phone, install to home screen, and see empty 
 
 ## M1. Logging core (F2 minus photo)
 - Text logging with P1, USDA matching, confirmation card, flags and alternatives
-- Precision first: amount source and state on every item, confidence caps, grams default for scale users, "Weigh it" hint, hand portion tag and picker, Raw / Cooked / Dry toggle, cooked default matching
+- Precision first: amount source and state on every item, confidence caps, grams default for scale users, "Weigh it" hint, hand portion tag, Raw / Cooked / Dry toggle, cooked default matching. The no-scale hand portion picker moves to M2 (PM 2026-10-15).
 - Hand portion conversions seeded with the PRD F14 defaults (the edit screen ships in M4)
 - Search, barcode via Open Food Facts, manual entry (grams default for scale users)
 - Edit, delete
@@ -24,12 +24,13 @@ Done when: Sean can sign in on his phone, install to home screen, and see empty 
 - `ai_calls` table
 - `evals/parsing.jsonl` v0.2 (24 synthetic cases, in the repo) and `pnpm eval:parsing`
 
-Build order (PM 2026-10-13): model locked by the eval, confirmation card, then manual entry, edit and delete, offline queue and sync.
+Build order (PM 2026-10-13, updated 2026-10-15): P1 model locked (Sonnet 5.5), confirmation card, then manual entry, Add item, edit and delete, Raw / Cooked / Dry toggle, offline queue and sync; then the local FDC import (QUESTIONS.md Q40), then more curated chains if holdout meal calories are still under 80%. Engineering tells the PM when that is done, and the PM supplies fresh holdout cases for the final M1 measurement.
 
-Done when: repeat meal logs in under 5 seconds (measured once favorites and quick add land), described meal under 20 seconds, the parsing eval meets every M1 pass bar in `evals/README.md`, offline log syncs.
+Done when: repeat meal logs in under 5 seconds (measured once favorites and quick add land), described meal under 20 seconds, the parsing eval meets every M1 pass bar in `evals/README.md` (holdout meal calories 80% or higher included, measured on the PM's fresh holdout cases), offline log syncs.
 
 ## M2. Member experience (F1, F3, F4, F17 member reminders, F16 signup consents)
 - Onboarding, target formula from settings, medical screening and flag, food scale step and hand portion guide, `onboarding_completed` event
+- No-scale hand portion picker on the confirmation card in place of "Weigh it" (moved from M1)
 - Required install step and push permission
 - Today screen complete with the "est." marker, Progress with weight trend and weighed share
 - Evening nudge, reminder preferences and food scale setting in Me

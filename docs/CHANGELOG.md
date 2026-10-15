@@ -145,3 +145,12 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
 
 - Dev meal kcal is 82% for all three after matcher fixes from dev failures: menu size and style words optional (size taken from the meal text), the named brand preferred, skin on avoided unless said, no leading food rule for comma-free branded names.
 - No model meets every bar; all miss holdout meal calories, which depends on matching and chain data rather than the model. Default set to Sonnet 5.5 (provisional, QUESTIONS.md Q42).
+
+### 2026-10-15: PM decisions applied to docs
+
+- Q42 resolved: Sonnet 5.5 locked as the P1 model; Haiku 5.5 re-tested once real alpha meals are in the eval.
+- Holdout meal calories (80%) is an M1 exit gate, measured on fresh holdout cases from the PM after the local FDC import and any further chain curation.
+- Raw / Cooked / Dry toggle stays in M1; only the no-scale hand portion picker moves to M2.
+- Hosted auth settings script (Supabase Management API, apply and verify-only modes) recorded in ARCHITECTURE.md.
+- MILESTONES M1 build order extended through the FDC import and the PM's final holdout measurement.
+- PRD F2 lists the 6 curated chains that ship (Q41); the other 5 are added if holdout meal calories stay under 80% after the FDC import. AI_PROMPTS eval section corrected to v0.4, 29 cases.

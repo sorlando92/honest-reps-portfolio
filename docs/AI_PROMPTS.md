@@ -2,7 +2,7 @@
 
 Every LLM call lives in `lib/ai/`. Each has a **locked layer** (in code, versioned in git) and, only where noted, a **coach-editable layer** loaded from `ai_prompt_versions`. All calls request structured JSON output and validate it with Zod. On invalid output, retry once, then fall back (noted per prompt).
 
-Model: `ANTHROPIC_MODEL` env var. The P1 model is chosen by the parsing eval: the cheapest of Claude Opus 5.5, Sonnet 5.5 and Haiku 5.5 that meets every pass bar on dev and holdout with a P1 median latency of 2.5 s or less. Quick add and favorites never call a model. Log every call to the `ai_calls` table (ARCHITECTURE.md): prompt id and version, editable layer version where used, model, latency, input and output tokens, outcome (ok, retried, fallback, error), and validation result. `events` is for product analytics only and never receives AI call logs.
+Model: `ANTHROPIC_MODEL` env var. The P1 model is locked to Claude Sonnet 5.5 (QUESTIONS.md Q42). Re-test Haiku 5.5 on the parsing eval once it holds real alpha meals. Quick add and favorites never call a model. Log every call to the `ai_calls` table (ARCHITECTURE.md): prompt id and version, editable layer version where used, model, latency, input and output tokens, outcome (ok, retried, fallback, error), and validation result. `events` is for product analytics only and never receives AI call logs.
 
 Global safety rules (included in every locked layer; P1 and P2 leave out the `medical_flag` sentence because they only extract foods and their schema has no such field; medical screening happens in P3 and P5):
 - You are a nutrition coaching assistant for a certified strength and conditioning coach. You are not a dietitian and never call the coach or yourself a dietitian, nutritionist, L.D., or L.D.N.
@@ -191,5 +191,5 @@ On true: set `messages.flagged_medical`, add the roster flag, notify the coach. 
 
 ## Eval sets (create in M1 and M4)
 
-- `evals/parsing.jsonl`: v0.2, 24 synthetic cases with amount source and state on every item. Scoring, M1 pass bars and maintenance rules are in `evals/README.md`. Grows to 50 cases before gym beta, at least half from real logs.
+- `evals/parsing.jsonl`: v0.4, 29 synthetic cases with amount source and state on every item. Scoring, M1 pass bars and maintenance rules are in `evals/README.md`. Grows to 50 cases before gym beta, at least half from real logs.
 - `evals/review.jsonl`: 10 synthetic client weeks covering the scenarios in QUESTIONS.md item 3. Sean grades drafts as send as is, light edit, or rewrite. Pass bar before beta: 70% send as is or light edit.

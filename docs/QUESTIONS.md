@@ -34,8 +34,13 @@ Recommendation: when a check-in arrives after prep has run, rerun P3 for that cl
 **Q35. [M1] Real meals versus the synthetic eval set.** `evals/README.md` v0.2 says the synthetic set replaces "Sean supplies 20 real meals" for M1. The PM decisions round 2 say Sean will supply 20 real meals.
 Recommendation: v0.2 is the M1 gate. When Sean's meals arrive they are added as p025 onward (set v0.3), split between dev and holdout, and count toward the 50 case beta target. They do not block M1. Blocks: nothing.
 
-**Q42. [AI_PROMPTS P1 model] No model meets every bar.** Clean runs on eval v0.4: Sonnet 5.5 and Opus 5.5 pass everything except holdout meal calories (67%, bar 80%); Haiku 5.5 also misses holdout amount source (86%). The meal calorie gap is the same across models, so it comes from matching and chain data, not the model.
-Recommendation: lock Sonnet 5.5 now (1.8 s, $0.004 per parse, half the cost of Opus at the same accuracy) and keep holdout meal calories as an open bar, closed by the local FDC import (Q40) and more curated chains, measured on fresh holdout cases. Engineering has set Sonnet 5.5 as the default in the meantime so testing is not blocked. Blocks: the M1 eval sign-off, not testing.
+### Resolved by the PM (2026-10-15, commit "docs: PM decisions 2026-10-15")
+
+- **Q42** Sonnet 5.5 is locked as the P1 model. Re-test Haiku 5.5 when real alpha meals are in the eval. Quick add and favorites never call a model.
+- **Holdout meal calories** 80% or higher is an M1 exit gate, not an open bar. Closed by the local FDC import (Q40), then more curated chains if still under 80% (revisits Q41). Measured on fresh holdout cases the PM supplies once that work is done.
+- **Raw / Cooked / Dry toggle** ships in M1. Only the no-scale hand portion picker moves to M2 (it needs `has_scale`).
+- **Hosted auth settings** are applied and verified by a script through the Supabase Management API (ARCHITECTURE.md "Domains and email"). Its verify-only mode runs before each release.
+- **Root domain:** `honestreps.app` redirects to `app.honestreps.app`. Engineering gives Sean the Vercel and Cloudflare steps (owner task 8).
 
 ### Resolved by the PM (round 4, 2026-10-13)
 

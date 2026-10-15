@@ -26,6 +26,7 @@
 - Email: sending domain `mail.honestreps.app`, verified in Resend (DKIM and SPF records in Cloudflare DNS). Sender `auth@mail.honestreps.app`, sender name "Honest Reps". Supabase Auth uses Resend over SMTP.
 - `.app` is on the HSTS preload list, so every URL must be HTTPS, including previews and redirects. Vercel issues the TLS certificates.
 - Supabase Auth Site URL is `https://app.honestreps.app`; Vercel preview URLs are added to the allowed redirect URLs.
+- Hosted auth settings are kept in code, not set by hand: a script uses the Supabase Management API to apply and verify the sign in email templates (from `supabase/templates/`), OTP length 6, OTP expiry 3600 seconds, Site URL, redirect URLs and the SMTP sender fields. Its verify-only mode runs before each release and fails on any drift. The Supabase personal access token lives in the gitignored `.env.hosted`, never in the repo.
 
 ## Module boundaries
 
