@@ -11,6 +11,8 @@ export interface CurrentUser {
   email: string | null
   role: Role
   tier: "free" | "paid"
+  /** IANA name; local days and times use it (core/time/local-day.ts). */
+  timezone: string
 }
 
 /**
@@ -26,7 +28,7 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser> => {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("role, tier")
+    .select("role, tier, timezone")
     .eq("id", claims.sub)
     .single()
 
@@ -37,5 +39,6 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser> => {
     email: typeof claims.email === "string" ? claims.email : null,
     role: profile.role as Role,
     tier: profile.tier as "free" | "paid",
+    timezone: profile.timezone as string,
   }
 })

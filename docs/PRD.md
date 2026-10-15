@@ -125,11 +125,12 @@ Story: as a user, I see in one glance what I have left today.
 Acceptance
 - Calories remaining and protein remaining as large numbers with thin progress bars. Carbs and fat smaller below.
 - Over target shows "+120 over" in muted gray. Never red, never a warning tone.
-- Timeline of today's entries in time order with calories and protein; optional meal tags shown. Estimated entries show a subtle "est." marker. Totals are unchanged.
+- Timeline of today's entries in time order with calories and protein; optional meal tags shown. Each row is titled with what the user typed (raw input, first line, truncated to one line); entries without typed input use their item names. Quick add and favorites log with the title of the entry they came from. Tapping a row shows its items. Estimated entries show a subtle "est." marker. Totals are unchanged.
 - Log bar pinned above the tab bar: text field, camera icon, barcode icon.
 - Paid users: assigned habits as one-tap checkboxes; check-in card appears when due.
 - Free users: one quiet coaching card linking to the upgrade screen.
 - Day switcher to view or log past days.
+- Times and days follow the user's profile timezone (ARCHITECTURE.md "Local days").
 
 ### F4. Weight and trend (free)
 Story: as a user, I see my real trend, not daily noise.

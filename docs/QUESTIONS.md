@@ -34,6 +34,10 @@ Recommendation: when a check-in arrives after prep has run, rerun P3 for that cl
 **Q35. [M1] Real meals versus the synthetic eval set.** `evals/README.md` v0.2 says the synthetic set replaces "Sean supplies 20 real meals" for M1. The PM decisions round 2 say Sean will supply 20 real meals.
 Recommendation: v0.2 is the M1 gate. When Sean's meals arrive they are added as p025 onward (set v0.3), split between dev and holdout, and count toward the 50 case beta target. They do not block M1. Blocks: nothing.
 
+**Q43. [F3, F17, core] Where the profile timezone comes from.** Sean's entries showed UTC times because the profile timezone is set only at signup from the device; accounts created another way (the seeded coach) stay on the `UTC` default and nothing ever corrects them. There is no timezone setting in Me.
+Applied as an interim fix (bug, before alpha): when the app opens and the device timezone differs from the profile, the profile is updated to the device timezone and the screen refreshes. A traveling user's days and reminders follow them.
+Recommendation: keep this. Days already logged keep their instants; only how they group into local days changes while traveling, which matches what the user sees on their phone. If the PM prefers a fixed home timezone, add a Me setting in M2 and stop auto-updating. Blocks: nothing.
+
 ### Resolved by the PM (2026-10-15, commit "docs: PM decisions 2026-10-15")
 
 - **Q42** Sonnet 5.5 is locked as the P1 model. Re-test Haiku 5.5 when real alpha meals are in the eval. Quick add and favorites never call a model.

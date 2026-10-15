@@ -88,7 +88,7 @@ Stacks for drill-ins, bottom sheets for short tasks (log confirm, weight entry, 
   - One signal per row, by cause: the `caution` dot and "Check this" only when the food match is uncertain. A clear food with an estimated amount shows "Estimated" in `text-muted` plus an inline "Weigh it" text button that focuses the amount field in grams, with no caution dot. No-scale users get a hand portion picker in its place. One line, never a modal.
   - Hand portion row: small "Hand portion" tag in `text-muted`. Not flagged.
   - Meat, fish, grains and pasta: one-tap segmented toggle Raw / Cooked, plus Dry for grains and pasta. 44pt segments.
-- **Entry row:** time, name, calories, protein. Swipe left for edit and delete. Optional meal tag pill. Estimated entries show "est." in `caption` style, `text-muted`.
+- **Entry row:** time, title (the user's raw input on one line, truncated; item names when there was none), calories, protein. Tap to show the items. Swipe left for edit and delete. Optional meal tag pill. Estimated entries show "est." in `caption` style, `text-muted`.
 - **Habit row:** checkbox (44pt), habit name, streak count.
 - **Locked element:** standard component with a small lock icon and muted overlay; tapping opens the upgrade screen. Report preview is blurred.
 - **Review card (coach):** full-screen card with sections: summary, flags, numbers, check-in, suggestion (accept or ignore), editable draft, Send button. Swipe or Send to advance.

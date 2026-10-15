@@ -161,3 +161,11 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
 - Production deploy from `main` (85afe03). P1 runs on Sonnet 5.5 (code default; `ANTHROPIC_MODEL` is not set in Vercel).
 - Checks before deploy: typecheck, lint, 111 unit and RLS tests pass.
 - Waiting on Sean's phone test of the log bar and confirmation card.
+
+### 2026-10-15: phone test fixes (timezone, entry titles)
+
+- Bug: entry times showed in UTC. Cause: the seeded coach account had no timezone, so the profile kept the `UTC` default, and signup is the only place the device timezone was saved. Fix: the app corrects `profiles.timezone` to the device's timezone when it opens (QUESTIONS.md Q43). Sean's profile corrects itself on next open.
+- `core/time/local-day.ts` is the one source of local days (`localDate`, `localToday`, `dayBounds`, including 23 and 25 hour days). Today now queries the exact local day bounds instead of a 36 hour window. Rule recorded in ARCHITECTURE.md "Local days" for daily totals, adherence, logging-day counts, nudges and the weekly cycle when they are built.
+- Tests: unit tests for 11:30 PM Central (summer and winter), midnight rollover, half hour zones and DST days; a database test that an 11:30 PM Central log lands on that Central day at "11:30 PM".
+- Timeline rows are titled with the raw input on one line; tapping a row shows its items. Entries without typed input use the item names. PRD F3 and DESIGN_SYSTEM "Entry row" updated; quick add and favorites will reuse the title.
+- Tracking confirmed in MILESTONES: targets with remaining and day switcher (M2), barcode with the log bar icon (M1, after phone testing), camera icon locked for free users (moved from M5 to M3 with photo logging). The log bar shows neither icon yet.

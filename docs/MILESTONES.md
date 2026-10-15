@@ -19,7 +19,7 @@ Done when: Sean can sign in on his phone, install to home screen, and see empty 
 - Hand portion conversions seeded with the PRD F14 defaults (the edit screen ships in M4)
 - Search, barcode via Open Food Facts, manual entry (grams default for scale users)
 - Edit, delete
-- Deferred until Sean has tested the log loop on his phone for a few days (PM 2026-10-13): barcode, favorites, quick add chips (remember the last weighed amount), optional meal tags
+- Deferred until Sean has tested the log loop on his phone for a few days (PM 2026-10-13): barcode (log bar icon, Open Food Facts lookup, attribution), favorites, quick add chips (remember the last weighed amount), optional meal tags
 - Offline queue and sync
 - `ai_calls` table
 - `evals/parsing.jsonl` v0.2 (24 synthetic cases, in the repo) and `pnpm eval:parsing`
@@ -32,7 +32,7 @@ Done when: repeat meal logs in under 5 seconds (measured once favorites and quic
 - Onboarding, target formula from settings, medical screening and flag, food scale step and hand portion guide, `onboarding_completed` event
 - No-scale hand portion picker on the confirmation card in place of "Weigh it" (moved from M1)
 - Required install step and push permission
-- Today screen complete with the "est." marker, Progress with weight trend and weighed share
+- Today screen complete: calorie and protein targets with remaining and progress bars, carbs and fat pair, day switcher, the "est." marker; Progress with weight trend and weighed share
 - Evening nudge, reminder preferences and food scale setting in Me
 - Signup consents, privacy policy and terms pages, account deletion per PRD F16 (consent retention with email hash, events kept without user id)
 
@@ -42,7 +42,7 @@ Done when: a new member goes from the signup link to first food logged in under 
 - Weekly check-in flow, configurable questions with report tags, reminders, overdue logic
 - Habit library and assignments, daily checks, streaks
 - Messaging with photos and push, P5 message safety screen
-- Photo logging with P2
+- Photo logging with P2, and the log bar camera icon (locked for free users, opens the upgrade screen; PM 2026-10-15)
 - Weekly report with P4 headline and the Weighed stat card
 
 Done when: a test client completes a full week cycle end to end.
@@ -62,7 +62,7 @@ Done when: Sean reviews 10 test clients averaging 3 minutes or less each.
 - Price from Stripe, new price on change with the old one archived
 - Downgrade behavior per PRD F11: locks, read-only thread and reports, user-editable targets
 - State disclosure acceptance on paid signup
-- Locked states for free users (camera, report preview, coaching card)
+- Locked states for free users (report preview, coaching card; the camera lock ships in M3)
 - Accessibility audit (axe plus manual VoiceOver), performance pass, copy review against DESIGN_SYSTEM.md rules
 - Bug bash
 

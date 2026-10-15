@@ -75,6 +75,8 @@ Nutrition module
 
 Store everything in metric; convert at the edge.
 
+**Local days.** Instants are stored as `timestamptz` (UTC). Every displayed time and every day boundary (Today, daily totals, adherence, logging-day counts, the north star, evening nudge, reminders) uses the user's `profiles.timezone`; the weekly cycle uses the coach's. In TypeScript, go through `core/time/local-day.ts` (`localDate`, `localToday`, `dayBounds`), which handles 23 and 25 hour days. In SQL and jobs, use `(logged_at at time zone p.timezone)::date`. Never use the server's or the browser's zone. The app keeps `profiles.timezone` on the device's timezone (QUESTIONS.md Q43).
+
 ## Key flows
 
 **Text logging:** client → `/api/parse` → P1 extraction → match each item to `food_items` (cache first, then USDA search) → compute macros → return draft card → user confirms → save entry and items. Weighed items keep the exact stated grams. Hand items convert to grams with the coach's hand portion conversions (`nutrition_coach_settings`). Items whose brand is a curated chain match that chain's curated items; other chains fall back to a generic match marked estimated. Quick add and favorites log stored items directly and never call a model. Meat, fish, grains and pasta with no stated state match the cooked entry and expose the toggle.

@@ -104,6 +104,9 @@ test("describe a meal, fix it on the card, log it", async ({ page }, info) => {
   const timeline = page.getByRole("list", { name: "Today's entries" })
   await expect(timeline).toContainText("white rice")
   await expect(timeline).toContainText("white rice, chicken")
+  // Tapping the row shows its items.
+  await timeline.getByText("white rice, chicken").click()
+  await expect(timeline.getByRole("list", { name: "Items" })).toBeVisible()
   await page.screenshot({ path: info.outputPath("today.png"), fullPage: true })
 })
 
