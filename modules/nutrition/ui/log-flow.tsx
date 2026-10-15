@@ -2,9 +2,10 @@
 
 import { useId, useMemo, useState, useSyncExternalStore, useTransition } from "react"
 import { useRouter } from "next/navigation"
-import { ArrowUp, ScanBarcode, Search } from "lucide-react"
+import { ArrowUp, ScanBarcode, Search, Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useOnline } from "@/lib/use-online"
+import type { QuickAddChip } from "../entries/quick-add"
 import type { DraftItem, DraftResult } from "../parsing/service"
 import { defaultUnit, totals, type WeightUnit } from "./amounts"
 import { BarcodeScanner } from "./barcode-scanner"
@@ -32,7 +33,7 @@ type Method = "text" | "search" | "manual" | "barcode"
  * The log loop on Today: describe a meal or search for foods, check the
  * card, tap Log it (PRD F2, DESIGN_SYSTEM.md "Log bar" and "Log confirmation").
  */
-export function LogFlow({ units, hasScale }: { units: "imperial" | "metric"; hasScale: boolean | null }) {
+export function LogFlow({ units, hasScale, chips }: { units: "imperial" | "metric"; hasScale: boolean | null; chips: QuickAddChip[] }) {
   const router = useRouter()
   const online = useOnline()
   const [phase, setPhase] = useState<Phase>({ kind: "idle" })
@@ -124,6 +125,34 @@ export function LogFlow({ units, hasScale }: { units: "imperial" | "metric"; has
     })
   }
 
+  // Quick add and favorites: one tap logs, no card and no model (PRD F2).
+  const [quickBusy, startQuick] = useTransition()
+  function quickAdd(chip: QuickAddChip) {
+    startQuick(async () => {
+      const res = await fetch("/api/entries", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          clientUuid: crypto.randomUUID(),
+          loggedAt: new Date().toISOString(),
+          method: "quick_add",
+          mealTag: null,
+          aiCallId: null,
+          title: chip.kind === "favorite" ? chip.title : null,
+          quickAddSource: chip.kind,
+          items: chip.items,
+        }),
+      }).catch(() => null)
+      if (!res || !res.ok) {
+        setAnnounce("Not logged. Try again.")
+        return
+      }
+      setAnnounce(`Logged ${chip.title}.`)
+      navigator.vibrate?.(10)
+      router.refresh()
+    })
+  }
+
   function discard() {
     clearDraft()
     setSearching(null)
@@ -141,6 +170,9 @@ export function LogFlow({ units, hasScale }: { units: "imperial" | "metric"; has
         onSubmit={read}
         onSearch={() => startSearch({ query: "", target: "add" })}
         onScan={() => startSearch({ query: "", target: "scan" })}
+        chips={chips}
+        onChip={quickAdd}
+        chipsDisabled={quickBusy || !online}
       />
       <p role="status" aria-live="polite" className="sr-only">
         {announce}
@@ -275,10 +307,29 @@ export function LogFlow({ units, hasScale }: { units: "imperial" | "metric"; has
  * controls (DESIGN_SYSTEM "Log bar", Q47): an empty field shows search and
  * barcode; once the user types, they give way to send.
  */
-function LogBar({ disabled, onSubmit, onSearch, onScan }: { disabled: boolean; onSubmit: (text: string) => void; onSearch: () => void; onScan: () => void }) {
+function LogBar({
+  disabled,
+  onSubmit,
+  onSearch,
+  onScan,
+  chips,
+  onChip,
+  chipsDisabled,
+}: {
+  disabled: boolean
+  onSubmit: (text: string) => void
+  onSearch: () => void
+  onScan: () => void
+  chips: QuickAddChip[]
+  onChip: (chip: QuickAddChip) => void
+  chipsDisabled: boolean
+}) {
   const id = useId()
   const [text, setText] = useState("")
+  const [focused, setFocused] = useState(false)
   const typing = text.trim().length > 0
+  // DESIGN_SYSTEM "Log bar": quick add chips show while the bar has focus.
+  const showChips = focused && !typing && chips.length > 0
   return (
     <form
       onSubmit={(e) => {
@@ -288,9 +339,35 @@ function LogBar({ disabled, onSubmit, onSearch, onScan }: { disabled: boolean; o
         onSubmit(value)
         setText("")
       }}
+      onFocus={() => setFocused(true)}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setFocused(false)
+      }}
       className="fixed inset-x-0 z-30 border-t border-border bg-bg px-4 py-2"
       style={{ bottom: "calc(var(--tab-bar-height) + env(safe-area-inset-bottom))" }}
     >
+      {showChips && (
+        <ul aria-label="Quick add" className="mx-auto mb-2 flex max-w-[720px] gap-2 overflow-x-auto pb-1">
+          {chips.map((chip) => (
+            <li key={chip.key} className="shrink-0">
+              <button
+                type="button"
+                disabled={chipsDisabled}
+                // iPhone Safari does not focus tapped buttons, so the field would
+                // blur and hide the chips before the tap lands.
+                onPointerDown={(e) => e.preventDefault()}
+                onClick={() => onChip(chip)}
+                aria-label={`Log ${chip.title}, ${chip.calories} calories${chip.kind === "favorite" ? ", favorite" : ""}`}
+                className="flex min-h-11 max-w-[16rem] items-center gap-1.5 rounded-full bg-surface px-4 text-body disabled:opacity-50"
+              >
+                {chip.kind === "favorite" && <Star aria-hidden className="size-4 shrink-0 fill-current text-accent-strong" />}
+                <span className="truncate">{chip.title}</span>
+                <span className="shrink-0 text-caption text-text-muted tabular-nums">{chip.calories}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
       <div className="mx-auto flex max-w-[720px] items-center gap-2">
         <label htmlFor={`${id}-meal`} className="sr-only">
           What did you eat?

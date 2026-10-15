@@ -29,6 +29,10 @@ export const saveEntryBody = z.object({
   /** The parse that produced the card; its input and output become the audit trail. */
   aiCallId: z.uuid().nullable(),
   items: z.array(entryItem).min(1).max(30),
+  /** Timeline title for entries that were not typed (a favorite's title). */
+  title: z.string().trim().min(1).max(200).nullable().optional(),
+  /** Quick add chips: a starred favorite or a frequent food (food_logged prop). */
+  quickAddSource: z.enum(["favorite", "frequent"]).optional(),
 })
 
 export type SaveEntryBody = z.infer<typeof saveEntryBody>
@@ -60,6 +64,7 @@ export async function saveEntry(supabase: SupabaseClient, userId: string, body: 
       logged_at: body.loggedAt,
       meal_tag: body.mealTag,
       method: body.method,
+      title: body.title ?? null,
       raw_input: audit.input,
       model_output: audit.output,
       confidence: confidences.length ? Math.min(...confidences) : null,
@@ -118,6 +123,7 @@ export function foodLoggedProps(body: SaveEntryBody, offline: boolean): Record<s
     confidence: confidences.length ? Math.min(...confidences) : 1,
     offline,
     items: body.items.length,
+    ...(body.quickAddSource ? { quick_add_source: body.quickAddSource } : {}),
     ...counts,
   }
 }

@@ -197,3 +197,32 @@ test("swiping a row left opens the editor", async ({ page }, info) => {
   })
   await expect(page.getByRole("dialog", { name: "Edit entry" })).toBeVisible()
 })
+
+test("star an entry, then log it again from a quick add chip", async ({ page }, info) => {
+  await signInWithCode(page, `e2e-quick-${info.project.name}-${Date.now()}@example.test`)
+  await stubParse(page)
+  const card = await describeMeal(page)
+  await card.getByRole("button", { name: "Log it" }).click()
+  await expect(card).toHaveCount(0)
+
+  const timeline = page.getByRole("list", { name: "Today's entries" })
+  await timeline.locator("summary").first().click()
+  const star = timeline.getByRole("button", { name: "Favorite white rice, chicken" })
+  await expect(star).toHaveAttribute("aria-pressed", "false")
+  await star.click()
+  await expect(star).toHaveAttribute("aria-pressed", "true")
+
+  // Focusing the log bar shows the chips: the favorite first, then frequent foods.
+  await page.getByLabel("What did you eat?").focus()
+  const chips = page.getByRole("list", { name: "Quick add" })
+  await expect(chips.getByRole("button").first()).toHaveAccessibleName("Log white rice, chicken, 468 calories, favorite")
+  await expect(chips.getByRole("button", { name: /^Log chicken, 263 calories$/ })).toBeVisible()
+  await expectNoAxeViolations(page)
+  await expectTapTargets(page)
+  await page.screenshot({ path: info.outputPath("chips.png"), fullPage: true })
+
+  await chips.getByRole("button").first().click()
+  await expect(timeline.locator("summary")).toHaveCount(2)
+  await expect(timeline.locator("summary").nth(1)).toContainText("white rice, chicken")
+  await expect(timeline.locator("summary").nth(1)).toContainText("468")
+})

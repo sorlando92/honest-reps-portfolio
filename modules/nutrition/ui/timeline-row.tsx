@@ -1,6 +1,8 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useRef, useState, useTransition } from "react"
+import { useRouter } from "next/navigation"
+import { Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import type { DraftItem } from "../parsing/service"
 import { EntryEditor } from "./entry-editor"
@@ -13,6 +15,8 @@ export interface TimelineRowEntry {
   calories: number
   proteinG: number
   marker: "match" | "estimated" | null
+  /** Set when this entry is starred. */
+  favoriteId: string | null
 }
 
 // A deliberate horizontal swipe, not a scroll.
@@ -29,6 +33,18 @@ export function TimelineRow({ entry: e, units, hasScale }: { entry: TimelineRowE
   const [session, setSession] = useState(0)
   const start = useRef<{ x: number; y: number } | null>(null)
   const swiped = useRef(false)
+  const router = useRouter()
+  const [starring, startStar] = useTransition()
+
+  // PRD F2: any entry can be starred; favorites show first among quick add chips.
+  function toggleFavorite() {
+    startStar(async () => {
+      const res = e.favoriteId
+        ? await fetch(`/api/favorites/${e.favoriteId}`, { method: "DELETE" }).catch(() => null)
+        : await fetch("/api/favorites", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ entryId: e.id }) }).catch(() => null)
+      if (res?.ok) router.refresh()
+    })
+  }
 
   function edit() {
     setSession((n) => n + 1)
@@ -89,9 +105,20 @@ export function TimelineRow({ entry: e, units, hasScale }: { entry: TimelineRowE
             </li>
           ))}
         </ul>
-        <div className="mb-2 ml-19">
+        <div className="mb-2 ml-19 flex items-center gap-6">
           <Button variant="text" onClick={edit} aria-label={`Edit ${e.title}`} className="h-11 min-w-11 justify-start px-0 text-accent-strong">
             Edit
+          </Button>
+          <Button
+            variant="text"
+            onClick={toggleFavorite}
+            disabled={starring}
+            aria-pressed={e.favoriteId !== null}
+            aria-label={`Favorite ${e.title}`}
+            className="h-11 min-w-11 justify-start gap-1.5 px-0 text-accent-strong"
+          >
+            <Star aria-hidden className={e.favoriteId ? "size-5 fill-current" : "size-5"} />
+            {e.favoriteId ? "Favorite" : "Add to favorites"}
           </Button>
         </div>
       </details>

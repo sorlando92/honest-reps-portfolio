@@ -223,3 +223,11 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
 - Entries started from a barcode log as `method: barcode`.
 - Tests: unit (barcode normalizing, reading Open Food Facts products), e2e (log bar layout; typed barcode not found, then found, servings, attribution, log) at 375px light and dark with axe and 44pt checks. One live Open Food Facts lookup checked by hand.
 - Not yet: cached barcodes offline (post-MVP offline queue).
+
+### 2026-10-15: MVP step 1, quick add and favorites
+
+- Migration 20261015000002 (additive): `food_entries.title` (the timeline title for entries that were not typed, so `raw_input` stays the audit of what the user typed) and `favorites` (title, items as a template, source entry; own rows, coach reads assigned users, insert and delete only), with an RLS suite.
+- Favorites: "Add to favorites" in an opened timeline row stars the entry (title and items). Starred again it stays one favorite; tapping "Favorite" removes it.
+- Quick add chips show above the log bar while it has focus: up to 3 favorites (newest first), then the most frequent foods for this time of day (morning, midday, evening, late in the user's timezone, over 60 days), up to 6 chips. A frequent food logs at its last weighed amount, else its most recent. One tap logs (`method: quick_add`, `food_logged` with `quick_add_source`); no card, no model. Disabled offline (Q46).
+- Favorites log at the amounts they were starred with; only frequent food chips use the last weighed amount.
+- Tests: unit (time of day buckets, ranking, last weighed amount), RLS (favorites), e2e (star, chips, one tap log) at 375px light and dark with axe and 44pt checks.

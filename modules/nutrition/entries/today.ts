@@ -52,6 +52,7 @@ interface ItemRow {
 interface Row {
   id: string
   logged_at: string
+  title: string | null
   raw_input: string | null
   food_entry_items: ItemRow[]
 }
@@ -72,7 +73,7 @@ export async function dayEntries(
   const { start, end } = dayBounds(date, timezone)
   const { data } = await supabase
     .from("food_entries")
-    .select(`id, logged_at, raw_input, food_entry_items(${ITEM_COLUMNS})`)
+    .select(`id, logged_at, title, raw_input, food_entry_items(${ITEM_COLUMNS})`)
     .eq("user_id", userId)
     .eq("status", "final")
     .gte("logged_at", start.toISOString())
@@ -87,7 +88,7 @@ export async function dayEntries(
       id: row.id,
       loggedAt: row.logged_at,
       time: time.format(new Date(row.logged_at)),
-      title: entryTitle(row.raw_input, items),
+      title: entryTitle(row.title ?? row.raw_input, items),
       items,
       calories: Math.round(items.reduce((s, i) => s + i.calories, 0)),
       proteinG: Math.round(items.reduce((s, i) => s + i.proteinG, 0)),
