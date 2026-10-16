@@ -148,13 +148,15 @@ New user: targets shown, meal cards empty, log bar focused. No tutorial. Before 
 Bottom sheet over Today. Items, edits, flags, "Log it." Pending offline items show "Pending, will finish when you're online." An unconfirmed card (draft) is kept on the device and reopens with the app. Barcode results carry the caption "Food data from Open Food Facts" (`caption` style, links to openfoodfacts.org).
 
 ### Progress (dashboard)
-Spec: `docs/SCREENS_V2.md` "Progress (dashboard)".
+Spec: `docs/PROGRESS_SPEC.md` on top of `docs/SCREENS_V2.md` "Progress (dashboard)"; PROGRESS_SPEC wins where it is more specific (bar segments, target line, selection, empty states, copy, screen reader summaries).
 1. Header "Progress" with today's date below
 2. Week chart (stacked macro bars, target line) and 4 tiles for the selected day
 3. Week averages: average calories, average protein, days on target, protein days, weighed share (Q57)
 4. Consistency, 30 days: Food log and Weigh-ins grids side by side
 5. Weight trend (7, 30, 90 days; line in `text`, raw dots in `text-muted` at 40% opacity), "Log weight"
-6. Weekly reports list (paid; blurred preview for free, post-MVP)
+6. Weekly reports list (paid; blurred preview for free, post-MVP; hidden in MVP)
+
+Over target, a bar rises above the dashed target line with no red or warning color.
 
 ### Check-in (paid)
 One question per screen, progress dots at top, big tap targets for 1 to 5 scales, photo step with skip, short text last, Submit. Target completion under 60 seconds.

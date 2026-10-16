@@ -52,7 +52,9 @@ Guardrails:
 
 ### Metrics and instrumentation (emit from day one)
 
-Events: `signup_started`, `signup_completed`, `onboarding_completed` (the first time the user reaches Today after onboarding), `pwa_installed`, `push_enabled`, `food_logged` (method: text, photo, barcode, search, manual, quick_add; meal; confidence; offline; counts per amount source), `food_entry_corrected`, `food_entry_deleted`, `weight_logged`, `habit_checked`, `checkin_started`, `checkin_submitted` (on_time boolean), `report_viewed`, `message_sent` (role), `upgrade_viewed` (source), `upgrade_completed`, `subscription_canceled`, `review_card_opened`, `review_reply_sent` (seconds_on_card, draft_edit_distance), `meal_copied` (meal, from_date), `day_switched` (days_from_today), `streak_milestone` (days), `day_note_saved`, `macro_card_mode_changed` (mode: eaten, left).
+Events: `signup_started`, `signup_completed`, `onboarding_completed` (the first time the user reaches Today after onboarding), `pwa_installed`, `push_enabled`, `food_logged` (method: text, photo, barcode, search, manual, quick_add; meal; confidence; offline; counts per amount source), `food_entry_corrected`, `food_entry_deleted`, `weight_logged`, `habit_checked`, `checkin_started`, `checkin_submitted` (on_time boolean), `report_viewed`, `message_sent` (role), `upgrade_viewed` (source), `upgrade_completed`, `subscription_canceled`, `review_card_opened`, `review_reply_sent` (seconds_on_card, draft_edit_distance), `meal_copied` (meal, from_date), `day_switched` (days_from_today), `streak_milestone` (days), `day_note_saved`, `macro_card_mode_changed` (mode: eaten, left), `progress_viewed`, `progress_week_changed` (weeks_from_current), `weight_range_changed` (days).
+
+Test profiles (`profiles.is_test`, the demo account) are excluded from every metric, the north star and the coach roster flags count.
 
 Coach review time = time from `review_card_opened` to `review_reply_sent`.
 
@@ -145,7 +147,7 @@ Acceptance
 ### F4. Progress, the dashboard (free)
 Story: as a user, I see my real trend and my consistency, not daily noise.
 
-Spec: `docs/SCREENS_V2.md` "Progress (dashboard)".
+Spec: `docs/PROGRESS_SPEC.md` (build spec, approved 2026-10-16) on top of `docs/SCREENS_V2.md` "Progress (dashboard)"; PROGRESS_SPEC wins where it is more specific, and its acceptance criteria are part of this feature.
 
 Acceptance
 - Header: "Progress" with today's date below.
@@ -153,7 +155,8 @@ Acceptance
 - Week averages: average calories, average protein, days on target, protein days, weighed share ("Weighed: 64% of items", Q57).
 - Consistency, last 30 days, two cards: Food log (filled `accent-strong` when on target, muted fill when logged off target, empty when not logged; "22 of 30 days logged") and Weigh-ins (filled when weighed; "12 weigh-ins"). Empty states "No logs yet" and "No weigh-ins yet".
 - Weight trend: 7, 30 and 90 day toggle; an exponentially weighted moving average line (smoothing in app_config) with faint raw weigh-ins; trend value and change over the range; "Log weight". Weight can be logged any day from Today or Progress.
-- Weekly reports (paid): list; free users see the locked preview (post-MVP with reports).
+- Weekly reports (paid): list; free users see the locked preview (post-MVP with reports; hidden in MVP).
+- Demo data: `pnpm seed:demo` creates a test member with 35 days of realistic data so the full screen can be tested; `pnpm seed:demo --remove` deletes it (PROGRESS_SPEC "Demo data").
 - Not included: steps, nutrients, water.
 
 ### F5. Weekly check-in (paid)

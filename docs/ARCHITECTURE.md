@@ -43,7 +43,7 @@ Core never imports from a module. Modules register: their check-in metrics, thei
 ## Data model (initial)
 
 Core
-- `profiles` (id, role: member|coach, coach_id, display_name, units, timezone, tier: free|paid, billing_source: stripe|comped|external, medical_flag, date_of_birth, created_at). Date of birth lives in core because the 18+ age gate is core; all other onboarding body data is in `nutrition_profiles`.
+- `profiles` (id, role: member|coach, coach_id, display_name, units, timezone, tier: free|paid, billing_source: stripe|comped|external, medical_flag, date_of_birth, is_test, created_at). `is_test` marks demo accounts (`pnpm seed:demo`); test profiles are excluded from metrics, the north star and roster flag counts. Date of birth lives in core because the 18+ age gate is core; all other onboarding body data is in `nutrition_profiles`.
 - `app_config` (key, value jsonb) — product name, consent versions, adherence thresholds, weight trend smoothing, default coach
 - `coach_settings` (coach_id, stripe_price_id, checkin_day, review_day, weekly_cycle jsonb, target_defaults jsonb, reminder_defaults jsonb, disclosure_text, ai_editable_layer_version_id)
 - `ai_prompt_versions` (id, coach_id, voice, focus, phrases_use, phrases_avoid, examples jsonb, created_at). Limits enforced in the database and the form: voice and focus 600 characters each, each phrases field 400, up to 20 examples of up to 1,200 characters.
@@ -101,7 +101,11 @@ Store everything in metric; convert at the edge.
 
 **Price change (PRD F14):** saving a new price creates a new Stripe price, archives the old one, and stores the new `stripe_price_id`. Existing subscriptions keep their old price.
 
-**Metrics:** north star = users who completed onboarding (`onboarding_completed`) and logged food on 4 or more days in the measured week, divided by all users who completed onboarding. Active this week = logged food on at least 1 day.
+**Daily aggregates and Progress:** per local day totals (calories, protein, carbs, fat, logged), the target in effect on that date, adherent and protein_hit come from one shared nutrition aggregate used by both Today and Progress (and the coach client week view in M5). `progress_summary(user_id, week_start, weight_range)` returns everything the Progress screen needs in one server call: the week by day, week averages including weighed share, the last 30 days (logged, adherent, weighed), and the weight series (raw weigh-ins, EWMA trend, goal weight). The owner reads their own summary; the assigned coach reads the same summary. Progress components take a user id so the coach view reuses them. Spec: `docs/PROGRESS_SPEC.md`.
+
+**Demo data:** `pnpm seed:demo` creates the test member `demo@example.test` (assigned to the coach, `is_test = true`) with 35 days of data; `pnpm seed:demo --remove` deletes the account and all its rows. Approved to run against hosted.
+
+**Metrics:** north star = users who completed onboarding (`onboarding_completed`) and logged food on 4 or more days in the measured week, divided by all users who completed onboarding. Active this week = logged food on at least 1 day. All metrics exclude profiles with `is_test = true`.
 
 **Adherence definition:** a day counts as adherent when calories are within ±10% of target and food was logged. Protein day hit when protein ≥ 90% of target. Both thresholds in `app_config`.
 

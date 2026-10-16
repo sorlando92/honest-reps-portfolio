@@ -39,9 +39,10 @@ Done when: the parsing eval meets every pass bar in `evals/README.md`, including
 - Signup consents: terms, privacy, disclaimer, coach visibility
 - Required install step and push permission
 - Journal and Dashboard (`docs/SCREENS_V2.md` on top of `docs/TODAY_SPEC.md`): macro color tokens; Today as the landing screen with header arrows and Go to date, week strip with calorie rings (view and log past days, Q52 anchors), macro card (4 rings, Eaten and Left, week insight, mini bars, streak with earned moments), sticky compact header, meal cards with P, C, F, kcal chips, weight row and sheet, day notes, floating log bar
-- Progress dashboard: week chart with day tiles, week averages, 30 day consistency grids, weight trend with 7, 30, 90 day ranges
+- Progress dashboard (`docs/PROGRESS_SPEC.md`): week chart with day tiles, week averages, 30 day consistency grids, weight trend with 7, 30, 90 day ranges, all from one `progress_summary` call on the daily aggregates shared with Today; components take a user id for reuse in the M5 client week view
+- Demo data: `pnpm seed:demo` and `--remove`, `profiles.is_test`, test profiles excluded from metrics and roster counts
 - Weight logging and the EWMA trend
-- Events: `signup_started`, `signup_completed`, `onboarding_completed`, `pwa_installed`, `push_enabled`, `weight_logged`, `day_switched`, `streak_milestone`, `day_note_saved`, `macro_card_mode_changed`
+- Events: `signup_started`, `signup_completed`, `onboarding_completed`, `pwa_installed`, `push_enabled`, `weight_logged`, `day_switched`, `streak_milestone`, `day_note_saved`, `macro_card_mode_changed`, `progress_viewed`, `progress_week_changed`, `weight_range_changed`
 
 ### 4. Client loop (F5, F12, F16 disclosure)
 - Coach invite by email with the paid flag set to comped or external; the invited client skips any upgrade step
