@@ -6,8 +6,8 @@ import { getCurrentUser } from "@/core/auth/current-user"
 import { track } from "@/core/events/track"
 import { localToday } from "@/core/time/local-day"
 import { createAdminClient } from "@/lib/supabase/admin"
-import { createClient } from "@/lib/supabase/server"
-import { ageOn, computeTargets, MINIMUM_AGE, type TargetDefaults } from "@/modules/nutrition/targets/formula"
+import { resolveTargetDefaults } from "@/modules/nutrition/targets/defaults"
+import { ageOn, computeTargets, MINIMUM_AGE } from "@/modules/nutrition/targets/formula"
 
 const answers = z.object({
   units: z.enum(["imperial", "metric"]),
@@ -25,74 +25,75 @@ const answers = z.object({
 
 export type OnboardingAnswers = z.infer<typeof answers>
 
-export type FinishResult = { ok: false; error: "underage" | "invalid" | "settings" | "save" }
+/** Why a save failed, so the screen can say what happened (never "connection" unless it was the network). */
+export type FinishResult = { ok: false; error: "underage" | "invalid" | "server" }
+
+const CONSENT_KINDS = ["terms", "privacy", "disclaimer"] as const
 
 /**
- * Saves onboarding (PRD F1): profile, nutrition profile, the first weigh-in
- * (Q56), formula targets (Q54) and the signup consents (Q55), then lands on
- * Today. Under 18 saves nothing (Q61). Date of birth and the medical flag are
- * written with the service role because users cannot change them later.
+ * Saves onboarding (PRD F1) in one transaction (`complete_onboarding`):
+ * profile, nutrition profile, the first weigh-in (Q56), formula targets (Q54)
+ * and signup consents (Q55). Safe to retry. Under 18 saves nothing (Q61).
+ * Target settings resolve from the user's coach, else the default coach, else
+ * app_config, so a coach or a member without a coach never fails.
  */
 export async function finishOnboarding(input: OnboardingAnswers): Promise<FinishResult> {
   const parsed = answers.safeParse(input)
-  if (!parsed.success) return { ok: false, error: "invalid" }
+  if (!parsed.success) {
+    console.error("[onboarding] invalid answers", parsed.error.issues)
+    return { ok: false, error: "invalid" }
+  }
   const a = parsed.data
   const user = await getCurrentUser()
   const today = localToday(user.timezone)
-  if (ageOn(a.dateOfBirth, today) < MINIMUM_AGE) return { ok: false, error: "underage" }
+  const age = ageOn(a.dateOfBirth, today)
+  if (age < MINIMUM_AGE) return { ok: false, error: "underage" }
 
-  const supabase = await createClient()
   const admin = createAdminClient()
-  const { data: profile } = await supabase.from("profiles").select("coach_id, onboarding_completed_at, medical_flag").eq("id", user.id).single()
-  const { data: settings } = profile?.coach_id
-    ? await supabase.from("coach_settings").select("target_defaults").eq("coach_id", profile.coach_id).maybeSingle()
-    : { data: null }
-  const { data: consentVersions } = await supabase.from("app_config").select("value").eq("key", "consent_versions").maybeSingle()
-  if (!settings?.target_defaults) return { ok: false, error: "settings" }
+  const [resolved, { data: consentConfig }] = await Promise.all([
+    resolveTargetDefaults(admin, user.id),
+    admin.from("app_config").select("value").eq("key", "consent_versions").maybeSingle(),
+  ])
+  if (!resolved) {
+    console.error("[onboarding] no target settings: no coach, default coach or app_config.target_defaults", { userId: user.id })
+    return { ok: false, error: "server" }
+  }
 
   let targets
   try {
     targets = computeTargets(
-      { sex: a.sex, ageYears: ageOn(a.dateOfBirth, today), heightCm: a.heightCm, weightKg: a.weightKg, goalWeightKg: a.goalWeightKg, activityLevel: a.activityLevel, goal: a.goal },
-      settings.target_defaults as TargetDefaults
+      { sex: a.sex, ageYears: age, heightCm: a.heightCm, weightKg: a.weightKg, goalWeightKg: a.goalWeightKg, activityLevel: a.activityLevel, goal: a.goal },
+      resolved.defaults
     )
-  } catch {
-    return { ok: false, error: "settings" }
+  } catch (error) {
+    console.error("[onboarding] target formula failed", { userId: user.id, source: resolved.source, error })
+    return { ok: false, error: "server" }
   }
 
-  const firstTime = !profile?.onboarding_completed_at
-  const versions = (consentVersions?.value ?? {}) as Record<string, string>
-  const steps = await Promise.all([
-    admin
-      .from("profiles")
-      .update({
-        units: a.units,
-        date_of_birth: a.dateOfBirth,
-        // A medical yes stays until the coach reviews it (Q20); a later no never clears it.
-        medical_flag: Boolean(profile?.medical_flag) || a.medical,
-        onboarding_completed_at: profile?.onboarding_completed_at ?? new Date().toISOString(),
-      })
-      .eq("id", user.id),
-    supabase.from("nutrition_profiles").upsert(
-      { user_id: user.id, goal: a.goal, sex: a.sex, height_cm: a.heightCm, activity_level: a.activityLevel, goal_weight_kg: a.goalWeightKg, has_scale: a.hasScale, updated_at: new Date().toISOString() },
-      { onConflict: "user_id" }
-    ),
-    supabase.from("weights").upsert({ user_id: user.id, date: today, weight_kg: Math.round(a.weightKg * 100) / 100, updated_at: new Date().toISOString() }, { onConflict: "user_id,date" }),
-    supabase.from("targets").insert({
-      user_id: user.id,
-      calories: targets.calories,
-      protein_g: targets.proteinG,
-      carbs_g: targets.carbsG,
-      fat_g: targets.fatG,
-      set_by: "formula",
-      note: targets.note,
-    }),
-    supabase.from("consents").insert(
-      (["terms", "privacy", "disclaimer"] as const).map((kind) => ({ user_id: user.id, kind, version: versions[kind] ?? "draft-2026-10" }))
-    ),
-  ])
-  if (steps.some((s) => s.error)) return { ok: false, error: "save" }
+  const versions = (consentConfig?.value ?? {}) as Record<string, string>
+  const { data: firstTime, error } = await admin.rpc("complete_onboarding", {
+    p_user_id: user.id,
+    p: {
+      units: a.units,
+      date_of_birth: a.dateOfBirth,
+      medical: a.medical,
+      goal: a.goal,
+      sex: a.sex,
+      height_cm: a.heightCm,
+      activity_level: a.activityLevel,
+      goal_weight_kg: a.goalWeightKg,
+      has_scale: a.hasScale,
+      weight_kg: Math.round(a.weightKg * 100) / 100,
+      local_date: today,
+      targets: { calories: targets.calories, protein_g: targets.proteinG, carbs_g: targets.carbsG, fat_g: targets.fatG, note: targets.note },
+      consent_versions: Object.fromEntries(CONSENT_KINDS.map((k) => [k, versions[k] ?? "draft-2026-10"])),
+    },
+  })
+  if (error) {
+    console.error("[onboarding] save failed", { userId: user.id, code: error.code, message: error.message, details: error.details })
+    return { ok: false, error: "server" }
+  }
 
-  if (firstTime) await track("onboarding_completed", { goal: a.goal, has_scale: a.hasScale, medical: a.medical, units: a.units })
+  if (firstTime) await track("onboarding_completed", { goal: a.goal, has_scale: a.hasScale, medical: a.medical, units: a.units, targets_source: resolved.source })
   redirect("/today")
 }

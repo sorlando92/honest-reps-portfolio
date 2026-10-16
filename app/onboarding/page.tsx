@@ -4,7 +4,8 @@ import { redirect } from "next/navigation"
 import { getCurrentUser } from "@/core/auth/current-user"
 import { localToday } from "@/core/time/local-day"
 import { createClient } from "@/lib/supabase/server"
-import type { TargetDefaults } from "@/modules/nutrition/targets/formula"
+import { createAdminClient } from "@/lib/supabase/admin"
+import { resolveTargetDefaults } from "@/modules/nutrition/targets/defaults"
 import { OnboardingFlow } from "./onboarding-flow"
 
 export const metadata: Metadata = { title: "Welcome" }
@@ -24,16 +25,17 @@ async function Onboarding() {
   const user = await getCurrentUser()
   if (user.onboardingCompleted) redirect("/today")
   const supabase = await createClient()
-  const { data: profile } = await supabase.from("profiles").select("units, coach_id").eq("id", user.id).single()
-  const { data: settings } = profile?.coach_id
-    ? await supabase.from("coach_settings").select("target_defaults").eq("coach_id", profile.coach_id).maybeSingle()
-    : { data: null }
+  const [{ data: profile }, resolved] = await Promise.all([
+    supabase.from("profiles").select("units").eq("id", user.id).single(),
+    // The same settings the save uses, so the preview matches what is saved.
+    resolveTargetDefaults(createAdminClient(), user.id),
+  ])
 
   return (
     <OnboardingFlow
       initialUnits={profile?.units === "metric" ? "metric" : "imperial"}
       today={localToday(user.timezone)}
-      targetDefaults={(settings?.target_defaults as TargetDefaults | undefined) ?? null}
+      targetDefaults={resolved?.defaults ?? null}
     />
   )
 }

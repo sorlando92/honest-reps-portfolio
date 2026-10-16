@@ -18,10 +18,27 @@ const isLocal = /^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?/.test(url)
 
 const admin = createClient(url, serviceKey, { auth: { persistSession: false, autoRefreshToken: false } })
 
+// PRD F1 target formula (ARCHITECTURE "Target formula defaults", Q29, Q54).
+// Each coach's copy lives in coach_settings; app_config keeps the platform
+// copy that onboarding falls back to when a user has no coach (bug 2026-10-16).
+const TARGET_DEFAULTS = {
+  activity_multipliers: { sedentary: 1.2, light: 1.375, moderate: 1.55, very_active: 1.725, extra_active: 1.9 },
+  goal_calorie_adjustment_pct: { lose_fat: -20, maintain: 0, build_muscle: 10, performance: 5 },
+  protein_g_per_lb_goal_weight: { lose_fat: 1.0, maintain: 0.8, build_muscle: 1.0, performance: 0.9 },
+  protein_cap_g: 220,
+  calorie_floor: "bmr",
+  // Q54: fat as a share of calories by goal, a floor per lb of goal weight,
+  // carbs fill the rest with a minimum (fat gives way first, then calories).
+  fat_pct_of_calories: { lose_fat: 30, maintain: 30, build_muscle: 25, performance: 25 },
+  fat_min_g_per_lb_goal_weight: 0.3,
+  carbs_min_g: 50,
+}
+
 // Defaults from the PRD, ARCHITECTURE "Target formula defaults" and the PM
 // decisions on QUESTIONS.md Q17 and Q29. All editable in Coach settings.
 // Days are 0 = Sunday through 6 = Saturday.
 const APP_CONFIG: Record<string, unknown> = {
+  target_defaults: TARGET_DEFAULTS,
   product_name: "Honest Reps",
   // Q55: legal documents stay "draft-2026-10" until Sean approves the final text.
   consent_versions: { coach_visibility: "2026-10-12", terms: "draft-2026-10", privacy: "draft-2026-10", disclaimer: "draft-2026-10" },
@@ -44,18 +61,7 @@ const COACH_SETTINGS = {
     review_prep_day: 6, // Saturday
     review_prep_at: "22:00",
   },
-  target_defaults: {
-    activity_multipliers: { sedentary: 1.2, light: 1.375, moderate: 1.55, very_active: 1.725, extra_active: 1.9 },
-    goal_calorie_adjustment_pct: { lose_fat: -20, maintain: 0, build_muscle: 10, performance: 5 },
-    protein_g_per_lb_goal_weight: { lose_fat: 1.0, maintain: 0.8, build_muscle: 1.0, performance: 0.9 },
-    protein_cap_g: 220,
-    calorie_floor: "bmr",
-    // Q54: fat as a share of calories by goal, a floor per lb of goal weight,
-    // carbs fill the rest with a minimum (fat gives way first, then calories).
-    fat_pct_of_calories: { lose_fat: 30, maintain: 30, build_muscle: 25, performance: 25 },
-    fat_min_g_per_lb_goal_weight: 0.3,
-    carbs_min_g: 50,
-  },
+  target_defaults: TARGET_DEFAULTS,
   reminder_defaults: { evening_nudge: "19:00", checkin_reminder: "08:00", checkin_followup: "19:00" },
 }
 

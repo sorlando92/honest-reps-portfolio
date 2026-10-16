@@ -295,3 +295,12 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
 - Every app screen sends users who have not finished onboarding to `/onboarding`; finished users are sent back to Today. Existing accounts (Sean's) go through onboarding on their next open, which gives them targets.
 - e2e: full onboarding with a database check of everything saved, the under 18 stop, axe and 44pt checks. The sign in helper marks other test users onboarded with fixed test targets.
 - Not yet: the required install step and push permission (next, with Web Push), Q61's cleanup of under 18 accounts (with account deletion in step 6).
+
+### 2026-10-16: fix, onboarding failed for the coach account
+
+- Bug: on hosted, Sean's onboarding showed no targets and then "Your answers were not saved. Check your connection and try again." Cause, confirmed in the data: Sean's profile is the coach, with `coach_id` NULL; onboarding read target settings only from the user's own coach, found none, so the preview had nothing to compute and the save returned early (no rows were written). The message wrongly blamed the connection. Runtime logs for the attempt were gone (Vercel Hobby keeps about 30 minutes).
+- Fix: target settings resolve from the user's coach, else the default coach (`app_config.default_coach_id`), else `app_config.target_defaults` (new seeded key), layered so an older settings row missing a key still works. The targets screen always shows protein, carbs, fat and calories before Start logging, computed with the same settings the save uses.
+- The save is one transaction, `complete_onboarding()` (migration 20261016000002, additive, server only): retrying with the same answers adds nothing; a weigh-in is one per day, consents are added only when that kind and version is missing, targets only when they differ from the latest; date of birth is set once; a medical yes is kept.
+- Errors: causes are logged on the server (`[onboarding] ...`); the screen says "Could not reach Honest Reps..." only for network failures, otherwise that the problem is on our side; both say nothing is saved twice.
+- Tests: unit (settings order and fill), database (retry, partial earlier save, coach without a coach, rollback, server only), e2e (coach account onboards itself, member with no coach, retry after a failed save).
+- Hosted: migration applied; seed added `app_config.target_defaults`.

@@ -134,10 +134,16 @@ export function OnboardingFlow({ initialUnits, today, targetDefaults }: { initia
         hasScale: d.hasScale!,
         medical: d.medical!,
         consents: { terms: true, privacy: true, disclaimer: true },
-      }).catch(() => ({ ok: false as const, error: "save" as const }))
+      }).catch(() => ({ ok: false as const, error: "network" as const }))
       // Success redirects to Today; anything returned is a problem.
       if (result?.error === "underage") return setStep("underage")
-      setError("Your answers were not saved. Check your connection and try again.")
+      setError(
+        result?.error === "network"
+          ? "Could not reach Honest Reps. Check your connection and try again. Nothing is saved twice."
+          : result?.error === "invalid"
+            ? "Some answers need another look. Go back and check them."
+            : "Your answers were not saved because of a problem on our side. Try again in a moment. Nothing is saved twice."
+      )
     })
   }
 
@@ -153,7 +159,8 @@ export function OnboardingFlow({ initialUnits, today, targetDefaults }: { initia
     )
   }
 
-  const canGoOn = step === "no_scale" || valid[step as (typeof STEPS)[number]]
+  // PRD F1: targets are shown before the user can finish.
+  const canGoOn = step === "no_scale" || (step === "targets" ? targets !== null : valid[step as (typeof STEPS)[number]])
 
   return (
     <div className="flex flex-1 flex-col">
@@ -310,7 +317,9 @@ export function OnboardingFlow({ initialUnits, today, targetDefaults }: { initia
               ))}
             </dl>
           ) : (
-            <p className="text-body">Targets are set when you finish.</p>
+            <p role="alert" className="text-body">
+              We could not work out your targets. Go back and check your answers.
+            </p>
           )}
         </Screen>
       )}

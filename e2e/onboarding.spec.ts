@@ -100,3 +100,93 @@ test("under 18 stops at the date of birth and saves nothing", async ({ page }, i
   await page.getByRole("button", { name: "Sign out" }).click()
   await page.waitForURL("**/sign-in")
 })
+
+/** Answers every onboarding question up to the targets screen. */
+async function answerAll(page: Page) {
+  await next(page)
+  await choose(page, "Goal", "Build muscle")
+  await next(page)
+  await choose(page, "Sex", "Female")
+  await next(page)
+  await page.getByLabel("Date of birth").fill("1988-08-08")
+  await next(page)
+  await page.getByLabel("Feet").fill("5")
+  await page.getByLabel("Inches").fill("6")
+  await next(page)
+  await page.getByLabel("Current weight (lb)").fill("150")
+  await next(page)
+  await choose(page, "Activity", "Light")
+  await next(page)
+  await choose(page, "Food scale", "Yes")
+  await next(page)
+  await choose(page, "Medical condition", "No")
+  await next(page)
+  await page.getByLabel("I understand this is general nutrition information, not medical advice.").check()
+  await page.getByLabel("I accept the terms.").check()
+  await page.getByLabel("I accept the privacy policy.").check()
+  await next(page)
+  // PRD F1: the targets are on screen before Start logging.
+  await expect(page.getByRole("heading", { name: "Your starting targets" })).toBeVisible()
+  for (const label of ["Protein", "Carbs", "Fat", "Calories"]) await expect(page.getByText(label, { exact: true })).toBeVisible()
+  await expect(page.getByRole("button", { name: "Start logging" })).toBeEnabled()
+}
+
+async function userId(email: string) {
+  const { data } = await admin.auth.admin.listUsers({ perPage: 1000 })
+  return data.users.find((u) => u.email === email)!.id
+}
+
+async function saved(id: string) {
+  const [targets, weights, consents] = await Promise.all([
+    admin.from("targets").select("id", { count: "exact", head: true }).eq("user_id", id),
+    admin.from("weights").select("id", { count: "exact", head: true }).eq("user_id", id),
+    admin.from("consents").select("id", { count: "exact", head: true }).eq("user_id", id).neq("kind", "coach_visibility"),
+  ])
+  return { targets: targets.count, weights: weights.count, consents: consents.count }
+}
+
+test("a coach account with no coach of its own onboards itself (bug 2026-10-16)", async ({ page }, info) => {
+  const email = `e2e-coachself-${info.project.name}-${Date.now()}@example.test`
+  await signInWithCode(page, email, { onboarded: false })
+  const id = await userId(email)
+  await admin.from("profiles").update({ role: "coach", coach_id: null }).eq("id", id)
+  await page.reload()
+  await answerAll(page)
+  await page.getByRole("button", { name: "Start logging" }).click()
+  await page.waitForURL("**/today")
+  expect(await saved(id)).toEqual({ targets: 1, weights: 1, consents: 3 })
+})
+
+test("a member with no coach gets targets from the default coach's settings", async ({ page }, info) => {
+  const email = `e2e-nocoach-${info.project.name}-${Date.now()}@example.test`
+  await signInWithCode(page, email, { onboarded: false })
+  const id = await userId(email)
+  await admin.from("profiles").update({ coach_id: null }).eq("id", id)
+  await page.reload()
+  await answerAll(page)
+  await page.getByRole("button", { name: "Start logging" }).click()
+  await page.waitForURL("**/today")
+  expect(await saved(id)).toEqual({ targets: 1, weights: 1, consents: 3 })
+})
+
+test("a save that fails can be retried and nothing is saved twice", async ({ page }, info) => {
+  const email = `e2e-retry-${info.project.name}-${Date.now()}@example.test`
+  await signInWithCode(page, email, { onboarded: false })
+  await answerAll(page)
+
+  // The first save never reaches the server.
+  let blocked = false
+  await page.route("**/onboarding", async (route) => {
+    if (route.request().method() === "POST" && !blocked) {
+      blocked = true
+      return route.abort("internetdisconnected")
+    }
+    return route.continue()
+  })
+  await page.getByRole("button", { name: "Start logging" }).click()
+  await expect(page.getByText("Could not reach Honest Reps. Check your connection and try again. Nothing is saved twice.")).toBeVisible()
+
+  await page.getByRole("button", { name: "Start logging" }).click()
+  await page.waitForURL("**/today")
+  expect(await saved(await userId(email))).toEqual({ targets: 1, weights: 1, consents: 3 })
+})
