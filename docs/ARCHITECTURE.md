@@ -60,6 +60,7 @@ Core
 - `push_subscriptions` (user_id, endpoint, keys)
 - `subscriptions` (user_id, stripe_customer_id, stripe_subscription_id, status)
 - `consents` (user_id, kind: terms|privacy|disclaimer|coach_visibility|mo_disclosure, version, accepted_at, email_hash). On account deletion `user_id` is set to null and `email_hash` is filled; rows are purged 3 years after deletion.
+- `day_notes` (user_id, local_date, body, updated_at; unique on user_id plus local_date) — one note per local day on Today (docs/SCREENS_V2.md). Owner reads and writes; the assigned coach reads only.
 - `events` (id, user_id, name, props jsonb, created_at) — product analytics only (PRD section 5). `user_id` is set to null on account deletion.
 - `ai_calls` (id, user_id, prompt_id: P1..P5, prompt_version, editable_layer_version_id, model, latency_ms, input_tokens, output_tokens, outcome: ok|retried|fallback|error, validation: passed|failed_then_passed|failed, error, input, output jsonb, created_at) — one row per LLM call. `input` and `output` are the audit trail a saved food entry copies, so the browser never supplies them. Readable by the coach and the server only. Created in M1 with the first LLM call.
 

@@ -27,11 +27,26 @@ Follow the system light or dark setting. Both themes are first class.
 | `accent-strong` | #15803D | #39E27A | Accent used as text or thin graphics (progress bars, chart line). Meets contrast. |
 | `caution` | #B45309 | #F59E0B | System warnings only (sync failed, overdue for coach). Never for food totals. |
 | `danger` | #B91C1C | #F87171 | Destructive actions only (delete account) |
+| `macro-protein` | #DB2777 | #F472B6 | Protein ring, chip, chart segment, legend dot |
+| `macro-carbs` | #2563EB | #60A5FA | Carbs |
+| `macro-fat` | #7C3AED | #A78BFA | Fat (purple, so it never reads as the action green) |
+| `macro-calories` | #EA580C | #FB923C | Calories |
+
+Macro colors (SCREENS_V2, Sean 2026-10-15) are used only on macro data: rings, chips, chart segments and legend dots. Each has a 15% opacity track or chip background. Color is never the only signal: every ring and chip also carries a label or letter (P, C, F, kcal). Over target, a ring completes and its center shows "+12 over" in `text-muted`. Text on a macro chip is checked with axe in both themes and darkened if needed.
+
+Measured (engineering, 2026-10-15): as ring and bar graphics every macro color passes 3:1 on \`surface\` in both themes, but in light mode none passes 4.5:1 as text on its own 15% chip (2.7 to 4.2), and \`macro-calories\` fails as text on white. So macro numbers and letters use text tokens:
+
+| Token | Light | Dark | Contrast on its chip (light) |
+|---|---|---|---|
+| \`macro-protein-text\` | #9D174D | #F472B6 | 5.8 |
+| \`macro-carbs-text\` | #1E40AF | #60A5FA | 6.5 |
+| \`macro-fat-text\` | #5B21B6 | #A78BFA | 6.6 |
+| \`macro-calories-text\` | #9A3412 | #FB923C | 5.6 |
 
 Rules
 - Never put `accent` as text on a light background; use `accent-strong`.
 - Progress bar fill uses `accent-strong` on a `border` track.
-- No other colors. No gradients. No shadows.
+- No other colors: the green accent is for actions only, the four macro colors only for macro data. No gradients. No shadows.
 
 ## Typography
 
@@ -80,10 +95,10 @@ Stacks for drill-ins, bottom sheets for short tasks (log confirm, weight entry, 
 
 ## Components
 
-- **Log bar:** pinned above the tab bar on Today. Never more than 3 controls at 375px (PM 2026-10-15, Q47):
-  - Empty field: text field ("What did you eat?"), "Search foods" icon button, barcode icon button.
-  - Once the user types: search and barcode collapse and the send button appears (text field plus send).
-  - On focus, shows quick add chips above it. The camera icon arrives with photo logging (post-MVP) and must fit the 3 control rule.
+- **Log bar:** a floating pill above the tab bar on Today (SCREENS_V2; supersedes the Q47 layout). The only entry point for logging; no floating "+" button.
+  - Empty: leading search glyph (44pt, opens food search), placeholder "What did you eat?", trailing barcode icon (44pt).
+  - Typing: the trailing icon becomes send.
+  - On focus, shows quick add chips above it. The camera icon appears only when photo logging ships (post-MVP), locked for free users.
 - **Quick add chip:** pill, `surface` fill, food name plus calories. One tap logs it.
 - **Stat block:** big number + label + thin progress bar.
 - **Confirmation card (bottom sheet):** list of parsed items. Each row: name, amount stepper, macros line, swap and remove. Flagged rows have a `caution` dot and "Check this" label with alternatives. Primary button "Log it." Secondary "Add item."
@@ -94,11 +109,15 @@ Stacks for drill-ins, bottom sheets for short tasks (log confirm, weight entry, 
   - Hand portion row: small "Hand portion" tag in `text-muted`. Not flagged.
   - Meat, fish, grains and pasta: one-tap segmented toggle Raw / Cooked, plus Dry for grains and pasta. 44pt segments.
 - **Entry row:** inside a meal section. Title (the user's raw input on one line, truncated; item names when there was none), calories, protein. Tap to show the items. Swipe left for edit and delete. Estimated entries show "est." in `caption` style, `text-muted`.
-- **Week strip:** 7 day cells, Monday to Sunday: weekday letter (`label`) over date number. Selected day has `accent` fill with `on-accent` text. Status dot under past and current days: filled `accent-strong` (logged, on target), outline `text-muted` (logged, not on target), none (nothing logged). Future days disabled. Each cell is at least 44pt and labeled for screen readers ("Wednesday, October 15, logged, on target").
-- **Summary card:** `surface` card. Calories remaining in `display` with "left" (`label`), a thin `accent-strong` bar on a `border` track and the caption "1,450 eaten of 2,100". Protein remaining in `number-lg` with "g left" and a bar. Carbs and fat as a small stat pair with mini bars. Over target: "+120 over" in `text-muted`, bar full, never red. Tap toggles Remaining and Eaten.
-- **Insight row:** one `body` line ("This week: 4 of 6 days on target. Protein 5 of 6.") with the streak ("6 day streak", `text-muted`) at the right. Opens the Week sheet: 7 bars of calories with the target as a line, protein markers, and a text summary for screen readers.
-- **Meal section:** header with the meal name (`headline`), subtotal calories and protein (`caption`, `text-muted`), an overflow menu (copy) and a 44pt "+" icon button. Entry rows below. Empty sections show only the header.
-- **Meal chip row:** on the confirmation card and in edit. Four pill chips (Breakfast, Lunch, Dinner, Snack), single select, selected chip in `accent` fill. 44pt targets.
+- **Week strip:** 7 day cells, Monday to Sunday: weekday letter (`label`) over the date inside a small ring filled to calories eaten over target (`macro-calories` on its 15% track, capped at full). Selected day boxed with a 1px `text` border; a dot under today. Future days disabled. Each cell is at least 44pt and labeled for screen readers ("Wednesday, October 15, 1,850 of 2,100 calories").
+- **Macro ring:** a circular progress ring in a macro color on its 15% track, with the label (Protein, Carbs, Fat, Calories) under it. Center: eaten in bold `number-lg` scale with "of 158" in `caption`; Left mode shows "38" and "left". Over: full ring, center "+12 over" in `text-muted`. Screen readers get one sentence ("Protein, 120 of 158 grams").
+- **Macro card:** `surface` card, 2 pages with page dots. Page 1: 4 macro rings, Protein, Carbs, Fat, Calories. Tap toggles Eaten and Left. Page 2: week insight line, 7 mini bars of calories against a target line with protein markers, and the streak.
+- **Sticky compact header:** once the macro card scrolls out of view, a one line bar pins under the title: 4 small rings, each with "eaten of target". Hidden again when the card is back in view.
+- **Meal card:** `surface` card per meal. Header with the meal name (`headline`), a "…" menu (copy) and a 44pt "+" icon button. Under the header, a chip row of subtotals: P, C, F and kcal, each a pill with its letter and number in the macro color on the 15% background. Entry rows below. Empty cards show the header, zero chips and "+".
+- **Consistency grid:** 30 cells, oldest to newest, in rows of 10. Food log: `accent-strong` fill when on target, `border` fill when logged off target, outline only when not logged. Weigh-ins: `text` fill when weighed. Caption under each grid. Screen readers get the caption plus "most recent: logged today".
+- **Week chart:** 7 stacked bars, Monday to Sunday: calories from protein, carbs and fat in macro colors (4, 4 and 9 calories per gram), a dashed `text-muted` calorie target line, selected day outlined. Below it, 4 tiles for the selected day with color dots. A text summary for screen readers.
+- **Day note:** a single multiline field at the end of Today, placeholder "Add a note", saved on blur with a quiet "Saved." status.
+- **Meal picker chips:** on the confirmation card and in edit. Four pill chips (Breakfast, Lunch, Dinner, Snack), single select, selected chip in `accent` fill. 44pt targets.
 - **Weight row:** "Weight" with today's weigh-in (`headline`) or a "Log weight" text button, and "Trend 182.4 lb, down 0.6 this week" in `caption`. Opens the weight sheet.
 - **Habit row:** checkbox (44pt), habit name, streak count.
 - **Locked element:** standard component with a small lock icon and muted overlay; tapping opens the upgrade screen. Report preview is blurred.
@@ -111,25 +130,31 @@ Stacks for drill-ins, bottom sheets for short tasks (log confirm, weight entry, 
 ### Onboarding: food scale step
 "Do you have a food scale?" with two large buttons, Yes and Not yet. Not yet opens one skippable screen with the copy below and a 4 row hand portion guide (palm, fist, cupped hand, thumb), each row an outline icon, the hand portion name and what it measures.
 
-### Today
-Spec: `docs/TODAY_SPEC.md` (Today v2).
-1. Header ("Today", or "Wed, Oct 15" on another day; tap for a date picker; "Today" text button when another day is selected) and week strip
-2. Summary card (calories and protein remaining, carbs and fat)
-3. Insight row with logging streak
-4. Check-in card when due (paid) or quiet coaching card (free)
-5. Meal sections: Breakfast, Lunch, Dinner, Snacks
-6. Weight row
-7. Log bar pinned above tab bar
+### Today (journal, the landing screen)
+Specs: `docs/SCREENS_V2.md` on top of `docs/TODAY_SPEC.md`.
+1. Header "‹ Today ›" (other days "‹ Wed, Oct 15 ›"), overflow menu with "Go to date"
+2. Week strip with calorie rings
+3. Macro card (rings; week insight, mini bars and streak)
+4. Sticky compact header once the macro card scrolls away
+5. Check-in card when due (paid) or quiet coaching card (free)
+6. Meal cards: Breakfast, Lunch, Dinner, Snacks, each with its P, C, F, kcal chip row
+7. Weight row
+8. Day note
+9. Log bar floating above the tab bar
 
-New user: targets shown, sections empty, log bar focused with placeholder "2 eggs and toast". No tutorial. Before targets exist, the summary card shows eaten totals and "Set your targets".
+New user: targets shown, meal cards empty, log bar focused. No tutorial. Before targets exist, the rings show eaten totals and "Set your targets".
 
 ### Log confirmation
 Bottom sheet over Today. Items, edits, flags, "Log it." Pending offline items show "Pending, will finish when you're online." An unconfirmed card (draft) is kept on the device and reopens with the app. Barcode results carry the caption "Food data from Open Food Facts" (`caption` style, links to openfoodfacts.org).
 
-### Progress
-1. Weight trend chart (smoothed line in `accent-strong`, raw dots in `text-muted` at 40% opacity), 7 and 28 day change
-2. Weekly cards: adherence, protein days, weighed share, habits (paid), feel and performance (paid)
-3. Weekly reports list (paid; blurred preview for free)
+### Progress (dashboard)
+Spec: `docs/SCREENS_V2.md` "Progress (dashboard)".
+1. Header "Progress" with today's date below
+2. Week chart (stacked macro bars, target line) and 4 tiles for the selected day
+3. Week averages: average calories, average protein, days on target, protein days
+4. Consistency, 30 days: Food log and Weigh-ins grids side by side
+5. Weight trend (7, 30, 90 days; line in `text`, raw dots in `text-muted` at 40% opacity), "Log weight"
+6. Weekly reports list (paid; blurred preview for free, post-MVP)
 
 ### Check-in (paid)
 One question per screen, progress dots at top, big tap targets for 1 to 5 scales, photo step with skip, short text last, Submit. Target completion under 60 seconds.
@@ -172,6 +197,14 @@ Examples
 | Estimated item tag | Estimated |
 | Estimated entry marker | est. |
 | Calories label | left |
+| Ring center | 120 / of 158 |
+| Ring, Left mode | 38 / left |
+| Ring, over | +12 over |
+| Consistency caption | 22 of 30 days logged |
+| Weigh-in caption | 12 weigh-ins |
+| Consistency empty | No logs yet |
+| Weigh-ins empty | No weigh-ins yet |
+| Day note placeholder | Add a note |
 | Week insight | This week: 4 of 6 days on target. Protein 5 of 6. |
 | Streak | 6 day streak |
 | Streak milestone | 7 days straight. That's the habit. |

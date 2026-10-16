@@ -43,6 +43,18 @@ Recommendation: step 3 builds the consent step and records acceptance against ve
 **Q56. [F1] Where weight goes in onboarding, and the weigh-in day.** Onboarding asks current weight; F4 logs weights by day.
 Recommendation: onboarding saves the current weight as today's weigh-in in \`weights\` (one row per local day, re-logging the same day replaces it), so the trend starts at onboarding and nutrition_profiles keeps no weight copy (as ARCHITECTURE says). Blocks: nothing.
 
+**Q57. [F4, F7, SCREENS_V2 Progress] Weighed share on Progress.** PRD F7 says free users see the weighed share ("Weighed: X% of entries") in the Progress weekly cards, and it is the precision first signal. SCREENS_V2's dashboard has no place for it.
+Recommendation: add "Weighed" as a fifth stat in Week averages ("Weighed: 64% of items"). Blocks: nothing.
+
+**Q58. [SCREENS_V2 Today 8, F8] Day note limits and screening.** Notes are visible to the coach; the P5 medical screen runs only on messages.
+Recommendation: 1,000 characters with a live counter near the limit; no AI screen in MVP. When messaging ships with P5, run it on notes too and raise the same coach flag. Blocks: nothing.
+
+**Q59. [SCREENS_V2] Rings and charts before targets exist.** Week strip rings, the week chart target line and "on target" counts need a target.
+Recommendation: before onboarding sets targets, week strip rings show only their track, the week chart has no target line, and days on target, protein days and the Food log grid's on target fill are hidden (logged days show the muted fill). Supersedes Q51 (the outline dot is gone with the week strip rings). Blocks: nothing.
+
+**Q60. [SCREENS_V2 Progress 5] Default weight trend range.**
+Recommendation: 30 days, remembered on the device like the macro card mode. Blocks: nothing.
+
 ### Resolved by the PM (Today v2, 2026-10-15)
 
 - **Q49** Approved: `meal_tag` renamed to `meal`, backfilled from local time, not null, plus `copied_from_entry_id`. Applied to hosted after an export of `food_entries` (kept outside the repo): 4 rows before (meal null), 4 after (3 breakfast, 1 lunch).

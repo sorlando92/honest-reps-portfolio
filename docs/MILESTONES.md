@@ -38,9 +38,10 @@ Done when: the parsing eval meets every pass bar in `evals/README.md`, including
 - Medical screening question; yes flags the coach
 - Signup consents: terms, privacy, disclaimer, coach visibility
 - Required install step and push permission
-- Today v2 (`docs/TODAY_SPEC.md`) part 2: header and week strip with status dots (view and log past days), summary card, week insight row and Week sheet, logging streak with earned moments, weight row and weight sheet
-- Weight logging and the EWMA trend with 7 and 28 day change
-- Events: `signup_started`, `signup_completed`, `onboarding_completed`, `pwa_installed`, `push_enabled`, `weight_logged`, `day_switched`, `streak_milestone`
+- Journal and Dashboard (`docs/SCREENS_V2.md` on top of `docs/TODAY_SPEC.md`): macro color tokens; Today as the landing screen with header arrows and Go to date, week strip with calorie rings (view and log past days, Q52 anchors), macro card (4 rings, Eaten and Left, week insight, mini bars, streak with earned moments), sticky compact header, meal cards with P, C, F, kcal chips, weight row and sheet, day notes, floating log bar
+- Progress dashboard: week chart with day tiles, week averages, 30 day consistency grids, weight trend with 7, 30, 90 day ranges
+- Weight logging and the EWMA trend
+- Events: `signup_started`, `signup_completed`, `onboarding_completed`, `pwa_installed`, `push_enabled`, `weight_logged`, `day_switched`, `streak_milestone`, `day_note_saved`, `macro_card_mode_changed`
 
 ### 4. Client loop (F5, F12, F16 disclosure)
 - Coach invite by email with the paid flag set to comped or external; the invited client skips any upgrade step
@@ -52,7 +53,7 @@ Done when: the parsing eval meets every pass bar in `evals/README.md`, including
 
 ### 5. Coach view (F9 subset, F10 subset)
 - Roster sorted by flags: logged under 4 of the last 7 days, check-in overdue, medical flag, unread reply
-- Client week view: daily totals against targets, entries, weight trend, check-in answers and photos
+- Client week view: daily totals against targets, entries, weight trend, day notes, check-in answers and photos
 - Reply composer on the check-in
 - Target edit for each client (calories, protein, carbs, fat) with the BMR floor and a coach override confirmation, saved with `set_by = coach` (Q45)
 - Events: `review_card_opened`, `review_reply_sent` (server only)

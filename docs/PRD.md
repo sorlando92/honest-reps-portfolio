@@ -52,7 +52,7 @@ Guardrails:
 
 ### Metrics and instrumentation (emit from day one)
 
-Events: `signup_started`, `signup_completed`, `onboarding_completed` (the first time the user reaches Today after onboarding), `pwa_installed`, `push_enabled`, `food_logged` (method: text, photo, barcode, search, manual, quick_add; meal; confidence; offline; counts per amount source), `food_entry_corrected`, `food_entry_deleted`, `weight_logged`, `habit_checked`, `checkin_started`, `checkin_submitted` (on_time boolean), `report_viewed`, `message_sent` (role), `upgrade_viewed` (source), `upgrade_completed`, `subscription_canceled`, `review_card_opened`, `review_reply_sent` (seconds_on_card, draft_edit_distance), `meal_copied` (meal, from_date), `day_switched` (days_from_today), `streak_milestone` (days).
+Events: `signup_started`, `signup_completed`, `onboarding_completed` (the first time the user reaches Today after onboarding), `pwa_installed`, `push_enabled`, `food_logged` (method: text, photo, barcode, search, manual, quick_add; meal; confidence; offline; counts per amount source), `food_entry_corrected`, `food_entry_deleted`, `weight_logged`, `habit_checked`, `checkin_started`, `checkin_submitted` (on_time boolean), `report_viewed`, `message_sent` (role), `upgrade_viewed` (source), `upgrade_completed`, `subscription_canceled`, `review_card_opened`, `review_reply_sent` (seconds_on_card, draft_edit_distance), `meal_copied` (meal, from_date), `day_switched` (days_from_today), `streak_milestone` (days), `day_note_saved`, `macro_card_mode_changed` (mode: eaten, left).
 
 Coach review time = time from `review_card_opened` to `review_reply_sent`.
 
@@ -121,31 +121,38 @@ Acceptance
   - **Pending:** a text or photo entry captured offline. Shows on the timeline as pending and does not count. When back online it parses automatically and saves without asking again; low-confidence items become flagged. The user is notified only if something was flagged.
 - Target: a repeat meal logs in under 5 seconds; a new described meal in under 20 seconds.
 
-### F3. Today (free)
-Story: as a user, I see in one glance what I have left today, how my week is going, and log in the right place fast.
+### F3. Today, the journal (free)
+Story: as a user, I see in one glance what I have eaten against my targets, how my week is going, and log in the right place fast.
 
-Full spec: `docs/TODAY_SPEC.md` (Today v2, approved by Sean 2026-10-15). Layout top to bottom: header and week strip, summary card, week insight row with logging streak, coach or check-in card, meal sections, weight row, log bar.
+Specs: `docs/SCREENS_V2.md` (Journal and Dashboard, approved by Sean 2026-10-15) on top of `docs/TODAY_SPEC.md`; SCREENS_V2 wins where they differ. Today is the landing screen. Layout top to bottom: header, week strip, macro card (rings, then week insight and streak), sticky compact header, coach or check-in card, meal cards, weight row, day note, log bar.
 
 Acceptance
-- Header: "Today" when today is selected, else the weekday and date ("Wed, Oct 15"). A Monday to Sunday week strip with a status dot per past or current day: filled `accent-strong` when logged and on target (calories within the app_config adherence range), outline `text-muted` when logged but not on target, none when nothing was logged. Swipe for earlier weeks, tap the title for a date picker, future days disabled, a "Today" text button when another day is selected.
-- Summary card: calories remaining as a large number with "left", a thin bar and "1,450 eaten of 2,100"; protein remaining with "g left" and a bar; carbs and fat as a small pair with mini bars. Over target shows "+120 over" in muted gray. Never red, never a warning tone. Tap toggles Remaining and Eaten, remembered on the device. Before targets exist: eaten totals only and "Set your targets".
-- Week insight row: "This week: 4 of 6 days on target. Protein 5 of 6." counting Monday through the selected day (protein day hit at 90% of target, app_config). Hidden until the user has logged on a day this week. Tap opens a Week sheet: calories per day against the target line, protein markers, and a text summary for screen readers.
-- Logging streak at the right of the insight row ("6 day streak"): consecutive local days with at least one food entry; today without an entry yet does not break it. Earned moment at 7, 14, 30, 60 and 100 days, at most once per day.
+- Header: "‹ Today ›"; the arrows move one day and the title shows "Wed, Oct 15" on other days. Overflow menu with "Go to date". Future days disabled.
+- Week strip, Monday to Sunday: each day shows its date inside a small ring filled to calories eaten over the calorie target (calories color, capped at full). Selected day boxed, a dot under today. Swipe for earlier weeks. Tapping a day loads it.
+- Macro card, 2 pages with dots. Page 1: 4 rings in order Protein, Carbs, Fat, Calories, each in its macro color with a text label; center shows eaten in bold with "of 158" below. Tap switches to Left mode ("38" and "left"), remembered on the device. Over target: the ring completes and the center shows "+12 over" in muted gray. Never red, never a warning color. Before targets exist: eaten totals only and "Set your targets". Page 2: "This week: 4 of 6 days on target. Protein 5 of 6." counting Monday through the selected day (on target per the app_config adherence range, protein hit at 90% of target), 7 mini bars of calories against the target line with a protein marker on hit days, and the logging streak ("6 day streak": consecutive local days with at least one entry; today without an entry yet does not break it; earned moment at 7, 14, 30, 60 and 100 days, at most once per day).
+- Sticky compact header: once the macro card scrolls away, one line pins under the title with 4 small rings and "eaten of target" beside each; scrolling back hides it.
 - Paid users: check-in card when due. Free users: one quiet coaching card linking to the upgrade screen.
-- Meal sections replace the timeline: Breakfast, Lunch, Dinner, Snacks, always shown, each with subtotal calories and protein and a 44pt "+" that focuses the log bar with that meal selected. Entries in time order inside a section; each row is titled with what the user typed (raw input, first line, truncated to one line), or the item names when there was no typed input; quick add and favorites log with the title of the entry they came from. Rows show calories, protein, "est." and "Check this"; tap or swipe to edit.
-- Meals auto-assign from the entry's local time: Breakfast 4:00 to 10:59, Lunch 11:00 to 15:59, Dinner 16:00 to 21:59, else Snacks (windows in app_config). The card and edit change it with one tap.
-- Copy a meal from a section's menu: "Copy to today" on a past day, "Copy yesterday's {meal}" on today. Copies are new entries at the current time with the same items, amounts and amount sources; no model call; "Copied."
+- Meal cards: Breakfast, Lunch, Dinner, Snacks, always shown. Header with the name, a "…" menu ("Copy yesterday's {meal}" on today, "Copy to today" on a past day) and a 44pt "+" that focuses the log bar with that meal selected. Under the header, a chip row of P, C, F and kcal subtotals in macro colors. Entries in time order; each row is titled with what the user typed (raw input, first line, truncated to one line), or the item names when there was no typed input; quick add and favorites log with the title of the entry they came from. Rows show calories, protein, "est." and "Check this"; tap or swipe to edit.
+- Meals auto-assign from the entry's local time: Breakfast 4:00 to 10:59, Lunch 11:00 to 15:59, Dinner 16:00 to 21:59, else Snacks (`app_config.meal_windows`). The card and edit change it with one tap. A log on a past day uses that date: at the meal's anchor time when a meal is chosen (`app_config.meal_anchors`), else the current clock time (Q52).
+- Copies are new entries at the current time with the same items, amounts and amount sources; no model call; "Copied."
 - Weight row: today's weigh-in or "Log weight", plus "Trend 182.4 lb, down 0.6 this week" (EWMA per app_config). Tap opens a weight sheet with entry and the last 7 days.
-- Log bar pinned above the tab bar per Q47. It logs to the selected day; the meal defaults to the window of the current time of day, editable on the card.
+- Day note: "Add a note" at the bottom, saved on blur, one per local day, visible to the user and their coach (coach client week view).
+- Log bar: a floating pill above the tab bar. Empty: leading search glyph (opens food search), placeholder "What did you eat?", trailing barcode icon. Typing: the trailing icon becomes send. The camera icon appears only when photo logging ships, locked for free users. It logs to the selected day. No floating "+" button.
 - Times and days follow the user's profile timezone (ARCHITECTURE.md "Local days").
 
-### F4. Weight and trend (free)
-Story: as a user, I see my real trend, not daily noise.
+### F4. Progress, the dashboard (free)
+Story: as a user, I see my real trend and my consistency, not daily noise.
+
+Spec: `docs/SCREENS_V2.md` "Progress (dashboard)".
 
 Acceptance
-- Log weight any day from Today or Progress.
-- Trend line uses an exponentially weighted moving average (smoothing configurable in app config), raw weigh-ins as faint dots.
-- Shows trend change over 7 and 28 days.
+- Header: "Progress" with today's date below.
+- Week chart: 7 stacked bars, Monday to Sunday, segments are calories from protein, carbs and fat in macro colors, with a dashed calorie target line. Tap a day to select it; below the chart, 4 tiles for that day (Protein, Carbs, Fat, Calories as "eaten of target" with color dots). Swipe for earlier weeks. Text summary for screen readers.
+- Week averages: average calories, average protein, days on target, protein days.
+- Consistency, last 30 days, two cards: Food log (filled `accent-strong` when on target, muted fill when logged off target, empty when not logged; "22 of 30 days logged") and Weigh-ins (filled when weighed; "12 weigh-ins"). Empty states "No logs yet" and "No weigh-ins yet".
+- Weight trend: 7, 30 and 90 day toggle; an exponentially weighted moving average line (smoothing in app_config) with faint raw weigh-ins; trend value and change over the range; "Log weight". Weight can be logged any day from Today or Progress.
+- Weekly reports (paid): list; free users see the locked preview (post-MVP with reports).
+- Not included: steps, nutrients, water.
 
 ### F5. Weekly check-in (paid)
 Stories
