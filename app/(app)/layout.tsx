@@ -1,4 +1,5 @@
 import { Suspense } from "react"
+import { redirect } from "next/navigation"
 import { getCurrentUser } from "@/core/auth/current-user"
 import { TabBar } from "@/components/nav/tab-bar"
 import { TimezoneSync } from "@/core/time/timezone-sync"
@@ -18,6 +19,8 @@ export default function AppLayout({ children }: LayoutProps<"/">) {
 
 async function RoleAwareTabBar() {
   const user = await getCurrentUser()
+  // PRD F1: nobody uses the app before onboarding sets their targets.
+  if (!user.onboardingCompleted) redirect("/onboarding")
   return (
     <>
       <TabBar isCoach={user.role === "coach"} />

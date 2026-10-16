@@ -34,6 +34,9 @@ Recommendation: when a check-in arrives after prep has run, rerun P3 for that cl
 **Q35. [M1] Real meals versus the synthetic eval set.** `evals/README.md` v0.2 says the synthetic set replaces "Sean supplies 20 real meals" for M1. The PM decisions round 2 say Sean will supply 20 real meals.
 Recommendation: v0.2 is the M1 gate. When Sean's meals arrive they are added as p025 onward (set v0.3), split between dev and holdout, and count toward the 50 case beta target. They do not block M1. Blocks: nothing.
 
+**Q61. [F1, F16] Under 18 when the account already exists.** PRD F1 says under 18 cannot create an account, but sign in by email code creates the account before onboarding asks the date of birth.
+Recommendation: onboarding stops at the date of birth with "Honest Reps is for adults 18 and over for now.", saves nothing from onboarding, and signs the person out. The empty account is deleted by the account deletion job when it ships in step 6 (until then it has no data beyond the email and the coach visibility consent). The date of birth is not stored. Blocks: nothing.
+
 ### Resolved by the PM (step 3 and Screens v2, 2026-10-16)
 
 - **Migrations** 20261015000008_day_notes and 20261015000009_screens_v2_events approved and applied. **Standing approval extended:** widening the events.name check to add PRD event names is approved going forward; it is listed in each update.

@@ -1,11 +1,21 @@
 import { expect, type Page } from "@playwright/test"
 import AxeBuilder from "@axe-core/playwright"
+import { createClient } from "@supabase/supabase-js"
 import { readLocalSupabase } from "../scripts/supabase-status.mts"
 
 const local = readLocalSupabase()
+export const admin = createClient(local.url, local.serviceRoleKey, { auth: { persistSession: false, autoRefreshToken: false } })
 
-/** Signs in through the real UI, reading the code from the local mail catcher. */
-export async function signInWithCode(page: Page, email: string) {
+/** Starting targets for test users who skip onboarding. */
+export const TEST_TARGETS = { calories: 2100, protein_g: 170, carbs_g: 200, fat_g: 65 }
+
+/**
+ * Signs in through the real UI, reading the code from the local mail catcher.
+ * New users land on onboarding; unless `onboarded: false`, the helper marks
+ * them onboarded with TEST_TARGETS and opens Today, so tests that are not
+ * about onboarding start where users spend their time.
+ */
+export async function signInWithCode(page: Page, email: string, { onboarded = true }: { onboarded?: boolean } = {}) {
   const since = Date.now()
   await page.goto("/sign-in")
   await page.getByLabel("Email").fill(email)
@@ -15,7 +25,27 @@ export async function signInWithCode(page: Page, email: string) {
   const code = await waitForCode(email, since)
   await page.getByLabel("6 digit code").fill(code)
   await page.getByRole("button", { name: "Sign in" }).click()
+  // Sign in lands on Today; the app then sends new users on to onboarding.
+  await page.waitForURL(/\/(today|onboarding)$/)
+  if (!onboarded) {
+    await page.waitForURL("**/onboarding")
+    return
+  }
+  await markOnboarded(email)
+  await page.goto("/today")
   await page.waitForURL("**/today")
+}
+
+async function markOnboarded(email: string) {
+  const { data } = await admin.auth.admin.listUsers({ perPage: 1000 })
+  const user = data.users.find((u) => u.email?.toLowerCase() === email.toLowerCase())
+  if (!user) throw new Error(`No user ${email}`)
+  const { data: profile } = await admin.from("profiles").select("onboarding_completed_at").eq("id", user.id).single()
+  if (profile?.onboarding_completed_at) return
+  const done = await admin.from("profiles").update({ onboarding_completed_at: new Date().toISOString() }).eq("id", user.id)
+  if (done.error) throw done.error
+  const targets = await admin.from("targets").insert({ user_id: user.id, ...TEST_TARGETS, set_by: "formula" })
+  if (targets.error) throw targets.error
 }
 
 async function waitForCode(email: string, since: number): Promise<string> {

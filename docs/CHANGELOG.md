@@ -287,3 +287,11 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
 - Target formula per Q54: fat 30% (lose fat, maintain) or 25% (build muscle, performance) of calories, floor 0.3 g per lb of goal weight; carbs the rest, minimum 50 g; fat gives way first, then calories rise with a note. Unit tested, including both fallbacks.
 - Seed: Q54 keys in `coach_settings.target_defaults` and draft-2026-10 consent versions (Q55) in `app_config.consent_versions`. The seed now adds keys missing from existing settings without changing any set value; run on local and hosted (added only the new keys).
 - Docs: Q54 to Q60 resolved; PRD F1 (fat and carbs, consents, first weigh-in), F4 (weighed share); ARCHITECTURE target defaults; DESIGN_SYSTEM macro text tokens approved, weighed share on Progress, stray backslashes removed.
+
+### 2026-10-16: onboarding (PRD F1)
+
+- `/onboarding`, one question per screen: units, goal, sex, date of birth (18+ gate, Q61), height, current and optional goal weight, activity level, food scale (Not yet shows one screen with the hand portion guide), medical screening (yes shows the doctor message), consents (disclaimer, terms, privacy; links to `/legal/*` draft pages, public), then the starting targets computed with the coach's settings (Q54).
+- Finishing saves the profile (units, date of birth and the medical flag with the service role, since users cannot change them later), the nutrition profile with `has_scale`, today's weigh-in (Q56), a formula `targets` row (with the floors note when it applies), and consents at version draft-2026-10 (Q55); emits `onboarding_completed` once; lands on Today. Under 18 saves nothing and offers Sign out.
+- Every app screen sends users who have not finished onboarding to `/onboarding`; finished users are sent back to Today. Existing accounts (Sean's) go through onboarding on their next open, which gives them targets.
+- e2e: full onboarding with a database check of everything saved, the under 18 stop, axe and 44pt checks. The sign in helper marks other test users onboarded with fixed test targets.
+- Not yet: the required install step and push permission (next, with Web Push), Q61's cleanup of under 18 accounts (with account deletion in step 6).

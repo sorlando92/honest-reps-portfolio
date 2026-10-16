@@ -3,7 +3,7 @@ import { createServerClient } from "@supabase/ssr"
 import { publicEnv } from "@/lib/env"
 
 // Routes anyone can open without a session.
-const PUBLIC_PATHS = ["/sign-in", "/auth/confirm", "/api/events", "/offline"]
+const PUBLIC_PATHS = ["/sign-in", "/auth/confirm", "/api/events", "/offline", "/legal"]
 
 function isPublic(pathname: string) {
   return PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`))

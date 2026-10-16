@@ -13,6 +13,8 @@ export interface CurrentUser {
   tier: "free" | "paid"
   /** IANA name; local days and times use it (core/time/local-day.ts). */
   timezone: string
+  /** PRD F1: set once the user finishes onboarding. */
+  onboardingCompleted: boolean
 }
 
 /**
@@ -28,7 +30,7 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser> => {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("role, tier, timezone")
+    .select("role, tier, timezone, onboarding_completed_at")
     .eq("id", claims.sub)
     .single()
 
@@ -40,5 +42,6 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser> => {
     role: profile.role as Role,
     tier: profile.tier as "free" | "paid",
     timezone: profile.timezone as string,
+    onboardingCompleted: profile.onboarding_completed_at !== null,
   }
 })
