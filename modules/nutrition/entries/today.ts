@@ -19,6 +19,8 @@ export interface TimelineEntry {
   items: DraftItem[]
   calories: number
   proteinG: number
+  carbsG: number
+  fatG: number
   /** Q34 on the timeline: "match" shows Check this, "estimated" shows est. */
   marker: "match" | "estimated" | null
 }
@@ -96,6 +98,8 @@ export async function dayEntries(
       items,
       calories: Math.round(items.reduce((s, i) => s + i.calories, 0)),
       proteinG: Math.round(items.reduce((s, i) => s + i.proteinG, 0)),
+      carbsG: Math.round(items.reduce((s, i) => s + i.carbsG, 0)),
+      fatG: Math.round(items.reduce((s, i) => s + i.fatG, 0)),
       marker: items.some((i) => i.flagReason === "match")
         ? "match"
         : items.some((i) => i.amountSource === "estimated")

@@ -87,3 +87,23 @@ function parse(date: string): [number, number, number] {
   if (!match) throw new Error(`Not a local date: ${date}`)
   return [Number(match[1]), Number(match[2]), Number(match[3])]
 }
+
+/**
+ * The instant a local wall clock time ("HH:MM") on a local date names in a
+ * timezone. A time skipped by a daylight saving change lands an hour later.
+ */
+export function localInstant(date: string, time: string, timezone: string): Date {
+  const [y, m, d] = parse(date)
+  const match = /^(\d{1,2}):(\d{2})$/.exec(time)
+  if (!match) throw new Error(`Not a local time: ${time}`)
+  const wall = Date.UTC(y, m - 1, d, Number(match[1]), Number(match[2]))
+  let instant = wall - offsetMs(wall, timezone)
+  const corrected = wall - offsetMs(instant, timezone)
+  if (corrected !== instant) instant = corrected
+  return new Date(instant)
+}
+
+/** The local wall clock time ("HH:MM") of an instant in a timezone. */
+export function localTime(instant: Date | string, timezone: string): string {
+  return new Intl.DateTimeFormat("en-GB", { timeZone: timezone, hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(new Date(instant))
+}

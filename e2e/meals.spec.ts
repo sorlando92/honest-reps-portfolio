@@ -61,7 +61,8 @@ test("sections are always shown; + picks the meal and the card can change it", a
   await expect(card).toHaveCount(0)
 
   await expect(section(page, "Dinner")).toContainText("turkey sandwich")
-  await expect(page.getByRole("region", { name: "Dinner" })).toContainText("460 cal · 28 g protein")
+  await expect(page.getByRole("region", { name: "Dinner" }).getByRole("list", { name: "Dinner totals" })).toContainText("460 kcal")
+  await expect(page.getByRole("region", { name: "Dinner" }).getByRole("list", { name: "Dinner totals" })).toContainText("P 28")
 
   // Edit moves it to another meal.
   await section(page, "Dinner").locator("summary").click()

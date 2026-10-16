@@ -14,6 +14,10 @@ export interface StoredDraft {
   method?: "text" | "search" | "manual" | "barcode"
   /** The section it files under; set when the card opens (docs/TODAY_SPEC.md 6). */
   meal?: Meal
+  /** True once the user picked the meal (section "+" or chip); a past day log then uses its anchor time (Q52). */
+  mealChosen?: boolean
+  /** The local date the card logs to: the day selected when it opened. */
+  date?: string
   aiCallId: string | null
   items: DraftItem[]
   /** Stable across retries, so a save sent twice is stored once. */

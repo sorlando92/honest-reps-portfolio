@@ -37,3 +37,18 @@ export function mealFor(instant: Date | string, timezone: string, windows: MealW
   }
   return "snack"
 }
+
+/** Local times a past day log is stamped at when a meal is chosen (Q52). */
+export type MealAnchors = Record<Meal, string>
+
+export const DEFAULT_MEAL_ANCHORS: MealAnchors = { breakfast: "08:00", lunch: "12:30", dinner: "18:30", snack: "15:00" }
+
+/** Reads app_config "meal_anchors", falling back to the defaults for anything missing or malformed. */
+export function mealAnchors(value: unknown): MealAnchors {
+  const v = (value ?? {}) as Partial<Record<string, unknown>>
+  const pick = (meal: Meal): string => {
+    const t = v[meal]
+    return typeof t === "string" && /^([01]\d|2[0-3]):[0-5]\d$/.test(t) ? t : DEFAULT_MEAL_ANCHORS[meal]
+  }
+  return { breakfast: pick("breakfast"), lunch: pick("lunch"), dinner: pick("dinner"), snack: pick("snack") }
+}

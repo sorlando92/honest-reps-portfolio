@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation"
 import { ArrowUp, ScanBarcode, Search, Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useOnline } from "@/lib/use-online"
-import { mealFor, type Meal, type MealWindows } from "../entries/meals"
+import { mealFor, type Meal, type MealAnchors, type MealWindows } from "../entries/meals"
+import { loggedAtFor } from "../entries/logged-at"
 import type { QuickAddChip } from "../entries/quick-add"
 import type { DraftItem, DraftResult } from "../parsing/service"
 import { defaultUnit, totals, type WeightUnit } from "./amounts"
@@ -42,12 +43,17 @@ export function LogFlow({
   chips,
   timezone,
   mealWindows,
+  mealAnchors,
+  date,
 }: {
   units: "imperial" | "metric"
   hasScale: boolean | null
   chips: QuickAddChip[]
   timezone: string
   mealWindows: MealWindows
+  mealAnchors: MealAnchors
+  /** The selected local day; new logs go to it (PRD F3, Q52). */
+  date: string
 }) {
   const router = useRouter()
   const online = useOnline()
@@ -77,6 +83,9 @@ export function LogFlow({
   }, [])
   /** The meal a new card or quick add files under: the chosen section, else the time of day. */
   const nextMeal = (): Meal => pendingMeal ?? mealFor(new Date(), timezone, mealWindows)
+  /** Fields every new card starts with: its meal, whether the user chose it, and its day. */
+  const startFields = () => ({ meal: nextMeal(), mealChosen: pendingMeal !== null, date })
+  const stamp = (day: string, meal: Meal | null) => loggedAtFor(day, meal, timezone, mealAnchors).toISOString()
 
   async function read(text: string) {
     setPhase({ kind: "reading", text })
@@ -100,7 +109,7 @@ export function LogFlow({
         return
       }
       if (result.items.length === 0) throw new Error("No food found in that. Try naming what you ate.")
-      saveDraft({ text, method: "text", meal: nextMeal(), aiCallId: result.aiCallId, items: result.items, clientUuid: crypto.randomUUID(), createdAt: Date.now() })
+      saveDraft({ text, method: "text", ...startFields(), aiCallId: result.aiCallId, items: result.items, clientUuid: crypto.randomUUID(), createdAt: Date.now() })
       setPhase({ kind: "idle" })
       setSheetOpen(true)
     } catch (error) {
@@ -122,7 +131,7 @@ export function LogFlow({
     if (draft) {
       saveDraft({ ...draft, items: apply(draft.items) })
     } else if (from.target !== "change") {
-      saveDraft({ text: "", method, meal: nextMeal(), aiCallId: null, items: [item], clientUuid: crypto.randomUUID(), createdAt: Date.now() })
+      saveDraft({ text: "", method, ...startFields(), aiCallId: null, items: [item], clientUuid: crypto.randomUUID(), createdAt: Date.now() })
     }
     setSearching(null)
   }
@@ -135,7 +144,7 @@ export function LogFlow({
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           clientUuid: draft.clientUuid,
-          loggedAt: new Date().toISOString(),
+          loggedAt: stamp(draft.date ?? date, draft.mealChosen ? (draft.meal ?? null) : null),
           method: draft.aiCallId ? "text" : (draft.method ?? "search"),
           meal: draft.meal ?? nextMeal(),
           aiCallId: draft.aiCallId,
@@ -164,7 +173,7 @@ export function LogFlow({
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           clientUuid: crypto.randomUUID(),
-          loggedAt: new Date().toISOString(),
+          loggedAt: stamp(date, pendingMeal),
           method: "quick_add",
           meal: nextMeal(),
           aiCallId: null,
@@ -302,7 +311,7 @@ export function LogFlow({
             }}
           />
         )}
-        {showCard && <MealChips value={draft.meal ?? nextMeal()} onChange={(meal) => saveDraft({ ...draft, meal })} />}
+        {showCard && <MealChips value={draft.meal ?? nextMeal()} onChange={(meal) => saveDraft({ ...draft, meal, mealChosen: true })} />}
         {showCard && (
           <ul className="flex flex-col gap-3 pb-3">
             {draft.items.map((item, index) => (
