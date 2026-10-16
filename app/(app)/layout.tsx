@@ -3,6 +3,7 @@ import { redirect } from "next/navigation"
 import { getCurrentUser } from "@/core/auth/current-user"
 import { TabBar } from "@/components/nav/tab-bar"
 import { TimezoneSync } from "@/core/time/timezone-sync"
+import { InstallGate } from "@/components/pwa/install-gate"
 import "@/modules/nutrition"
 
 export default function AppLayout({ children }: LayoutProps<"/">) {
@@ -25,6 +26,7 @@ async function RoleAwareTabBar() {
     <>
       <TabBar isCoach={user.role === "coach"} />
       <TimezoneSync profileTimezone={user.timezone} />
+      <InstallGate />
     </>
   )
 }

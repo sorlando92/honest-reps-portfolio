@@ -95,5 +95,6 @@ export async function finishOnboarding(input: OnboardingAnswers): Promise<Finish
   }
 
   if (firstTime) await track("onboarding_completed", { goal: a.goal, has_scale: a.hasScale, medical: a.medical, units: a.units, targets_source: resolved.source })
-  redirect("/today")
+  // PRD F1: the required install step and push permission come next.
+  redirect("/install")
 }

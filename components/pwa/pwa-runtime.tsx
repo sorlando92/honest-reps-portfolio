@@ -2,6 +2,7 @@
 
 import { useEffect } from "react"
 import { track } from "@/core/events/client"
+import { keepInstallPrompt } from "@/lib/install-prompt"
 
 const INSTALL_TRACKED_KEY = "hr:pwa_installed_tracked"
 
@@ -30,7 +31,11 @@ export function PwaRuntime() {
 
     const onInstalled = () => markInstalled(platformName())
     window.addEventListener("appinstalled", onInstalled)
-    return () => window.removeEventListener("appinstalled", onInstalled)
+    window.addEventListener("beforeinstallprompt", keepInstallPrompt)
+    return () => {
+      window.removeEventListener("appinstalled", onInstalled)
+      window.removeEventListener("beforeinstallprompt", keepInstallPrompt)
+    }
   }, [])
 
   return null
@@ -43,7 +48,7 @@ export function isStandalone(): boolean {
   )
 }
 
-function platformName(): string {
+export function platformName(): string {
   const ua = navigator.userAgent
   if (/iPhone|iPad|iPod/.test(ua)) return "ios"
   if (/Android/.test(ua)) return "android"

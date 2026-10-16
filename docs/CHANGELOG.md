@@ -304,3 +304,12 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
 - Errors: causes are logged on the server (`[onboarding] ...`); the screen says "Could not reach Honest Reps..." only for network failures, otherwise that the problem is on our side; both say nothing is saved twice.
 - Tests: unit (settings order and fill), database (retry, partial earlier save, coach without a coach, rollback, server only), e2e (coach account onboards itself, member with no coach, retry after a failed save).
 - Hosted: migration applied; seed added `app_config.target_defaults`.
+
+### 2026-10-16: install step and push permission (PRD F1)
+
+- After onboarding, `/install`: platform specific steps to add the app to the Home Screen (iPhone Safari: Share, Add to Home Screen, open from the Home Screen; other iPhone browsers: open in Safari; Android Chrome: the native install dialog when ready, else the browser menu steps), then Reminders on the same screen. On iPhone, reminders are offered only once the app runs from the Home Screen, and the screen says so. Product name from `app_config`.
+- Q62 (recommended, pending): "Not now" the first time; on the next app open on that device it shows once more with "Skip"; then never again. Counted per device.
+- Web Push: migration 20261016000003_push_subscriptions (additive; owner only, not even the coach), `POST/DELETE /api/push/subscribe`, `push_enabled` on a user's first device. When another person signs in on the same phone, the device moves to them. VAPID keys generated and set in Vercel (Production and Preview) and `.env.local`; `VAPID_SUBJECT` added to the env list. Sending reminders comes with step 4.
+- `beforeinstallprompt` is kept by the PWA runtime so the install screen can open Android's dialog.
+- Docs: MILESTONES step 6 adds Sentry error monitoring (release tags, source maps, user id only, email on new issue types) and logs kept at least 7 days (Vercel Pro or a log drain). Owner tasks 12 (Sentry account, DSN and auth token) and 13 (Pro or log drain before alpha). Q62 added.
+- Tests: RLS (push_subscriptions), e2e (Not now, Skip, never again across app opens; reminders on with a stubbed browser push service, saved and `push_enabled`; iPhone steps and the Home Screen note) at 375px light and dark with axe and 44pt checks. Onboarding tests now pass through the install step.

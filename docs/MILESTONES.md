@@ -61,6 +61,8 @@ Done when: the parsing eval meets every pass bar in `evals/README.md`, including
 ### 6. Trust (F16)
 - Privacy policy and terms templates for Sean's approval; the privacy policy states the Q16 deletion terms exactly
 - Self-serve account deletion per Q16
+- Error monitoring (PM 2026-10-16): Sentry free tier for client and server errors, tagged with the release, source maps uploaded at build. Payloads carry the user id only: no email, no food, weight, health or note data. Sean gets an email alert on each new error type.
+- Logs kept at least 7 days before alpha: Vercel Pro (already required before clients, Q6) or a log drain
 
 **MVP exit:** Sean plus at least 3 clients log food for 7 days, each completes one check-in, and Sean reviews all of them in the app with no Google Form.
 

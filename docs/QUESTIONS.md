@@ -15,6 +15,8 @@ Engineering adds questions here with: feature ID, the decision needed, and a rec
 9. **Email sender.** Done 2026-10-13: Resend sends from `auth@mail.honestreps.app` through Supabase SMTP; both sign in templates set in the hosted dashboard and verified with a test email.
 10. **Two-factor on owner accounts.** Turn on two-factor (authenticator app) for the Supabase, GitHub, Vercel, Cloudflare, Resend and Stripe accounts before the alpha. Does not block M0. See Q31.
 11. **M1 API keys.** Anthropic API key and USDA FoodData Central API key. Put them in Vercel environment variables (Production and Preview) and in the local `.env.local`, never in chat or the repo. Blocks M1.
+12. **Sentry.** Create a free Sentry account (sentry.io) and a Next.js project, then give engineering the DSN and an auth token for source map uploads, as Vercel environment variables (`NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_AUTH_TOKEN`, Production and Preview) and `.env.local`, never in chat or the repo. Set the alert rule "a new issue is created" to email you. Blocks the MVP step 6 monitoring item.
+13. **Logs before alpha.** Upgrade Vercel to Pro (also owner task 8 and Q6) so runtime logs persist, or add a log drain. The Hobby plan keeps about 30 minutes, which lost the logs for the onboarding bug on 2026-10-16. Blocks alpha.
 
 ## Engineering questions
 
@@ -36,6 +38,9 @@ Recommendation: v0.2 is the M1 gate. When Sean's meals arrive they are added as 
 
 **Q61. [F1, F16] Under 18 when the account already exists.** PRD F1 says under 18 cannot create an account, but sign in by email code creates the account before onboarding asks the date of birth.
 Recommendation: onboarding stops at the date of birth with "Honest Reps is for adults 18 and over for now.", saves nothing from onboarding, and signs the person out. The empty account is deleted by the account deletion job when it ships in step 6 (until then it has no data beyond the email and the coach visibility consent). The date of birth is not stored. Blocks: nothing.
+
+**Q62. [F1] "Skippable only after one dismissal" for the install step.**
+Recommendation: right after onboarding, the install screen shows with "Not now" as its only way out. On the next app open on that device it shows once more, now with "Skip". After that it never blocks; installing stays available from Me. Push permission sits on the same screen; on iPhone it is offered only once the app runs from the Home Screen, and the screen says plainly that reminders need that. Dismissals are counted per device, since installing is per device. Blocks: nothing.
 
 ### Resolved by the PM (step 3 and Screens v2, 2026-10-16)
 

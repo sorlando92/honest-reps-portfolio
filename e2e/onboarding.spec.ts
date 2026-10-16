@@ -55,7 +55,7 @@ test("a new member answers onboarding and lands on Today with targets", async ({
   await expect(page.getByText("Protein", { exact: true })).toBeVisible()
   await page.screenshot({ path: info.outputPath("targets.png"), fullPage: true })
   await page.getByRole("button", { name: "Start logging" }).click()
-  await page.waitForURL("**/today")
+  await notNowToToday(page)
   await expect(page.getByRole("heading", { name: "Breakfast", level: 2 })).toBeVisible()
 
   // Saved: formula targets, the first weigh-in (Q56), consents (Q55), the medical flag.
@@ -100,6 +100,13 @@ test("under 18 stops at the date of birth and saves nothing", async ({ page }, i
   await page.getByRole("button", { name: "Sign out" }).click()
   await page.waitForURL("**/sign-in")
 })
+
+/** Onboarding ends on the install step (PRD F1); "Not now" goes to Today. */
+async function notNowToToday(page: Page) {
+  await page.waitForURL("**/install")
+  await page.getByRole("button", { name: "Not now" }).click()
+  await page.waitForURL("**/today")
+}
 
 /** Answers every onboarding question up to the targets screen. */
 async function answerAll(page: Page) {
@@ -153,7 +160,7 @@ test("a coach account with no coach of its own onboards itself (bug 2026-10-16)"
   await page.reload()
   await answerAll(page)
   await page.getByRole("button", { name: "Start logging" }).click()
-  await page.waitForURL("**/today")
+  await notNowToToday(page)
   expect(await saved(id)).toEqual({ targets: 1, weights: 1, consents: 3 })
 })
 
@@ -165,7 +172,7 @@ test("a member with no coach gets targets from the default coach's settings", as
   await page.reload()
   await answerAll(page)
   await page.getByRole("button", { name: "Start logging" }).click()
-  await page.waitForURL("**/today")
+  await notNowToToday(page)
   expect(await saved(id)).toEqual({ targets: 1, weights: 1, consents: 3 })
 })
 
@@ -187,6 +194,6 @@ test("a save that fails can be retried and nothing is saved twice", async ({ pag
   await expect(page.getByText("Could not reach Honest Reps. Check your connection and try again. Nothing is saved twice.")).toBeVisible()
 
   await page.getByRole("button", { name: "Start logging" }).click()
-  await page.waitForURL("**/today")
+  await notNowToToday(page)
   expect(await saved(await userId(email))).toEqual({ targets: 1, weights: 1, consents: 3 })
 })
