@@ -23,7 +23,8 @@ const admin = createClient(url, serviceKey, { auth: { persistSession: false, aut
 // Days are 0 = Sunday through 6 = Saturday.
 const APP_CONFIG: Record<string, unknown> = {
   product_name: "Honest Reps",
-  consent_versions: { coach_visibility: "2026-10-12" },
+  // Q55: legal documents stay "draft-2026-10" until Sean approves the final text.
+  consent_versions: { coach_visibility: "2026-10-12", terms: "draft-2026-10", privacy: "draft-2026-10", disclaimer: "draft-2026-10" },
   adherence: { calorie_tolerance_pct: 10, protein_hit_pct: 90 },
   weight_trend: { method: "ewma", alpha: 0.1 },
   // QUESTIONS.md Q11: food match score below this flags the item.
@@ -49,6 +50,11 @@ const COACH_SETTINGS = {
     protein_g_per_lb_goal_weight: { lose_fat: 1.0, maintain: 0.8, build_muscle: 1.0, performance: 0.9 },
     protein_cap_g: 220,
     calorie_floor: "bmr",
+    // Q54: fat as a share of calories by goal, a floor per lb of goal weight,
+    // carbs fill the rest with a minimum (fat gives way first, then calories).
+    fat_pct_of_calories: { lose_fat: 30, maintain: 30, build_muscle: 25, performance: 25 },
+    fat_min_g_per_lb_goal_weight: 0.3,
+    carbs_min_g: 50,
   },
   reminder_defaults: { evening_nudge: "19:00", checkin_reminder: "08:00", checkin_followup: "19:00" },
 }
@@ -56,6 +62,7 @@ const COACH_SETTINGS = {
 async function main() {
   for (const [key, value] of Object.entries(APP_CONFIG)) {
     check(await admin.from("app_config").upsert({ key, value }, { onConflict: "key", ignoreDuplicates: true }))
+    await addMissingKeys("app_config", "key", key, "value", value)
   }
 
   const coachId = await ensureUser(admin, coachEmail)
@@ -65,6 +72,7 @@ async function main() {
       .from("coach_settings")
       .upsert({ coach_id: coachId, ...COACH_SETTINGS }, { onConflict: "coach_id", ignoreDuplicates: true })
   )
+  await addMissingKeys("coach_settings", "coach_id", coachId, "target_defaults", COACH_SETTINGS.target_defaults)
   check(await admin.from("app_config").upsert({ key: "default_coach_id", value: coachId }, { onConflict: "key" }))
   console.log(`Coach: ${coachEmail} (${coachId})`)
 
@@ -124,6 +132,22 @@ async function ensureUser(client: SupabaseClient, email: string): Promise<string
   })
   if (error) throw error
   return data.user.id
+}
+
+/**
+ * Settings that already exist keep every value the coach set; keys added to
+ * the defaults since (new settings) are filled in. Never overwrites.
+ */
+async function addMissingKeys(table: string, idColumn: string, id: string, column: string, defaults: unknown) {
+  if (!defaults || typeof defaults !== "object" || Array.isArray(defaults)) return
+  const { data } = await admin.from(table).select(column).eq(idColumn, id).maybeSingle()
+  const current = (data as Record<string, unknown> | null)?.[column]
+  if (!current || typeof current !== "object" || Array.isArray(current)) return
+  const missing = Object.keys(defaults).filter((k) => !(k in current))
+  if (!missing.length) return
+  const merged = { ...(defaults as Record<string, unknown>), ...(current as Record<string, unknown>) }
+  check(await admin.from(table).update({ [column]: merged }).eq(idColumn, id))
+  console.log(`Added to ${table}.${column} (${id}): ${missing.join(", ")}`)
 }
 
 function check(result: { error: { message: string } | null }) {

@@ -10,9 +10,12 @@ export interface TargetDefaults {
   goal_calorie_adjustment_pct: Record<Goal, number>
   protein_g_per_lb_goal_weight: Record<Goal, number>
   protein_cap_g: number
-  /** QUESTIONS.md Q54: fat as a share of calories, with a floor per lb of body weight. */
-  fat_pct_of_calories?: number
-  fat_min_g_per_lb?: number
+  /** QUESTIONS.md Q54: fat as a share of calories by goal. */
+  fat_pct_of_calories: Record<Goal, number>
+  /** Fat floor, grams per lb of goal weight (current weight if none). */
+  fat_min_g_per_lb_goal_weight: number
+  /** Carbs never go below this; fat gives way first, then calories rise. */
+  carbs_min_g: number
 }
 
 export interface TargetInput {
@@ -32,11 +35,12 @@ export interface Targets {
   fatG: number
   /** Estimated BMR, the calorie floor (PRD F1). */
   bmr: number
+  /** Set when protein, fat and carb floors forced calories above the formula (Q54); shown to the coach. */
+  note: string | null
 }
 
-// Q54 recommendation, used until the coach settings carry their own values.
-const FAT_PCT_DEFAULT = 25
-const FAT_MIN_PER_LB_DEFAULT = 0.3
+export const FLOORS_NOTE = "Calories raised to fit the protein, fat and carb floors."
+
 const LB_PER_KG = 2.20462
 
 /** Mifflin St Jeor resting energy, kcal per day. */
@@ -53,14 +57,29 @@ export function computeTargets(input: TargetInput, d: TargetDefaults): Targets {
   const adjusted = rest * multiplier * (1 + (d.goal_calorie_adjustment_pct[input.goal] ?? 0) / 100)
   // Floor: never below estimated BMR, after rounding too.
   const floor = Math.ceil(rest / 10) * 10
-  const calories = Math.max(roundTo(adjusted, 10), floor)
+  let calories = Math.max(roundTo(adjusted, 10), floor)
 
-  const proteinBasisLb = (input.goalWeightKg ?? input.weightKg) * LB_PER_KG
-  const proteinG = Math.round(Math.min(proteinBasisLb * (d.protein_g_per_lb_goal_weight[input.goal] ?? 0.8), d.protein_cap_g))
+  const basisLb = (input.goalWeightKg ?? input.weightKg) * LB_PER_KG
+  const proteinG = Math.round(Math.min(basisLb * d.protein_g_per_lb_goal_weight[input.goal], d.protein_cap_g))
 
-  const fatG = Math.round(Math.max(((d.fat_pct_of_calories ?? FAT_PCT_DEFAULT) / 100) * calories / 9, (d.fat_min_g_per_lb ?? FAT_MIN_PER_LB_DEFAULT) * input.weightKg * LB_PER_KG))
-  const carbsG = Math.max(0, Math.round((calories - proteinG * 4 - fatG * 9) / 4))
-  return { calories, proteinG, carbsG, fatG, bmr: Math.round(rest) }
+  // Q54: fat is a share of calories, never under its floor; carbs take the
+  // rest, never under their minimum. Fat gives way toward its floor first; if
+  // both floors bind, calories rise to fit and the coach gets a note.
+  const fatFloor = Math.round(d.fat_min_g_per_lb_goal_weight * basisLb)
+  let fatG = Math.max(Math.round(((d.fat_pct_of_calories[input.goal] / 100) * calories) / 9), fatFloor)
+  const carbsFor = (fat: number) => Math.floor((calories - proteinG * 4 - fat * 9) / 4)
+  let carbsG = carbsFor(fatG)
+  let note: string | null = null
+  if (carbsG < d.carbs_min_g) {
+    fatG = Math.max(fatFloor, Math.floor((calories - proteinG * 4 - d.carbs_min_g * 4) / 9))
+    carbsG = carbsFor(fatG)
+  }
+  if (carbsG < d.carbs_min_g) {
+    carbsG = d.carbs_min_g
+    calories = Math.ceil((proteinG * 4 + fatG * 9 + carbsG * 4) / 10) * 10
+    note = FLOORS_NOTE
+  }
+  return { calories, proteinG, carbsG, fatG, bmr: Math.round(rest), note }
 }
 
 /** Whole years on a local date (YYYY-MM-DD) for a date of birth (YYYY-MM-DD). */

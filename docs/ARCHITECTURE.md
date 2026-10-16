@@ -108,7 +108,7 @@ Store everything in metric; convert at the edge.
 **Target formula defaults** (seeded into `coach_settings.target_defaults`, editable in Coach settings):
 - Calories: Mifflin St Jeor BMR × activity multiplier (sedentary 1.2, light 1.375, moderate 1.55, very active 1.725, extra active 1.9), then goal adjustment (lose fat −20%, maintain 0%, build muscle +10%, performance +5%). Floor: never below estimated BMR.
 - Protein: grams per lb of goal weight, current weight if none (lose fat 1.0, maintain 0.8, build muscle 1.0, performance 0.9), capped at 220 g.
-- Fat and carbs fill the remainder.
+- Fat: 30% of calories (lose fat, maintain) or 25% (build muscle, performance), floor 0.3 g per lb of goal weight. Carbs fill the remainder, minimum 50 g; fat gives way toward its floor first, then calories rise to fit and `targets.note` tells the coach (Q54). Keys: `fat_pct_of_calories`, `fat_min_g_per_lb_goal_weight`, `carbs_min_g`.
 - Weight trend: EWMA with alpha 0.1 (`app_config.weight_trend`).
 
 ## Environment variables

@@ -280,3 +280,10 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
 - Migration 20261015000008_day_notes (additive): `day_notes` (one per user and local day, 1 to 1,000 characters; owner reads and writes, assigned coach reads only), RLS suite added. Local only for now: it ships with 20261015000009.
 - Migration 20261015000009_screens_v2_events: widens the event name check with `day_note_saved` and `macro_card_mode_changed`. It drops and recreates the constraint, so it waits for PM approval; until then those two events would be refused by the database.
 - Macro color tokens and the light mode `-text` shades in the theme (`bg-macro-protein`, `text-macro-protein-text` and so on).
+
+### 2026-10-16: step 3 decisions applied
+
+- Applied to hosted: 20261015000008_day_notes, 20261015000009_screens_v2_events (widens the event name check), 20261016000001_targets_note (additive: the coach note when floors raise calories).
+- Target formula per Q54: fat 30% (lose fat, maintain) or 25% (build muscle, performance) of calories, floor 0.3 g per lb of goal weight; carbs the rest, minimum 50 g; fat gives way first, then calories rise with a note. Unit tested, including both fallbacks.
+- Seed: Q54 keys in `coach_settings.target_defaults` and draft-2026-10 consent versions (Q55) in `app_config.consent_versions`. The seed now adds keys missing from existing settings without changing any set value; run on local and hosted (added only the new keys).
+- Docs: Q54 to Q60 resolved; PRD F1 (fat and carbs, consents, first weigh-in), F4 (weighed share); ARCHITECTURE target defaults; DESIGN_SYSTEM macro text tokens approved, weighed share on Progress, stray backslashes removed.

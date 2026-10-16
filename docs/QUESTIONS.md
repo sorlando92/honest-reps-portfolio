@@ -34,26 +34,16 @@ Recommendation: when a check-in arrives after prep has run, rerun P3 for that cl
 **Q35. [M1] Real meals versus the synthetic eval set.** `evals/README.md` v0.2 says the synthetic set replaces "Sean supplies 20 real meals" for M1. The PM decisions round 2 say Sean will supply 20 real meals.
 Recommendation: v0.2 is the M1 gate. When Sean's meals arrive they are added as p025 onward (set v0.3), split between dev and holdout, and count toward the 50 case beta target. They do not block M1. Blocks: nothing.
 
-**Q54. [F1, ARCHITECTURE "Target formula defaults"] How fat and carbs split the remainder.** The specs say "fat and carbs fill the remainder" after protein, with no split.
-Recommendation: fat at 25% of target calories, carbs take what is left, with fat never under 0.3 g per lb of body weight (carbs absorb the difference). Both values live in `coach_settings.target_defaults` (\`fat_pct_of_calories: 25\`, \`fat_min_g_per_lb: 0.3\`) and are editable later in Coach settings. Engineering builds with these as seeded defaults until the PM decides. Blocks: final targets in MVP step 3.
+### Resolved by the PM (step 3 and Screens v2, 2026-10-16)
 
-**Q55. [F1, F16, MVP 3 and 6] Signup consents before the legal documents exist.** Step 3 has signup consents (terms, privacy, disclaimer, coach visibility); the privacy policy and terms templates are step 6.
-Recommendation: step 3 builds the consent step and records acceptance against version "draft-2026-10", linking to the template pages built early as clearly marked drafts. When Sean approves the final text in step 6, bump the versions in `app_config.consent_versions` and ask existing users to accept again on next open. Blocks: the consent screen in step 3.
-
-**Q56. [F1] Where weight goes in onboarding, and the weigh-in day.** Onboarding asks current weight; F4 logs weights by day.
-Recommendation: onboarding saves the current weight as today's weigh-in in \`weights\` (one row per local day, re-logging the same day replaces it), so the trend starts at onboarding and nutrition_profiles keeps no weight copy (as ARCHITECTURE says). Blocks: nothing.
-
-**Q57. [F4, F7, SCREENS_V2 Progress] Weighed share on Progress.** PRD F7 says free users see the weighed share ("Weighed: X% of entries") in the Progress weekly cards, and it is the precision first signal. SCREENS_V2's dashboard has no place for it.
-Recommendation: add "Weighed" as a fifth stat in Week averages ("Weighed: 64% of items"). Blocks: nothing.
-
-**Q58. [SCREENS_V2 Today 8, F8] Day note limits and screening.** Notes are visible to the coach; the P5 medical screen runs only on messages.
-Recommendation: 1,000 characters with a live counter near the limit; no AI screen in MVP. When messaging ships with P5, run it on notes too and raise the same coach flag. Blocks: nothing.
-
-**Q59. [SCREENS_V2] Rings and charts before targets exist.** Week strip rings, the week chart target line and "on target" counts need a target.
-Recommendation: before onboarding sets targets, week strip rings show only their track, the week chart has no target line, and days on target, protein days and the Food log grid's on target fill are hidden (logged days show the muted fill). Supersedes Q51 (the outline dot is gone with the week strip rings). Blocks: nothing.
-
-**Q60. [SCREENS_V2 Progress 5] Default weight trend range.**
-Recommendation: 30 days, remembered on the device like the macro card mode. Blocks: nothing.
+- **Migrations** 20261015000008_day_notes and 20261015000009_screens_v2_events approved and applied. **Standing approval extended:** widening the events.name check to add PRD event names is approved going forward; it is listed in each update.
+- **macro-*-text shades** for light mode approved (DESIGN_SYSTEM tokens).
+- **Q54** Fat 30% of calories for lose fat and maintain, 25% for build muscle and performance, floor 0.3 g per lb of goal weight (current weight if none). Carbs fill the remainder, minimum 50 g. Under 50 g, fat drops toward its floor first; if both floors bind, protein and floors stay and calories rise to fit, with a note to the coach. All in the coach settings seed.
+- **Q55** Consent version "draft-2026-10" until Sean approves the final legal text; on approval, bump the version and require re-acceptance on next app open.
+- **Q56** The onboarding weight becomes the first weigh-in.
+- **Q57** Weighed share is a fifth week average on Progress.
+- **Q58** 1,000 character cap on day notes; run P5 on notes when messaging ships.
+- **Q59, Q60** Approved as recommended.
 
 ### Resolved by the PM (Today v2, 2026-10-15)
 

@@ -81,9 +81,11 @@ Acceptance
 - Food scale step: "Do you have a food scale?" Yes / Not yet, stored as `has_scale` and changeable in Me. Not yet shows one skippable screen ("A food scale is the biggest upgrade to your accuracy. Most cost less than lunch. Until then, use hand portions.") followed by a 4 item hand portion guide: palm, fist, cupped hand, thumb.
 - Calories: Mifflin St Jeor x activity multiplier, adjusted by goal. **Floor: the calorie target never goes below the user's estimated BMR**, including after coach or user edits (show a plain note if an edit would cross it; coach can override with a confirmation).
 - Protein: grams per lb of goal weight (current weight if no goal weight), **capped at a configurable maximum, default 220 g**.
-- Fat and carbs fill the remainder. All multipliers, goal adjustments, protein per lb, and the protein cap read from coach settings.
+- Fat: 30% of calories for lose fat and maintain, 25% for build muscle and performance, never under 0.3 g per lb of goal weight (current weight if none). Carbs fill the remainder, at least 50 g. If carbs would fall under 50 g, fat drops toward its floor first; if both floors bind, protein and the floors are kept and calories rise to fit, with a note to the coach (Q54).
+- All multipliers, goal adjustments, protein per lb, the protein cap, fat percentages and floors read from coach settings.
 - Medical screening question: "Do you have a medical condition that affects what you eat?" Yes shows "Talk with your doctor before changing your diet. Your coach will be notified." and flags the coach. The user can still track.
-- Disclaimer and terms accepted at signup (see F16).
+- Disclaimer, terms and privacy policy accepted at signup (see F16). Until Sean approves the final legal text, acceptances record version "draft-2026-10"; on approval the version is bumped and every user accepts again on their next app open (Q55).
+- The weight entered in onboarding is saved as the first weigh-in (Q56).
 - Required install step: guided add to home screen with platform-specific visuals, then push permission. Skippable only after one dismissal; reminders will not work until installed on iPhone, and the screen says so plainly.
 - Free users can edit their own targets. Paid users' targets are set by the coach. A new paid user keeps their formula targets until the coach changes them; the coach sees a "targets not reviewed" flag on that client until he saves or confirms them once.
 - Lands on Today with targets shown and the log bar focused.
@@ -148,7 +150,7 @@ Spec: `docs/SCREENS_V2.md` "Progress (dashboard)".
 Acceptance
 - Header: "Progress" with today's date below.
 - Week chart: 7 stacked bars, Monday to Sunday, segments are calories from protein, carbs and fat in macro colors, with a dashed calorie target line. Tap a day to select it; below the chart, 4 tiles for that day (Protein, Carbs, Fat, Calories as "eaten of target" with color dots). Swipe for earlier weeks. Text summary for screen readers.
-- Week averages: average calories, average protein, days on target, protein days.
+- Week averages: average calories, average protein, days on target, protein days, weighed share ("Weighed: 64% of items", Q57).
 - Consistency, last 30 days, two cards: Food log (filled `accent-strong` when on target, muted fill when logged off target, empty when not logged; "22 of 30 days logged") and Weigh-ins (filled when weighed; "12 weigh-ins"). Empty states "No logs yet" and "No weigh-ins yet".
 - Weight trend: 7, 30 and 90 day toggle; an exponentially weighted moving average line (smoothing in app_config) with faint raw weigh-ins; trend value and change over the range; "Log weight". Weight can be logged any day from Today or Progress.
 - Weekly reports (paid): list; free users see the locked preview (post-MVP with reports).

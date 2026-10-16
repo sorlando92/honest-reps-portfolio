@@ -34,14 +34,14 @@ Follow the system light or dark setting. Both themes are first class.
 
 Macro colors (SCREENS_V2, Sean 2026-10-15) are used only on macro data: rings, chips, chart segments and legend dots. Each has a 15% opacity track or chip background. Color is never the only signal: every ring and chip also carries a label or letter (P, C, F, kcal). Over target, a ring completes and its center shows "+12 over" in `text-muted`. Text on a macro chip is checked with axe in both themes and darkened if needed.
 
-Measured (engineering, 2026-10-15): as ring and bar graphics every macro color passes 3:1 on \`surface\` in both themes, but in light mode none passes 4.5:1 as text on its own 15% chip (2.7 to 4.2), and \`macro-calories\` fails as text on white. So macro numbers and letters use text tokens:
+Measured (engineering, 2026-10-15; approved by the PM 2026-10-16): as ring and bar graphics every macro color passes 3:1 on `surface` in both themes, but in light mode none passes 4.5:1 as text on its own 15% chip (2.7 to 4.2), and `macro-calories` fails as text on white. So macro numbers and letters use text tokens:
 
 | Token | Light | Dark | Contrast on its chip (light) |
 |---|---|---|---|
-| \`macro-protein-text\` | #9D174D | #F472B6 | 5.8 |
-| \`macro-carbs-text\` | #1E40AF | #60A5FA | 6.5 |
-| \`macro-fat-text\` | #5B21B6 | #A78BFA | 6.6 |
-| \`macro-calories-text\` | #9A3412 | #FB923C | 5.6 |
+| `macro-protein-text` | #9D174D | #F472B6 | 5.8 |
+| `macro-carbs-text` | #1E40AF | #60A5FA | 6.5 |
+| `macro-fat-text` | #5B21B6 | #A78BFA | 6.6 |
+| `macro-calories-text` | #9A3412 | #FB923C | 5.6 |
 
 Rules
 - Never put `accent` as text on a light background; use `accent-strong`.
@@ -151,7 +151,7 @@ Bottom sheet over Today. Items, edits, flags, "Log it." Pending offline items sh
 Spec: `docs/SCREENS_V2.md` "Progress (dashboard)".
 1. Header "Progress" with today's date below
 2. Week chart (stacked macro bars, target line) and 4 tiles for the selected day
-3. Week averages: average calories, average protein, days on target, protein days
+3. Week averages: average calories, average protein, days on target, protein days, weighed share (Q57)
 4. Consistency, 30 days: Food log and Weigh-ins grids side by side
 5. Weight trend (7, 30, 90 days; line in `text`, raw dots in `text-muted` at 40% opacity), "Log weight"
 6. Weekly reports list (paid; blurred preview for free, post-MVP)

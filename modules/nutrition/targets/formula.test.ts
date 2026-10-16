@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { ageOn, bmr, computeTargets, type TargetDefaults, type TargetInput } from "./formula"
+import { ageOn, bmr, computeTargets, FLOORS_NOTE, type TargetDefaults, type TargetInput } from "./formula"
 
 // The seeded defaults (QUESTIONS.md Q29, Q54).
 const defaults: TargetDefaults = {
@@ -7,11 +7,13 @@ const defaults: TargetDefaults = {
   goal_calorie_adjustment_pct: { lose_fat: -20, maintain: 0, build_muscle: 10, performance: 5 },
   protein_g_per_lb_goal_weight: { lose_fat: 1.0, maintain: 0.8, build_muscle: 1.0, performance: 0.9 },
   protein_cap_g: 220,
-  fat_pct_of_calories: 25,
-  fat_min_g_per_lb: 0.3,
+  fat_pct_of_calories: { lose_fat: 30, maintain: 30, build_muscle: 25, performance: 25 },
+  fat_min_g_per_lb_goal_weight: 0.3,
+  carbs_min_g: 50,
 }
 
 const man: TargetInput = { sex: "male", ageYears: 35, heightCm: 180, weightKg: 90, goalWeightKg: 82, activityLevel: "moderate", goal: "lose_fat" }
+const kcal = (t: { proteinG: number; carbsG: number; fatG: number }) => t.proteinG * 4 + t.carbsG * 4 + t.fatG * 9
 
 describe("bmr", () => {
   it("is Mifflin St Jeor", () => {
@@ -21,13 +23,20 @@ describe("bmr", () => {
 })
 
 describe("computeTargets", () => {
-  it("applies activity and goal, protein from goal weight, fat at 25%, carbs the rest", () => {
+  it("applies activity and goal, protein from goal weight, fat at 30% for fat loss, carbs the rest", () => {
     const t = computeTargets(man, defaults)
     expect(t.calories).toBe(2300) // 1855 x 1.55 x 0.8 = 2300.2
     expect(t.proteinG).toBe(181) // 82 kg = 180.8 lb x 1.0
-    expect(t.fatG).toBe(64) // 25% of 2300 / 9 = 63.9 (floor 0.3 x 198.4 lb = 59.5)
-    expect(t.carbsG).toBe(250) // (2300 - 724 - 576) / 4
-    expect(t.bmr).toBe(1855)
+    expect(t.fatG).toBe(77) // 30% of 2300 / 9 = 76.7 (floor 0.3 x 180.8 lb = 54)
+    expect(t.carbsG).toBe(220) // (2300 - 724 - 693) / 4 = 220.75
+    expect(t).toMatchObject({ bmr: 1855, note: null })
+  })
+
+  it("uses 25% fat for build muscle and performance", () => {
+    const t = computeTargets({ ...man, goal: "build_muscle", goalWeightKg: null }, defaults)
+    expect(t.calories).toBe(3160) // 1855 x 1.55 x 1.1 = 3162.8
+    expect(t.fatG).toBe(88) // 25% of 3160 / 9 = 87.8
+    expect(t.proteinG).toBe(198) // 90 kg = 198.4 lb x 1.0
   })
 
   it("never goes below BMR", () => {
@@ -40,10 +49,24 @@ describe("computeTargets", () => {
     expect(computeTargets({ ...man, goalWeightKg: null, goal: "maintain" }, defaults).proteinG).toBe(159) // 198.4 lb x 0.8
   })
 
-  it("keeps fat at its floor per lb when 25% is lower, and carbs never negative", () => {
-    const heavy = computeTargets({ ...man, sex: "female", weightKg: 120, heightCm: 155, ageYears: 60, activityLevel: "sedentary" }, defaults)
-    expect(heavy.fatG).toBe(79) // 0.3 x 264.6 lb
-    expect(heavy.carbsG).toBeGreaterThanOrEqual(0)
+  it("lowers fat toward its floor before carbs go under 50 g", () => {
+    // A coach setting of 2 g protein per lb: 30% fat would leave carbs at 39 g.
+    const highProtein = { ...defaults, protein_g_per_lb_goal_weight: { ...defaults.protein_g_per_lb_goal_weight, lose_fat: 2.0 }, protein_cap_g: 400 }
+    const t = computeTargets(man, highProtein)
+    expect(t.proteinG).toBe(362)
+    expect(t.fatG).toBe(72) // (2300 - 1448 - 200) / 9, above the 54 g floor
+    expect(t.carbsG).toBe(51)
+    expect(t).toMatchObject({ calories: 2300, note: null })
+  })
+
+  it("raises calories to fit when protein, fat and carb floors all bind, with a note for the coach", () => {
+    const t = computeTargets({ sex: "female", ageYears: 60, heightCm: 150, weightKg: 50, goalWeightKg: 100, activityLevel: "sedentary", goal: "lose_fat" }, defaults)
+    expect(t.proteinG).toBe(220) // cap
+    expect(t.fatG).toBe(66) // floor 0.3 x 220.5 lb
+    expect(t.carbsG).toBe(50)
+    expect(t.calories).toBe(1680) // 880 + 594 + 200 = 1674, up to 10
+    expect(t.note).toBe(FLOORS_NOTE)
+    expect(kcal(t)).toBeLessThanOrEqual(t.calories)
   })
 
   it("rejects an unknown activity level", () => {
