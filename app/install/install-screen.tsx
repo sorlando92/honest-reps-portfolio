@@ -1,11 +1,11 @@
 "use client"
 
-import { useEffect, useState, useSyncExternalStore } from "react"
+import { useState, useSyncExternalStore } from "react"
 import { useRouter } from "next/navigation"
 import { Ellipsis, PlusSquare, Share, Smartphone } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { isStandalone, platformName } from "@/components/pwa/pwa-runtime"
-import { dismissInstall, installDismissals, installPromptReady, markInstallSeen, onInstallPromptChange, promptInstall } from "@/lib/install-prompt"
+import { dismissInstall, installPromptReady, onInstallPromptChange, promptInstall } from "@/lib/install-prompt"
 
 type Push = "idle" | "working" | "on" | "blocked" | "unsupported" | "error"
 
@@ -14,7 +14,6 @@ interface Device {
   platform: string
   /** Only Safari can add to the Home Screen on iPhone. */
   safari: boolean
-  dismissals: number
   push: Push
 }
 
@@ -28,7 +27,6 @@ function readDevice(): Device {
     standalone: isStandalone(),
     platform: platformName(),
     safari: /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS|GSA/.test(ua),
-    dismissals: installDismissals(),
     push: !supported ? "unsupported" : Notification.permission === "denied" ? "blocked" : "idle",
   }
   return device
@@ -37,7 +35,7 @@ const noSubscribe = () => () => {}
 
 /**
  * Add to Home Screen with platform-specific steps, then reminders (PRD F1).
- * "Not now" the first time, "Skip" the second (Q62); after that it never blocks.
+ * "Not now" once (Q62); later prompts are a single banner on Today, and Me links here.
  */
 const SUBSCRIBE_TIMEOUT_MS = 10_000
 
@@ -57,14 +55,21 @@ function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
   })
 }
 
-export function InstallScreen({ productName, vapidPublicKey }: { productName: string; vapidPublicKey: string }) {
+export function InstallScreen({
+  productName,
+  vapidPublicKey,
+  from,
+}: {
+  productName: string
+  vapidPublicKey: string
+  /** Opened from Me or the Today banner: leaving goes back there and is not a dismissal. */
+  from: "me" | "today" | null
+}) {
   const router = useRouter()
   const found = useSyncExternalStore(noSubscribe, readDevice, () => null)
   const canPrompt = useSyncExternalStore(onInstallPromptChange, installPromptReady, () => false)
   const [installedNow, setInstalledNow] = useState(false)
   const [pushNow, setPush] = useState<Push | null>(null)
-
-  useEffect(() => markInstallSeen(), [])
 
   if (!found) return null
   const env = { ...found, standalone: found.standalone || installedNow }
@@ -95,8 +100,8 @@ export function InstallScreen({ productName, vapidPublicKey }: { productName: st
   }
 
   function leave(dismissed: boolean) {
-    if (dismissed) dismissInstall()
-    router.replace("/today")
+    if (dismissed && !from) dismissInstall()
+    router.replace(from === "me" ? "/me" : "/today")
   }
 
   return (
@@ -160,7 +165,7 @@ export function InstallScreen({ productName, vapidPublicKey }: { productName: st
           <Button onClick={() => leave(false)}>Continue</Button>
         ) : (
           <Button variant="text" onClick={() => leave(true)}>
-            {env.dismissals >= 1 ? "Skip" : "Not now"}
+            {from ? "Back" : "Not now"}
           </Button>
         )}
       </div>

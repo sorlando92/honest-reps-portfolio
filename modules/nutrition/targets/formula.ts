@@ -91,3 +91,8 @@ export function ageOn(dateOfBirth: string, today: string): number {
 
 /** PRD F1: under 18 cannot create an account. */
 export const MINIMUM_AGE = 18
+
+/** The calorie floor: estimated BMR rounded up to 10 (PRD F1). */
+export function calorieFloor(input: Pick<TargetInput, "sex" | "ageYears" | "heightCm" | "weightKg">): number {
+  return Math.ceil(bmr(input) / 10) * 10
+}

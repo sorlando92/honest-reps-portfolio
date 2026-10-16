@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react"
+import Link from "next/link"
 import { cn } from "cn"
 import { track } from "@/core/events/client"
 import { formatNumber, isStreakMilestone, shortDate, type DayTotals } from "../../days/week"
@@ -127,7 +128,11 @@ export function MacroCard({
                 <MacroRing key={m} macro={m} eaten={eatenOf(day, m)} target={targetOf(target, m)} mode={mode} />
               ))}
             </button>
-            {!target && <p className="mt-3 text-center text-caption text-text-muted">Set your targets</p>}
+            {!target && (
+              <Link href="/me#targets" className="mt-1 flex min-h-11 items-center justify-center text-caption text-accent-strong underline">
+                Set your targets
+              </Link>
+            )}
           </div>
           <div className="w-full shrink-0 snap-start p-4">
             <WeekPage week={week} insight={insight} streak={streak} today={today} />

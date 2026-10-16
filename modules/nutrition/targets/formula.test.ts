@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { ageOn, bmr, computeTargets, FLOORS_NOTE, type TargetDefaults, type TargetInput } from "./formula"
+import { ageOn, bmr, calorieFloor, computeTargets, FLOORS_NOTE, type TargetDefaults, type TargetInput } from "./formula"
 
 // The seeded defaults (QUESTIONS.md Q29, Q54).
 const defaults: TargetDefaults = {
@@ -78,5 +78,14 @@ describe("ageOn", () => {
   it("counts whole years and turns over on the birthday", () => {
     expect(ageOn("2008-10-16", "2026-10-15")).toBe(17)
     expect(ageOn("2008-10-15", "2026-10-15")).toBe(18)
+  })
+})
+
+describe("calorieFloor", () => {
+  it("is BMR rounded up to 10", () => {
+    // 10 x 80 + 6.25 x 180 - 5 x 36 + 5 = 1,750
+    expect(calorieFloor({ sex: "male", ageYears: 36, heightCm: 180, weightKg: 80 })).toBe(1750)
+    // 10 x 60 + 6.25 x 165 - 5 x 30 - 161 = 1,320.25
+    expect(calorieFloor({ sex: "female", ageYears: 30, heightCm: 165, weightKg: 60 })).toBe(1330)
   })
 })

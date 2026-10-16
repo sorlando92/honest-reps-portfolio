@@ -40,8 +40,10 @@ Recommendation: v0.2 is the M1 gate. When Sean's meals arrive they are added as 
 **Q61. [F1, F16] Under 18 when the account already exists.** PRD F1 says under 18 cannot create an account, but sign in by email code creates the account before onboarding asks the date of birth.
 Recommendation: onboarding stops at the date of birth with "Honest Reps is for adults 18 and over for now.", saves nothing from onboarding, and signs the person out. The empty account is deleted by the account deletion job when it ships in step 6 (until then it has no data beyond the email and the coach visibility consent). The date of birth is not stored. Blocks: nothing.
 
-**Q62. [F1] "Skippable only after one dismissal" for the install step.**
-Recommendation: right after onboarding, the install screen shows with "Not now" as its only way out. On the next app open on that device it shows once more, now with "Skip". After that it never blocks; installing stays available from Me. Push permission sits on the same screen; on iPhone it is offered only once the app runs from the Home Screen, and the screen says plainly that reminders need that. Dismissals are counted per device, since installing is per device. Blocks: nothing.
+### Resolved by the PM (CI, install prompts, targets in Me, 2026-10-16)
+
+- **Q62** Changed: the first dismissal of the install step is allowed. If the app is not installed 3 days later, Today shows one dismissible reminder banner. After that second dismissal, never prompt again. Install and reminders stay available in Me.
+- **Targets in Me** (step 3): free users edit their own calories, protein, carbs and fat with the BMR floor and a confirmation to go below it; paid clients see coach-set targets read only. "Set your targets" links there.
 
 ### Resolved by the PM (step 3 and Screens v2, 2026-10-16)
 

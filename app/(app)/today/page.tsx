@@ -5,6 +5,8 @@ import { getCurrentUser } from "@/core/auth/current-user"
 import { addDays, localToday } from "@/core/time/local-day"
 import { createClient } from "@/lib/supabase/server"
 import { EmptyState } from "@/components/screen"
+import { InstallBanner } from "@/components/pwa/install-banner"
+import { getPublicConfig } from "@/core/settings/public-config"
 import { dailyTotals, loggingStreak } from "@/modules/nutrition/days/daily"
 import { formatNumber, insightText, weekInsight, weekStart } from "@/modules/nutrition/days/week"
 import { MEALS, mealAnchors, mealWindows, SECTION_LABEL, type Meal } from "@/modules/nutrition/entries/meals"
@@ -43,10 +45,11 @@ async function Journal({ searchParams }: { searchParams: PageProps<"/today">["se
   const requested = typeof param === "string" ? param : null
   const user = await getCurrentUser()
   const supabase = await createClient()
-  const [{ data: profile }, { data: nutrition }, { data: config }] = await Promise.all([
+  const [{ data: profile }, { data: nutrition }, { data: config }, { productName }] = await Promise.all([
     supabase.from("profiles").select("units, timezone").eq("id", user.id).single(),
     supabase.from("nutrition_profiles").select("has_scale").eq("user_id", user.id).maybeSingle(),
     supabase.from("app_config").select("key, value").in("key", ["meal_windows", "meal_anchors", "weight_trend"]),
+    getPublicConfig(),
   ])
   const setting = (key: string) => config?.find((c) => c.key === key)?.value
   const hasScale = (nutrition?.has_scale as boolean | null | undefined) ?? null
@@ -94,6 +97,7 @@ async function Journal({ searchParams }: { searchParams: PageProps<"/today">["se
   return (
     <>
       <DayHeader date={date} today={today} />
+      <InstallBanner productName={productName} />
       <WeekStrip days={week} date={date} today={today} />
       <MacroCard
         day={selected}

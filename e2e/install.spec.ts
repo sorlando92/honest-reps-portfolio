@@ -5,7 +5,7 @@ import { admin, expectNoAxeViolations, expectTapTargets, signInWithCode } from "
 // has no push service, so the browser's subscribe call is stubbed with a fake
 // https endpoint; the save goes through the real API and database.
 
-test("Not now, then Skip on the next open, then never again", async ({ page, context }, info) => {
+test("Not now once; 3 days later one banner on Today; after that never again (Q62)", async ({ page, context }, info) => {
   await signInWithCode(page, `e2e-install-${info.project.name}-${Date.now()}@example.test`)
   await page.goto("/install")
   await expect(page.getByRole("heading", { name: /on your Home Screen$/ })).toBeVisible()
@@ -16,21 +16,37 @@ test("Not now, then Skip on the next open, then never again", async ({ page, con
   await page.getByRole("button", { name: "Not now" }).click()
   await page.waitForURL("**/today")
 
-  // Same visit: not shown again.
-  await page.reload()
-  await expect(page).toHaveURL(/\/today$/)
-
-  // Next app open (a new tab is a new session): shown once more, with Skip.
+  // Next app open: no install screen and, before 3 days, no banner.
   const reopened = await context.newPage()
   await reopened.goto("/today")
-  await reopened.waitForURL("**/install")
-  await reopened.getByRole("button", { name: "Skip" }).click()
-  await reopened.waitForURL("**/today")
+  await expect(reopened.getByRole("heading", { name: "Breakfast", level: 2 })).toBeVisible()
+  await expect(reopened).toHaveURL(/\/today$/)
+  await expect(reopened.getByRole("region", { name: "Install" })).toHaveCount(0)
+
+  // 3 days after the dismissal: one banner.
+  await reopened.evaluate(() => localStorage.setItem("hr:install-dismissed-at", String(Date.now() - 3 * 86_400_000 - 60_000)))
+  await reopened.reload()
+  const banner = reopened.getByRole("region", { name: "Install" })
+  await expect(banner).toContainText("to your Home Screen so reminders can reach you.")
+  await expectNoAxeViolations(reopened)
+  await expectTapTargets(reopened)
+  await banner.getByRole("button", { name: "Dismiss" }).click()
+  await expect(banner).toHaveCount(0)
 
   const third = await context.newPage()
   await third.goto("/today")
   await expect(third.getByRole("heading", { name: "Breakfast", level: 2 })).toBeVisible()
-  await expect(third).toHaveURL(/\/today$/)
+  await expect(third.getByRole("region", { name: "Install" })).toHaveCount(0)
+})
+
+test("Me opens the install screen, and Back returns to Me without counting a dismissal", async ({ page }, info) => {
+  await signInWithCode(page, `e2e-install-me-${info.project.name}-${Date.now()}@example.test`)
+  await page.goto("/me")
+  await page.getByRole("link", { name: "Add to Home Screen and turn on reminders" }).click()
+  await page.waitForURL("**/install?from=me")
+  await page.getByRole("button", { name: "Back" }).click()
+  await page.waitForURL(/\/me$/)
+  expect(await page.evaluate(() => localStorage.getItem("hr:install-dismissed-at"))).toBeNull()
 })
 
 /**

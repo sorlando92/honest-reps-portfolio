@@ -330,3 +330,10 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
 - Turning on reminders gives up after 10 seconds with "Reminders could not be turned on. Try again." and the button works again (e2e covers a push service that never answers).
 - GitHub Actions on Node 24 versions: checkout v7, setup-node v7, pnpm/action-setup v6, upload-artifact v7. `runs-on: ubuntu-24.04`.
 - Not done by engineering: gating production deploys on CI is a Vercel dashboard setting (owner task 14).
+
+### 2026-10-16: install prompts (Q62) and targets in Me
+
+- Q62 as decided: "Not now" on the install screen is allowed once; the second full-screen prompt is gone. 3 days after that dismissal, if the app is still not installed, Today shows one banner ("Add {product} to your Home Screen so reminders can reach you.", Set up, Dismiss). Dismissing it or tapping Set up ends prompts on that device. Devices with the old dismissal count carry over (1: the 3 days start now; 2: never prompted again).
+- Me: "Home Screen and reminders" opens the install screen; Back returns to Me and is not a dismissal.
+- Me, Targets: free users edit calories, protein, carbs and fat, with the macro calorie sum shown. Under the BMR floor (from date of birth, sex, height and the latest weigh-in) the app shows "1,500 calories is below your estimated resting burn of 1,750." with Save anyway and Change it; `POST /api/targets` refuses without the confirmation (409) and refuses paid users (403; RLS refuses their rows too). Paid clients see their targets read only with "Set by your coach." or "Your coach will review these." "Set your targets" on Today links to it.
+- Tests: unit (calorie floor), e2e at 375px light and dark (banner timing and never again, Me link and Back, free edit with floor confirmation, API refusal, paid read only).

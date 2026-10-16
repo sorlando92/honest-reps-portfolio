@@ -37,7 +37,8 @@ Done when: the parsing eval meets every pass bar in `evals/README.md`, including
 - Targets from the seeded formula with the BMR floor and the protein cap
 - Medical screening question; yes flags the coach
 - Signup consents: terms, privacy, disclaimer, coach visibility
-- Required install step and push permission
+- Required install step and push permission; one Today banner 3 days after a dismissal, then never again; install and reminders in Me (Q62)
+- Target editing in Me: free users edit their own with the BMR floor and a confirmation to go below it; paid clients read only. "Set your targets" on Today links to it
 - Journal and Dashboard (`docs/SCREENS_V2.md` on top of `docs/TODAY_SPEC.md`): macro color tokens; Today as the landing screen with header arrows and Go to date, week strip with calorie rings (view and log past days, Q52 anchors), macro card (4 rings, Eaten and Left, week insight, mini bars, streak with earned moments), sticky compact header, meal cards with P, C, F, kcal chips, weight row and sheet, day notes, floating log bar
 - Progress dashboard (`docs/PROGRESS_SPEC.md`): week chart with day tiles, week averages, 30 day consistency grids, weight trend with 7, 30, 90 day ranges, all from one `progress_summary` call on the daily aggregates shared with Today; components take a user id for reuse in the M5 client week view
 - Demo data: `pnpm seed:demo` and `--remove`, `profiles.is_test`, test profiles excluded from metrics and roster counts

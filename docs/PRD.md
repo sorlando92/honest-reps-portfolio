@@ -88,8 +88,8 @@ Acceptance
 - Medical screening question: "Do you have a medical condition that affects what you eat?" Yes shows "Talk with your doctor before changing your diet. Your coach will be notified." and flags the coach. The user can still track.
 - Disclaimer, terms and privacy policy accepted at signup (see F16). Until Sean approves the final legal text, acceptances record version "draft-2026-10"; on approval the version is bumped and every user accepts again on their next app open (Q55).
 - The weight entered in onboarding is saved as the first weigh-in (Q56).
-- Required install step: guided add to home screen with platform-specific visuals, then push permission. Skippable only after one dismissal; reminders will not work until installed on iPhone, and the screen says so plainly.
-- Free users can edit their own targets. Paid users' targets are set by the coach. A new paid user keeps their formula targets until the coach changes them; the coach sees a "targets not reviewed" flag on that client until he saves or confirms them once.
+- Required install step: guided add to home screen with platform-specific visuals, then push permission. Reminders will not work until installed on iPhone, and the screen says so plainly. The first dismissal ("Not now") is allowed. If the app is still not installed 3 days later, Today shows one dismissible reminder banner; after that second dismissal it never prompts again. Install and reminders stay available in Me (Q62).
+- Free users edit their own calories, protein, carbs and fat in Me; below the BMR floor they see a plain note and must confirm. Paid clients see their targets read only. Paid users' targets are set by the coach. A new paid user keeps their formula targets until the coach changes them; the coach sees a "targets not reviewed" flag on that client until he saves or confirms them once.
 - Lands on Today with targets shown and the log bar focused.
 
 ### F2. Food logging (free; photo is paid)
