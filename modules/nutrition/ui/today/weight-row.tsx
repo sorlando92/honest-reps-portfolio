@@ -46,7 +46,8 @@ export function WeightRow({
   )
 }
 
-function WeightSheet({
+/** Weight entry for a local day plus the last 7 days; shared by Today and Progress. */
+export function WeightSheet({
   open,
   onOpenChange,
   date,
@@ -54,6 +55,7 @@ function WeightSheet({
   weighInKg,
   last7,
   units,
+  onSaved,
 }: {
   open: boolean
   onOpenChange: (o: boolean) => void
@@ -62,6 +64,8 @@ function WeightSheet({
   weighInKg: number | null
   last7: { date: string; kg: number | null }[]
   units: Units
+  /** Called after a save; Today refreshes the page by default. */
+  onSaved?: () => void
 }) {
   const id = useId()
   const router = useRouter()
@@ -85,7 +89,8 @@ function WeightSheet({
       }
       navigator.vibrate?.(10)
       onOpenChange(false)
-      router.refresh()
+      if (onSaved) onSaved()
+      else router.refresh()
     })
   }
 

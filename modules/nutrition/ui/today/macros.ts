@@ -26,3 +26,9 @@ export const MACRO_CHIP: Record<Macro, string> = {
   fat: "bg-macro-fat/15",
   calories: "bg-macro-calories/15",
 }
+export const MACRO_DOT: Record<Macro, string> = {
+  protein: "bg-macro-protein",
+  carbs: "bg-macro-carbs",
+  fat: "bg-macro-fat",
+  calories: "bg-macro-calories",
+}

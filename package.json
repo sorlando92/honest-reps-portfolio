@@ -18,6 +18,7 @@
     "db:migrate": "supabase migration up",
     "db:push": "supabase db push",
     "db:seed": "node --env-file-if-exists=.env.local scripts/seed.mts",
+    "seed:demo": "node --env-file-if-exists=.env.local scripts/seed-demo.mts",
     "env:local": "node scripts/local-env.mts",
     "eval:parsing": "node --conditions=react-server --env-file-if-exists=.env.local evals/run-parsing.mts",
     "db:import-fdc": "node --conditions=react-server --env-file-if-exists=.env.local scripts/import-fdc.mts"

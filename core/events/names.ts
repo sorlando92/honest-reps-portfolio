@@ -26,6 +26,9 @@ export const EVENT_NAMES = [
   "streak_milestone",
   "day_note_saved",
   "macro_card_mode_changed",
+  "progress_viewed",
+  "progress_week_changed",
+  "weight_range_changed",
 ] as const
 
 export type EventName = (typeof EVENT_NAMES)[number]
