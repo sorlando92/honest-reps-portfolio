@@ -39,6 +39,24 @@ const noSubscribe = () => () => {}
  * Add to Home Screen with platform-specific steps, then reminders (PRD F1).
  * "Not now" the first time, "Skip" the second (Q62); after that it never blocks.
  */
+const SUBSCRIBE_TIMEOUT_MS = 10_000
+
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error("timeout")), ms)
+    promise.then(
+      (value) => {
+        clearTimeout(timer)
+        resolve(value)
+      },
+      (error) => {
+        clearTimeout(timer)
+        reject(error)
+      }
+    )
+  })
+}
+
 export function InstallScreen({ productName, vapidPublicKey }: { productName: string; vapidPublicKey: string }) {
   const router = useRouter()
   const found = useSyncExternalStore(noSubscribe, readDevice, () => null)
@@ -58,15 +76,22 @@ export function InstallScreen({ productName, vapidPublicKey }: { productName: st
     try {
       const permission = await Notification.requestPermission()
       if (permission !== "granted") return setPush(permission === "denied" ? "blocked" : "idle")
-      const registration = await navigator.serviceWorker.ready
-      const subscription =
-        (await registration.pushManager.getSubscription()) ??
-        (await registration.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: vapidPublicKey }))
-      const res = await fetch("/api/push/subscribe", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(subscription.toJSON()) })
-      setPush(res.ok ? "on" : "error")
+      // A service worker or push service that never answers must not leave
+      // the button stuck on "Turning on".
+      const saved = await withTimeout(subscribe(), SUBSCRIBE_TIMEOUT_MS)
+      setPush(saved ? "on" : "error")
     } catch {
       setPush("error")
     }
+  }
+
+  async function subscribe(): Promise<boolean> {
+    const registration = await navigator.serviceWorker.ready
+    const subscription =
+      (await registration.pushManager.getSubscription()) ??
+      (await registration.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: vapidPublicKey }))
+    const res = await fetch("/api/push/subscribe", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(subscription.toJSON()) })
+    return res.ok
   }
 
   function leave(dismissed: boolean) {
@@ -123,7 +148,7 @@ export function InstallScreen({ productName, vapidPublicKey }: { productName: st
             </Button>
             {push === "error" && (
               <p role="alert" className="text-body">
-                Reminders did not turn on. Try again.
+                Reminders could not be turned on. Try again.
               </p>
             )}
           </>

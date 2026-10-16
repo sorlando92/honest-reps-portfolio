@@ -1,4 +1,4 @@
-import { devices, expect, test } from "@playwright/test"
+import { devices, expect, test, type BrowserContext } from "@playwright/test"
 import { admin, expectNoAxeViolations, expectTapTargets, signInWithCode } from "./helpers"
 
 // PRD F1 install step and push permission (Q62) at 375px. Headless Chromium
@@ -33,21 +33,35 @@ test("Not now, then Skip on the next open, then never again", async ({ page, con
   await expect(third).toHaveURL(/\/today$/)
 })
 
+/**
+ * Stubs the browser push service: headless Chromium reports notifications as
+ * denied and has no push service, so act like a phone that asks and answers.
+ * The service worker is stubbed too, so the test never depends on it
+ * activating. `hang` makes subscribing never answer.
+ */
+async function stubPush(context: BrowserContext, endpoint: string, hang = false) {
+  await context.addInitScript(
+    ({ endpoint, hang }) => {
+      let permission: NotificationPermission = "default"
+      Object.defineProperty(Notification, "permission", { get: () => permission })
+      Notification.requestPermission = async () => (permission = "granted")
+      const fake = { endpoint, keys: { p256dh: "BPk3", auth: "c2VjcmV0" } }
+      const pushManager = {
+        getSubscription: async () => null,
+        subscribe: () => (hang ? new Promise(() => {}) : Promise.resolve({ ...fake, toJSON: () => fake })),
+      }
+      if ("serviceWorker" in navigator) {
+        Object.defineProperty(navigator.serviceWorker, "ready", { get: () => Promise.resolve({ pushManager }) })
+      }
+    },
+    { endpoint, hang }
+  )
+}
+
 test("turning on reminders saves this device's subscription", async ({ page, context }, info) => {
   const email = `e2e-push-${info.project.name}-${Date.now()}@example.test`
   const endpoint = `https://push.example.test/send/${info.project.name}-${Date.now()}`
-  await context.addInitScript((endpoint) => {
-    // Headless Chromium reports notifications as denied; act like a phone that asks.
-    let permission: NotificationPermission = "default"
-    Object.defineProperty(Notification, "permission", { get: () => permission })
-    Notification.requestPermission = async () => (permission = "granted")
-    const fake = { endpoint, keys: { p256dh: "BPk3", auth: "c2VjcmV0" } }
-    const proto = (window as unknown as { PushManager?: { prototype: Record<string, unknown> } }).PushManager?.prototype
-    if (proto) {
-      proto.getSubscription = async () => null
-      proto.subscribe = async () => ({ ...fake, toJSON: () => fake })
-    }
-  }, endpoint)
+  await stubPush(context, endpoint)
   await signInWithCode(page, email)
   await page.goto("/install")
   await page.getByRole("button", { name: "Turn on reminders" }).click()
@@ -63,6 +77,16 @@ test("turning on reminders saves this device's subscription", async ({ page, con
   ])
   expect(subs).toEqual([{ endpoint }])
   expect(events).toHaveLength(1)
+})
+
+test("a push service that never answers gives up after 10 seconds", async ({ page, context }, info) => {
+  await stubPush(context, "https://push.example.test/never", true)
+  await signInWithCode(page, `e2e-push-hang-${info.project.name}-${Date.now()}@example.test`)
+  await page.goto("/install")
+  await page.getByRole("button", { name: "Turn on reminders" }).click()
+  await expect(page.getByRole("button", { name: "Turning on" })).toBeDisabled()
+  await expect(page.getByRole("alert").filter({ hasText: "Reminders could not be turned on. Try again." })).toBeVisible({ timeout: 15_000 })
+  await expect(page.getByRole("button", { name: "Turn on reminders" })).toBeEnabled()
 })
 
 test.describe("on iPhone in Safari", () => {

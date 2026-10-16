@@ -322,3 +322,11 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
 - New routes: `POST /api/weights` (one per local day, replaces; `weight_logged`), `PUT /api/day-notes` (empty clears; `day_note_saved`). Events wired: `day_switched`, `macro_card_mode_changed`, `streak_milestone`, `day_note_saved`, `weight_logged`.
 - Tests: unit (weeks, insight, EWMA and change wording, Q52 stamps across daylight saving), database (daily_totals at 11:30 PM local, targets per date, adherence, coach and outsider reads, streak), e2e at 375px light and dark (rings and labels, mode remembered, day switch, past day log at the anchor, note, copy to today, weight and trend, sticky header, axe and 44pt).
 - Deferred: the check-in card (step 4) and the free coaching card (links to the upgrade screen, which ships with billing); "Set your targets" is plain text until targets can be edited from Me.
+
+### 2026-10-16: CI fixes
+
+- Cause of the red CI since `86dbe2e`: CI had no VAPID public key, so the reminders button rendered disabled and the e2e click waited until the test timed out. Production kept deploying because deploys are not gated on CI.
+- CI sets a throwaway `NEXT_PUBLIC_VAPID_PUBLIC_KEY` (public, test only). The e2e push test stubs the service worker and the push service, so it never depends on a real one.
+- Turning on reminders gives up after 10 seconds with "Reminders could not be turned on. Try again." and the button works again (e2e covers a push service that never answers).
+- GitHub Actions on Node 24 versions: checkout v7, setup-node v7, pnpm/action-setup v6, upload-artifact v7. `runs-on: ubuntu-24.04`.
+- Not done by engineering: gating production deploys on CI is a Vercel dashboard setting (owner task 14).

@@ -17,6 +17,7 @@ Engineering adds questions here with: feature ID, the decision needed, and a rec
 11. **M1 API keys.** Anthropic API key and USDA FoodData Central API key. Put them in Vercel environment variables (Production and Preview) and in the local `.env.local`, never in chat or the repo. Blocks M1.
 12. **Sentry.** Create a free Sentry account (sentry.io) and a Next.js project, then give engineering the DSN and an auth token for source map uploads, as Vercel environment variables (`NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_AUTH_TOKEN`, Production and Preview) and `.env.local`, never in chat or the repo. Set the alert rule "a new issue is created" to email you. Blocks the MVP step 6 monitoring item.
 13. **Logs before alpha.** Upgrade Vercel to Pro (also owner task 8 and Q6) so runtime logs persist, or add a log drain. The Hobby plan keeps about 30 minutes, which lost the logs for the onboarding bug on 2026-10-16. Blocks alpha.
+14. **Gate production deploys on CI.** In Vercel, Project Settings, Deployment Checks: add the GitHub check "CI / check" as required for Production, so a push to main is promoted only after CI passes. It is a dashboard setting; engineering cannot reach it without a Vercel token, and the alternative (deploying from GitHub Actions) also needs a `VERCEL_TOKEN` secret from you. Until then, a red CI run still deploys.
 
 ## Engineering questions
 
