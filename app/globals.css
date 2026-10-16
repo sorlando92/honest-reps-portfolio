@@ -18,6 +18,17 @@
   --caution: #b45309;
   --danger: #b91c1c;
 
+  /* Macro colors (DESIGN_SYSTEM.md): macro data only. The -text shades are for
+     numbers and letters on chips; the base colors fail 4.5:1 there in light. */
+  --macro-protein: #db2777;
+  --macro-carbs: #2563eb;
+  --macro-fat: #7c3aed;
+  --macro-calories: #ea580c;
+  --macro-protein-text: #9d174d;
+  --macro-carbs-text: #1e40af;
+  --macro-fat-text: #5b21b6;
+  --macro-calories-text: #9a3412;
+
   --tab-bar-height: 4rem;
 
   color-scheme: light dark;
@@ -35,6 +46,14 @@
     --accent-strong: #39e27a;
     --caution: #f59e0b;
     --danger: #f87171;
+    --macro-protein: #f472b6;
+    --macro-carbs: #60a5fa;
+    --macro-fat: #a78bfa;
+    --macro-calories: #fb923c;
+    --macro-protein-text: #f472b6;
+    --macro-carbs-text: #60a5fa;
+    --macro-fat-text: #a78bfa;
+    --macro-calories-text: #fb923c;
   }
 }
 
@@ -78,6 +97,14 @@
   --color-accent-strong: var(--accent-strong);
   --color-caution: var(--caution);
   --color-danger: var(--danger);
+  --color-macro-protein: var(--macro-protein);
+  --color-macro-carbs: var(--macro-carbs);
+  --color-macro-fat: var(--macro-fat);
+  --color-macro-calories: var(--macro-calories);
+  --color-macro-protein-text: var(--macro-protein-text);
+  --color-macro-carbs-text: var(--macro-carbs-text);
+  --color-macro-fat-text: var(--macro-fat-text);
+  --color-macro-calories-text: var(--macro-calories-text);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);

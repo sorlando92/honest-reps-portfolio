@@ -24,6 +24,8 @@ export const EVENT_NAMES = [
   "meal_copied",
   "day_switched",
   "streak_milestone",
+  "day_note_saved",
+  "macro_card_mode_changed",
 ] as const
 
 export type EventName = (typeof EVENT_NAMES)[number]

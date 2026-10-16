@@ -274,3 +274,9 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
 - DESIGN_SYSTEM: macro color tokens and their rules, plus `macro-*-text` shades for light mode (the spec colors fail 4.5:1 as text on their own chips), (macro data only, never the only signal, over is muted), log bar as a floating pill (supersedes the Q47 layout), macro ring, macro card, sticky compact header, meal card chips, consistency grid, week chart, day note; Today and Progress screens; copy. The Week sheet and the status dots are gone.
 - ARCHITECTURE: `day_notes`. MILESTONES step 3 rewritten around SCREENS_V2; step 5 week view shows day notes.
 - New questions Q57 (weighed share on Progress), Q58 (day note limits and screening), Q59 (rings and charts before targets; supersedes Q51), Q60 (default trend range).
+
+### 2026-10-15: Screens v2 foundations
+
+- Migration 20261015000008_day_notes (additive): `day_notes` (one per user and local day, 1 to 1,000 characters; owner reads and writes, assigned coach reads only), RLS suite added. Local only for now: it ships with 20261015000009.
+- Migration 20261015000009_screens_v2_events: widens the event name check with `day_note_saved` and `macro_card_mode_changed`. It drops and recreates the constraint, so it waits for PM approval; until then those two events would be refused by the database.
+- Macro color tokens and the light mode `-text` shades in the theme (`bg-macro-protein`, `text-macro-protein-text` and so on).
