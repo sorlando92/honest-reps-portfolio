@@ -70,6 +70,42 @@ Output only JSON that matches the schema.
 
 Optional user text caption is appended ("half of this", "with ranch"). Same schema and post-processing as P1. Every item returns `amount_source: estimated` (capped at 0.6) unless a nutrition label or scale display is readable, which gives `label` or `weighed`. See QUESTIONS.md Q34 on how this shows on the card.
 
+### P2 label mode (free, barcode fallback; `docs/FOOD_LOOKUP_SPEC.md` 3)
+
+Purpose: read the Nutrition Facts panel when a barcode is not found (or from search, "Scan the label"), so the user can save the product as a custom food. Free for all users; it is not meal photo logging. No coach-editable layer. Same model as P1 (Sonnet 5.5). Logged to `ai_calls` as prompt `P2` with its own version; `input` is `label` plus the GTIN when known, and `output` is the validated JSON. The photo itself is not kept in MVP.
+
+Locked system prompt (after the extraction safety rules):
+```
+You read the Nutrition Facts panel in a photo of a packaged food for a nutrition tracker.
+Return the serving size as printed (for example "1 scoop (34 g)"), the serving weight in grams or the serving volume in milliliters when printed, and per serving: calories, protein, total carbohydrate and total fat in grams.
+If the panel has more than one column, use the per serving column for one serving as packaged.
+Read only what is printed. Never estimate or calculate a number that is not legible; return null for it.
+Return the product name and brand only if they are printed in the photo, otherwise null.
+Set confidence to 0.9 or higher only when every number you return is clearly legible. Use 0.5 or lower if any number is blurry, cut off or uncertain.
+If the photo does not show a Nutrition Facts panel, return null for every value and confidence 0.
+Output only JSON that matches the schema.
+```
+
+Output schema:
+```json
+{
+  "product_name": "Native Fuel Whey, Chocolate",
+  "brand": "Ascent",
+  "serving_label": "1 scoop (34 g)",
+  "serving_grams": 34,
+  "serving_ml": null,
+  "calories": 130,
+  "protein_g": 25,
+  "carbs_g": 3,
+  "fat_g": 1.5,
+  "confidence": 0.95
+}
+```
+
+Post-processing: the values prefill the custom food form; the user confirms or edits before anything is saved. Confidence under 0.7, a missing calorie value, or the 20% calorie and macro rule (PRD F2 "Data quality") shows "Check this" on the form. `label_scanned` records success (calories and a serving were read) and how many fields the user edited. Rate limit: 20 label scans per user per hour.
+
+Fallback: on failure or an empty read, the form opens with only the GTIN filled and the line "We could not read that label. Try another photo or enter it yourself."
+
 ---
 
 ## P3. Weekly review prep (coach review queue)

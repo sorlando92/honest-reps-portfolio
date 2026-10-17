@@ -105,8 +105,9 @@ Stacks for drill-ins, bottom sheets for short tasks (log confirm, weight entry, 
 ## Components
 
 - **Log bar:** a floating pill above the tab bar on Today and Progress (NAV_SPEC 3; supersedes the Q47 layout). From Progress, logs go to today and the app switches to Today after Log it. The "+" button is the second entry point.
-  - Empty: leading search glyph (44pt, opens food search), placeholder "What did you eat?", trailing barcode icon (44pt).
-  - Typing: the trailing icon becomes send.
+  - Empty: leading search glyph (44pt, focuses the field and opens the results sheet), placeholder "What did you eat?", trailing barcode icon (44pt).
+  - Typing: the trailing icon becomes send. From 2 characters the results sheet opens above the bar (FOOD_LOOKUP_SPEC 1): row 1 "Describe with AI: {typed text}", then My foods, Brands and restaurants, Basic foods, 5 rows each with "Show more". Rows are 44pt or taller: name, then brand, serving and calories in `caption`.
+- **Barcode confirm:** product name, brand, image when available and the serving line ("1 scoop (34 g), 130 kcal"), then "Log it" (primary) and "Not this" (secondary). "Check this" shows here when the data quality rule fails (FOOD_LOOKUP_SPEC 3).
   - On focus, shows quick add chips above it. The camera icon appears only when photo logging ships (post-MVP), locked for free users.
 - **Quick add chip:** pill, `surface` fill, food name plus calories. One tap logs it.
 - **Stat block:** big number + label + thin progress bar.

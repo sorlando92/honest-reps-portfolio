@@ -28,9 +28,9 @@ Each has a 15% opacity track or chip background. Rules:
 Tabs unchanged: Today, Progress, Coach (Clients for the coach), Me. Today is the default landing. No floating "+" button: the log bar is the single entry point.
 
 ## Log bar (supersedes Q47 layout)
-Floating pill above the tab bar.
-- Empty: leading search glyph (tap opens food search), placeholder "What did you eat?", trailing barcode icon.
-- Typing: trailing icon becomes send.
+Floating pill above the tab bar. Search and barcode behavior: `docs/FOOD_LOOKUP_SPEC.md` (2026-10-17) overrides this section where they conflict.
+- Empty: leading search glyph (focuses the field and opens the results sheet), placeholder "What did you eat?", trailing barcode icon.
+- Typing: trailing icon becomes send. From 2 characters, live search results open above the bar with "Describe with AI: {typed text}" as row 1. Send and Enter always run AI parsing; tapping a result never does.
 - Camera icon: not shown until photo logging ships (post-MVP), then visible and locked for free users.
 
 ## Today (journal)

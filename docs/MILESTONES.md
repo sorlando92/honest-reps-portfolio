@@ -26,7 +26,7 @@ Build in this order: 1, then 3, then 2, then 4 to 6 (PM 2026-10-15: Sean tests t
 - Events: `food_logged` for every method (with meal), `food_entry_corrected`, `food_entry_deleted`, `meal_copied`
 
 ### 2. Accuracy gate
-- Local FDC import (QUESTIONS.md Q40): Foundation, SR Legacy and FNDDS in Postgres, searched locally
+- Local FDC import (QUESTIONS.md Q40): pulled forward into Food lookup in step 3 (PM 2026-10-17), now including Branded Foods. What remains here: rerun the parsing eval with P1 branded matches on the local copy
 - More curated chains if holdout meal calories are still under 80%
 - Engineering tells the PM when this is done; the PM supplies fresh holdout cases
 
@@ -44,7 +44,8 @@ Done when: the parsing eval meets every pass bar in `evals/README.md`, including
 - Demo data: `pnpm seed:demo` and `--remove`, `profiles.is_test`, test profiles excluded from metrics and roster counts
 - Weight logging and the EWMA trend
 - Navigation and calendar (`docs/NAV_SPEC.md`), before step 4: floating tab bar (Progress, Today, Coach or Clients, More) with the round "+" and quick action sheet; log bar on Today and Progress; bars hide while typing; Today header band with the sliding week strip, compact macro row on scroll and month calendar; Progress "Hi, {first name}" header with avatar; Me becomes More with grouped rows
-- Events: `signup_started`, `signup_completed`, `onboarding_completed`, `pwa_installed`, `push_enabled`, `weight_logged`, `day_switched`, `streak_milestone`, `day_note_saved`, `macro_card_mode_changed`, `progress_viewed`, `progress_week_changed`, `weight_range_changed`, `quick_action_used`, `calendar_expanded`
+- Food lookup (`docs/FOOD_LOOKUP_SPEC.md`, PM 2026-10-17), before step 4: one bar for search as you type and AI; local FDC index with Foundation, SR Legacy, FNDDS and Branded Foods (Q40 pulled forward); GTIN normalization, check digit and two read confirmation, lookup order with FDC Branded before Open Food Facts; confirm before logging with Not this; label scan (P2 label mode, free) and Enter it yourself as custom foods; My foods in More; coach Food lookups list in Clients; `evals/search.jsonl` (top 3 for 90%, top 5 for 100%). After it ships, Sean scans 25 real products (90% correct on first scan, every miss leads to label scan and an instant next scan)
+- Events: `signup_started`, `signup_completed`, `onboarding_completed`, `pwa_installed`, `push_enabled`, `weight_logged`, `day_switched`, `streak_milestone`, `day_note_saved`, `macro_card_mode_changed`, `progress_viewed`, `progress_week_changed`, `weight_range_changed`, `quick_action_used`, `calendar_expanded`, `search_performed`, `barcode_scanned`, `barcode_mismatch`, `label_scanned`, `custom_food_created`
 
 ### 4. Client loop (F5, F12, F16 disclosure)
 - Coach invite by email with the paid flag set to comped or external; the invited client skips any upgrade step

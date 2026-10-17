@@ -34,6 +34,7 @@ Rules:
 ## 3. Log bar
 - Floating pill above the tab bar on Today and Progress. From Progress, logs go to today and switch to Today after confirming.
 - Layout unchanged from SCREENS_V2: leading search glyph, "What did you eat?", trailing barcode icon, send when typing.
+- Search and AI share the bar (`docs/FOOD_LOOKUP_SPEC.md` 1, 2026-10-17): typing opens live results above the bar, row 1 is "Describe with AI: {typed text}", send always means AI. The search glyph and the "Search food" quick action open that results sheet with the field focused. Scan barcode follows FOOD_LOOKUP_SPEC 3 (confirm before logging, label scan when not found).
 
 ## 4. Today header and sliding calendar
 ### Header band
