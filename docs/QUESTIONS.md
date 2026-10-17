@@ -40,6 +40,12 @@ Recommendation: v0.2 is the M1 gate. When Sean's meals arrive they are added as 
 **Q61. [F1, F16] Under 18 when the account already exists.** PRD F1 says under 18 cannot create an account, but sign in by email code creates the account before onboarding asks the date of birth.
 Recommendation: onboarding stops at the date of birth with "Honest Reps is for adults 18 and over for now.", saves nothing from onboarding, and signs the person out. The empty account is deleted by the account deletion job when it ships in step 6 (until then it has no data beyond the email and the coach visibility consent). The date of birth is not stored. Blocks: nothing.
 
+**Q63. [NAV_SPEC 5] Where the first name in "Hi, {first name}" comes from.** Onboarding never asks for a name, so `profiles.display_name` is empty for most users.
+Recommendation: use the first word of `display_name` when set; otherwise show "Hi" alone and take the avatar initial from the email. Add a Name row under More, Account, so users can set it (one text field, saved to `display_name`). Engineering builds the fallback now and the Name row with this pass unless the PM says otherwise. Blocks: nothing.
+
+**Q64. [NAV_SPEC 6] More rows that have no screen yet.** Reminders (time and toggle per reminder) is step 4 (F17), Delete account is step 6, Subscription comes with billing, Coach settings with step 5.
+Recommendation: show only rows that work; add each row when its feature ships. Until step 4, reminders are reached through "Add to Home Screen and turn on reminders". Blocks: nothing.
+
 ### Resolved by the PM (CI, install prompts, targets in Me, 2026-10-16)
 
 - **Q62** Changed: the first dismissal of the install step is allowed. If the app is not installed 3 days later, Today shows one dismissible reminder banner. After that second dismissal, never prompt again. Install and reminders stay available in Me.

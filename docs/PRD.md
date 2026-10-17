@@ -52,7 +52,7 @@ Guardrails:
 
 ### Metrics and instrumentation (emit from day one)
 
-Events: `signup_started`, `signup_completed`, `onboarding_completed` (the first time the user reaches Today after onboarding), `pwa_installed`, `push_enabled`, `food_logged` (method: text, photo, barcode, search, manual, quick_add; meal; confidence; offline; counts per amount source), `food_entry_corrected`, `food_entry_deleted`, `weight_logged`, `habit_checked`, `checkin_started`, `checkin_submitted` (on_time boolean), `report_viewed`, `message_sent` (role), `upgrade_viewed` (source), `upgrade_completed`, `subscription_canceled`, `review_card_opened`, `review_reply_sent` (seconds_on_card, draft_edit_distance), `meal_copied` (meal, from_date), `day_switched` (days_from_today), `streak_milestone` (days), `day_note_saved`, `macro_card_mode_changed` (mode: eaten, left), `progress_viewed`, `progress_week_changed` (weeks_from_current), `weight_range_changed` (days).
+Events: `signup_started`, `signup_completed`, `onboarding_completed` (the first time the user reaches Today after onboarding), `pwa_installed`, `push_enabled`, `food_logged` (method: text, photo, barcode, search, manual, quick_add; meal; confidence; offline; counts per amount source), `food_entry_corrected`, `food_entry_deleted`, `weight_logged`, `habit_checked`, `checkin_started`, `checkin_submitted` (on_time boolean), `report_viewed`, `message_sent` (role), `upgrade_viewed` (source), `upgrade_completed`, `subscription_canceled`, `review_card_opened`, `review_reply_sent` (seconds_on_card, draft_edit_distance), `meal_copied` (meal, from_date), `day_switched` (days_from_today), `streak_milestone` (days), `day_note_saved`, `macro_card_mode_changed` (mode: eaten, left), `progress_viewed`, `progress_week_changed` (weeks_from_current), `weight_range_changed` (days), `quick_action_used` (action), `calendar_expanded`.
 
 Test profiles (`profiles.is_test`, the demo account) are excluded from every metric, the north star and the coach roster flags count.
 
@@ -80,7 +80,7 @@ Acceptance
 - Passwordless email sign in. Every sign-in email contains both a magic link and a 6-digit code. The code can be typed inside the installed app, which fixes iPhone home screen apps keeping a separate session from Safari. Invite links from the coach preassign the coach and paid flag.
 - Minimum age 18. Date of birth collected; under 18 cannot create an account and sees "Honest Reps is for adults 18 and over for now."
 - Collects goal (lose fat, maintain, build muscle, performance), sex, date of birth, height, current weight, optional goal weight, activity level, units (imperial default, metric toggle).
-- Food scale step: "Do you have a food scale?" Yes / Not yet, stored as `has_scale` and changeable in Me. Not yet shows one skippable screen ("A food scale is the biggest upgrade to your accuracy. Most cost less than lunch. Until then, use hand portions.") followed by a 4 item hand portion guide: palm, fist, cupped hand, thumb.
+- Food scale step: "Do you have a food scale?" Yes / Not yet, stored as `has_scale` and changeable in More. Not yet shows one skippable screen ("A food scale is the biggest upgrade to your accuracy. Most cost less than lunch. Until then, use hand portions.") followed by a 4 item hand portion guide: palm, fist, cupped hand, thumb.
 - Calories: Mifflin St Jeor x activity multiplier, adjusted by goal. **Floor: the calorie target never goes below the user's estimated BMR**, including after coach or user edits (show a plain note if an edit would cross it; coach can override with a confirmation).
 - Protein: grams per lb of goal weight (current weight if no goal weight), **capped at a configurable maximum, default 220 g**.
 - Fat: 30% of calories for lose fat and maintain, 25% for build muscle and performance, never under 0.3 g per lb of goal weight (current weight if none). Carbs fill the remainder, at least 50 g. If carbs would fall under 50 g, fat drops toward its floor first; if both floors bind, protein and the floors are kept and calories rise to fit, with a note to the coach (Q54).
@@ -88,8 +88,8 @@ Acceptance
 - Medical screening question: "Do you have a medical condition that affects what you eat?" Yes shows "Talk with your doctor before changing your diet. Your coach will be notified." and flags the coach. The user can still track.
 - Disclaimer, terms and privacy policy accepted at signup (see F16). Until Sean approves the final legal text, acceptances record version "draft-2026-10"; on approval the version is bumped and every user accepts again on their next app open (Q55).
 - The weight entered in onboarding is saved as the first weigh-in (Q56).
-- Required install step: guided add to home screen with platform-specific visuals, then push permission. Reminders will not work until installed on iPhone, and the screen says so plainly. The first dismissal ("Not now") is allowed. If the app is still not installed 3 days later, Today shows one dismissible reminder banner; after that second dismissal it never prompts again. Install and reminders stay available in Me (Q62).
-- Free users edit their own calories, protein, carbs and fat in Me; below the BMR floor they see a plain note and must confirm. Paid clients see their targets read only. Paid users' targets are set by the coach. A new paid user keeps their formula targets until the coach changes them; the coach sees a "targets not reviewed" flag on that client until he saves or confirms them once.
+- Required install step: guided add to home screen with platform-specific visuals, then push permission. Reminders will not work until installed on iPhone, and the screen says so plainly. The first dismissal ("Not now") is allowed. If the app is still not installed 3 days later, Today shows one dismissible reminder banner; after that second dismissal it never prompts again. Install and reminders stay available in More (Q62).
+- Free users edit their own calories, protein, carbs and fat in More; below the BMR floor they see a plain note and must confirm. Paid clients see their targets read only. Paid users' targets are set by the coach. A new paid user keeps their formula targets until the coach changes them; the coach sees a "targets not reviewed" flag on that client until he saves or confirms them once.
 - Lands on Today with targets shown and the log bar focused.
 
 ### F2. Food logging (free; photo is paid)
@@ -111,7 +111,7 @@ Acceptance
 - Hand portion items show a "Hand portion" tag and are not flagged. Conversions come from Coach settings (F14).
 - Meat, fish, grains and pasta show a one-tap Raw / Cooked toggle, plus Dry for grains and pasta. Default cooked unless stated. Changing it recalculates from the matching database entry.
 - Low-confidence items are visibly flagged with alternatives and a manual entry option. Saving is never blocked.
-- Barcode uses Open Food Facts; not found falls back to search or manual entry. Barcode results show the caption "Food data from Open Food Facts" linking to openfoodfacts.org; the same attribution appears in Me, About.
+- Barcode uses Open Food Facts; not found falls back to search or manual entry. Barcode results show the caption "Food data from Open Food Facts" linking to openfoodfacts.org; the same attribution appears in More, About.
 - Quick add: 5 to 6 chips of the user's most frequent foods for the current time of day, shown when the log bar is focused.
 - Favorites: any entry can be starred.
 - Quick add and favorites remember the last weighed amount for that food, and never call the AI model.
@@ -128,24 +128,28 @@ Acceptance
 ### F3. Today, the journal (free)
 Story: as a user, I see in one glance what I have eaten against my targets, how my week is going, and log in the right place fast.
 
-Specs: `docs/SCREENS_V2.md` (Journal and Dashboard, approved by Sean 2026-10-15) on top of `docs/TODAY_SPEC.md`; SCREENS_V2 wins where they differ. Today is the landing screen. Layout top to bottom: header, week strip, macro card (rings, then week insight and streak), sticky compact header, coach or check-in card, meal cards, weight row, day note, log bar.
+Specs: `docs/NAV_SPEC.md` (navigation and calendar, Sean 2026-10-16) over `docs/SCREENS_V2.md` (Journal and Dashboard, 2026-10-15) over `docs/TODAY_SPEC.md`; the newer spec wins where they differ, and NAV_SPEC's acceptance criteria are part of this feature. Today is the landing screen. Layout top to bottom: pinned header band (title row, then week strip or compact macro row, with the month calendar), macro card (rings, then week insight and streak), coach or check-in card, meal cards, weight row, day note, log bar, floating tab bar and "+" button.
 
 Acceptance
-- Header: "‹ Today ›"; the arrows move one day and the title shows "Wed, Oct 15" on other days. Overflow menu with "Go to date". Future days disabled.
-- Week strip, Monday to Sunday: each day shows its date inside a small ring filled to calories eaten over the calorie target (calories color, capped at full). Selected day boxed, a dot under today. Swipe for earlier weeks. Tapping a day loads it.
+- Header band, pinned: "‹ Today ›"; the arrows move one day and the title shows "Wed, Oct 15" on other days. Overflow menu with "Go to date" and "Day note". Future days disabled.
+- Week strip, Monday to Sunday: each day shows its date inside a small ring filled to calories eaten over the calorie target (calories color, capped at full). Selected day outlined, a dot under today. Swiping slides a whole week with snap, back to the account's first week and never past the current week, without changing the selected day. Tapping a day selects it.
+- Month calendar: pulling the week strip down or tapping the title expands a month calendar (‹ › and swipe between months); tapping a day selects it and collapses to that week.
+- Quick actions: the "+" beside the tab bar opens Search food, Scan barcode, Log weight, Day note and Copy yesterday's {meal for the current time window}; on Today they act on the selected day, elsewhere on today (switching to Today).
 - Macro card, 2 pages with dots. Page 1: 4 rings in order Protein, Carbs, Fat, Calories, each in its macro color with a text label; center shows eaten in bold with "of 158" below. Tap switches to Left mode ("38" and "left"), remembered on the device. Over target: the ring completes and the center shows "+12 over" in muted gray. Never red, never a warning color. Before targets exist: eaten totals only and "Set your targets". Page 2: "This week: 4 of 6 days on target. Protein 5 of 6." counting Monday through the selected day (on target per the app_config adherence range, protein hit at 90% of target), 7 mini bars of calories against the target line with a protein marker on hit days, and the logging streak ("6 day streak": consecutive local days with at least one entry; today without an entry yet does not break it; earned moment at 7, 14, 30, 60 and 100 days, at most once per day).
-- Sticky compact header: once the macro card scrolls away, one line pins under the title with 4 small rings and "eaten of target" beside each; scrolling back hides it.
+- Compact macro row: once the macro card scrolls under the header band, the week strip swaps for 4 small rings with "eaten of target" beside each; scrolling back swaps it back.
 - Paid users: check-in card when due. Free users: one quiet coaching card linking to the upgrade screen.
 - Meal cards: Breakfast, Lunch, Dinner, Snacks, always shown. Header with the name, a "…" menu ("Copy yesterday's {meal}" on today, "Copy to today" on a past day) and a 44pt "+" that focuses the log bar with that meal selected. Under the header, a chip row of P, C, F and kcal subtotals in macro colors. Entries in time order; each row is titled with what the user typed (raw input, first line, truncated to one line), or the item names when there was no typed input; quick add and favorites log with the title of the entry they came from. Rows show calories, protein, "est." and "Check this"; tap or swipe to edit.
 - Meals auto-assign from the entry's local time: Breakfast 4:00 to 10:59, Lunch 11:00 to 15:59, Dinner 16:00 to 21:59, else Snacks (`app_config.meal_windows`). The card and edit change it with one tap. A log on a past day uses that date: at the meal's anchor time when a meal is chosen (`app_config.meal_anchors`), else the current clock time (Q52).
 - Copies are new entries at the current time with the same items, amounts and amount sources; no model call; "Copied."
 - Weight row: today's weigh-in or "Log weight", plus "Trend 182.4 lb, down 0.6 this week" (EWMA per app_config). Tap opens a weight sheet with entry and the last 7 days.
 - Day note: "Add a note" at the bottom, saved on blur, one per local day, visible to the user and their coach (coach client week view).
-- Log bar: a floating pill above the tab bar. Empty: leading search glyph (opens food search), placeholder "What did you eat?", trailing barcode icon. Typing: the trailing icon becomes send. The camera icon appears only when photo logging ships, locked for free users. It logs to the selected day. No floating "+" button.
+- Log bar: a floating pill above the tab bar. Empty: leading search glyph (opens food search), placeholder "What did you eat?", trailing barcode icon. Typing: the trailing icon becomes send. The camera icon appears only when photo logging ships, locked for free users. It logs to the selected day. It also floats on Progress, where it logs to today and switches to Today after Log it. A round "+" button beside the tab bar opens quick actions (NAV_SPEC reverses the earlier "no floating +" rule). The tab bar, "+" and log bar hide while the keyboard is open.
 - Times and days follow the user's profile timezone (ARCHITECTURE.md "Local days").
 
 ### F4. Progress, the dashboard (free)
 Story: as a user, I see my real trend and my consistency, not daily noise.
+
+Header (NAV_SPEC 5): "Hi, {first name}" with today's date below and a round avatar with the user's initial that opens More.
 
 Spec: `docs/PROGRESS_SPEC.md` (build spec, approved 2026-10-16) on top of `docs/SCREENS_V2.md` "Progress (dashboard)"; PROGRESS_SPEC wins where it is more specific, and its acceptance criteria are part of this feature.
 
@@ -213,7 +217,7 @@ Acceptance
 ### F11. Upgrade and billing
 Acceptance
 - One upgrade screen: what paid includes, price read from Stripe (F14), Stripe Checkout.
-- Monthly subscription, cancel anytime from Me.
+- Monthly subscription, cancel anytime from More.
 - Webhook updates paid status on success, failure, and cancel.
 - Coach can comp any account or mark it externally billed.
 - Coach is notified on every new upgrade.
@@ -271,7 +275,7 @@ Acceptance
 Acceptance
 - Defaults: evening nudge at 7pm only on days with zero food logged; check-in reminder morning of check-in day plus one evening follow-up; coach reply received.
 - No meal-time reminders.
-- Users can change the time of each reminder or turn it off from Me.
+- Users can change the time of each reminder or turn it off from More.
 - Coach gets: new upgrade, medical flag, client message.
 
 ## 8. Non-goals for v1

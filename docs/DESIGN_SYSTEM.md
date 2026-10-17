@@ -18,6 +18,7 @@ Follow the system light or dark setting. Both themes are first class.
 | Token | Light | Dark | Use |
 |---|---|---|---|
 | `bg` | #FFFFFF | #0A0A0A | App background |
+| `band` | #F0F0F0 | #000000 | Today header band, a shade darker than `bg` (NAV_SPEC 4) |
 | `surface` | #F5F5F5 | #161616 | Cards, sheets, inputs |
 | `border` | #E5E5E5 | #262626 | Dividers, input borders, bar tracks |
 | `text` | #0A0A0A | #F5F5F5 | Primary text and numbers |
@@ -87,15 +88,23 @@ Lucide, 1.75px stroke, 24px default, 20px inline. One set only. Tab icons always
 
 ## Navigation
 
-Bottom tab bar, labeled icons:
-- Members and clients: **Today, Progress, Coach, Me**
-- Sean (coach role): **Today, Progress, Clients, Me**. Clients (roster, review queue, metrics, settings) replaces the Coach tab.
+Spec: `docs/NAV_SPEC.md` (Sean, 2026-10-16); it wins over SCREENS_V2 and TODAY_SPEC where they differ.
+
+- **Tab bar:** a floating rounded bar, `surface` fill, 1px `border`, full radius, 64pt tall, 16pt from the screen edges, 12pt above the bottom safe area, no shadow. Tabs left to right, icon above label, always labeled:
+  - Members and clients: **Progress, Today, Coach, More**
+  - Sean (coach role): **Progress, Today, Clients, More**. Clients (roster, review queue, metrics, settings) replaces the Coach tab.
+  - Icons: chart (Progress), fork and knife (Today), message (Coach) or clipboard (Clients), circle with three dots (More).
+  - Active tab: an inner pill (`accent` at 15%) behind icon and label, both in `accent-strong`. Inactive in `text-muted`. A tab list with selected state for screen readers.
+  - The app still opens on Today.
+- **"+" button:** a separate 64pt circle right of the tab bar, `surface` fill and 1px `border`, a large "+" in `text`, labeled "Quick actions". Opens the quick action sheet. This reverses the SCREENS_V2 "no floating +" rule.
+- **Quick action sheet:** bottom sheet of 56pt rows, icon plus label: Search food, Scan barcode, Log weight, Day note, Copy yesterday's {meal for the current time window}. On Today they act on the selected day; elsewhere on today, switching to Today.
+- The tab bar, "+" and log bar hide while the keyboard is open (the log bar stays while its own field has focus). Content is padded so nothing hides behind the floating bars.
 
 Stacks for drill-ins, bottom sheets for short tasks (log confirm, weight entry, habit edit).
 
 ## Components
 
-- **Log bar:** a floating pill above the tab bar on Today (SCREENS_V2; supersedes the Q47 layout). The only entry point for logging; no floating "+" button.
+- **Log bar:** a floating pill above the tab bar on Today and Progress (NAV_SPEC 3; supersedes the Q47 layout). From Progress, logs go to today and the app switches to Today after Log it. The "+" button is the second entry point.
   - Empty: leading search glyph (44pt, opens food search), placeholder "What did you eat?", trailing barcode icon (44pt).
   - Typing: the trailing icon becomes send.
   - On focus, shows quick add chips above it. The camera icon appears only when photo logging ships (post-MVP), locked for free users.
@@ -109,10 +118,12 @@ Stacks for drill-ins, bottom sheets for short tasks (log confirm, weight entry, 
   - Hand portion row: small "Hand portion" tag in `text-muted`. Not flagged.
   - Meat, fish, grains and pasta: one-tap segmented toggle Raw / Cooked, plus Dry for grains and pasta. 44pt segments.
 - **Entry row:** inside a meal section. Title (the user's raw input on one line, truncated; item names when there was none), calories, protein. Tap to show the items. Swipe left for edit and delete. Estimated entries show "est." in `caption` style, `text-muted`.
-- **Week strip:** 7 day cells, Monday to Sunday: weekday letter (`label`) over the date inside a small ring filled to calories eaten over target (`macro-calories` on its 15% track, capped at full). Selected day boxed with a 1px `text` border; a dot under today. Future days disabled. Each cell is at least 44pt and labeled for screen readers ("Wednesday, October 15, 1,850 of 2,100 calories").
+- **Header band (Today):** pinned to the top on `band` (a shade darker than `bg`). Row 1: centered "‹ Today ›" (title shows "Wed, Oct 15" on other days; tapping it opens the month calendar), a "Today" text button when another day is selected, and "…" with Go to date and Day note. Row 2: the week strip; once the macro card scrolls under the band, row 2 crossfades (200ms, instant with reduced motion) to the compact macro row, and back.
+- **Week strip:** 7 day cells, Monday to Sunday: weekday letter (`label`) over the date inside a small ring filled to calories eaten over target (`macro-calories` on its 15% track, capped at full). Selected day: a rounded rectangle outline around letter and ring; a dot under today. Future days dimmed and not tappable. Horizontal swipe slides a whole week with momentum and snaps to week boundaries, from the account's first week to the current week; swiping does not change the selected day, tapping does. Previous and next week buttons for keyboards and screen readers. Each cell is at least 44pt and labeled ("Wednesday October 15, 1,840 of 2,100 calories, selected").
+- **Month calendar:** pull the week strip down, or tap the title, to slide a month calendar down from the header (250ms, instant with reduced motion). Month name with ‹ › and horizontal swipe between months; a 7 column grid with the same rings, today dot, selected box and dimmed future days. Tapping a day selects it and collapses to that week. Pull up, tap outside or tap the title to collapse.
 - **Macro ring:** a circular progress ring in a macro color on its 15% track, with the label (Protein, Carbs, Fat, Calories) under it. Center: eaten in bold `number-lg` scale with "of 158" in `caption`; Left mode shows "38" and "left". Over: full ring, center "+12 over" in `text-muted`. Screen readers get one sentence ("Protein, 120 of 158 grams").
 - **Macro card:** `surface` card, 2 pages with page dots. Page 1: 4 macro rings, Protein, Carbs, Fat, Calories. Tap toggles Eaten and Left. Page 2: week insight line, 7 mini bars of calories against a target line with protein markers, and the streak.
-- **Sticky compact header:** once the macro card scrolls out of view, a one line bar pins under the title: 4 small rings, each with "eaten of target". Hidden again when the card is back in view.
+- **Compact macro row:** 4 small rings, each with "eaten of target". It replaces the week strip in the header band while the macro card is scrolled away (see Header band).
 - **Meal card:** `surface` card per meal. Header with the meal name (`headline`), a "…" menu (copy) and a 44pt "+" icon button. Under the header, a chip row of subtotals: P, C, F and kcal, each a pill with its letter and number in the macro color on the 15% background. Entry rows below. Empty cards show the header, zero chips and "+".
 - **Consistency grid:** 30 cells, oldest to newest, in rows of 10. Food log: `accent-strong` fill when on target, `border` fill when logged off target, outline only when not logged. Weigh-ins: `text` fill when weighed. Caption under each grid. Screen readers get the caption plus "most recent: logged today".
 - **Week chart:** 7 stacked bars, Monday to Sunday: calories from protein, carbs and fat in macro colors (4, 4 and 9 calories per gram), a dashed `text-muted` calorie target line, selected day outlined. Below it, 4 tiles for the selected day with color dots. A text summary for screen readers.
@@ -132,15 +143,14 @@ Stacks for drill-ins, bottom sheets for short tasks (log confirm, weight entry, 
 
 ### Today (journal, the landing screen)
 Specs: `docs/SCREENS_V2.md` on top of `docs/TODAY_SPEC.md`.
-1. Header "‹ Today ›" (other days "‹ Wed, Oct 15 ›"), overflow menu with "Go to date"
-2. Week strip with calorie rings
-3. Macro card (rings; week insight, mini bars and streak)
-4. Sticky compact header once the macro card scrolls away
+Navigation and calendar: `docs/NAV_SPEC.md`, which wins where it differs.
+1. Header band, pinned: "‹ Today ›" (other days "‹ Wed, Oct 15 ›"), overflow with Go to date and Day note; the week strip, swapped for the compact macro row on scroll; the month calendar slides down from it
+2. Macro card (rings; week insight, mini bars and streak)
 5. Check-in card when due (paid) or quiet coaching card (free)
 6. Meal cards: Breakfast, Lunch, Dinner, Snacks, each with its P, C, F, kcal chip row
 7. Weight row
 8. Day note
-9. Log bar floating above the tab bar
+9. Log bar floating above the tab bar, which floats with the "+" button
 
 New user: targets shown, meal cards empty, log bar focused. No tutorial. Before targets exist, the rings show eaten totals and "Set your targets".
 
@@ -148,6 +158,7 @@ New user: targets shown, meal cards empty, log bar focused. No tutorial. Before 
 Bottom sheet over Today. Items, edits, flags, "Log it." Pending offline items show "Pending, will finish when you're online." An unconfirmed card (draft) is kept on the device and reopens with the app. Barcode results carry the caption "Food data from Open Food Facts" (`caption` style, links to openfoodfacts.org).
 
 ### Progress (dashboard)
+Header (NAV_SPEC 5): "Hi, {first name}" with today's date below and a round avatar with the user's initial at top right that opens More. The log bar floats here too.
 Spec: `docs/PROGRESS_SPEC.md` on top of `docs/SCREENS_V2.md` "Progress (dashboard)"; PROGRESS_SPEC wins where it is more specific (bar segments, target line, selection, empty states, copy, screen reader summaries).
 1. Header "Progress" with today's date below
 2. Week chart (stacked macro bars, target line) and 4 tiles for the selected day
@@ -167,8 +178,12 @@ Single scroll: headline sentence, coach note, 4 to 6 stat cards (including "Weig
 ### Coach
 Members see the coach card and upgrade screen here; clients see their message thread and latest report. After a downgrade, the thread and past reports stay visible, read only, with the message field replaced by a locked element.
 
-### Me
-Profile, targets (editable for free users), units, food scale (Yes / Not yet), reminders (time and toggle per reminder), subscription, privacy and data, About (includes "Food data from Open Food Facts" linking to openfoodfacts.org), delete account.
+### More (was Me)
+List rows in groups (NAV_SPEC 6):
+- Goals: Targets (editable for free users, read only for paid clients; Q45)
+- App: Units, Reminders (time and toggle per reminder), Add to Home Screen and turn on reminders, Food scale (Yes / Not yet)
+- Account: Subscription (with billing), Privacy and data, Terms, About (includes "Food data from Open Food Facts" linking to openfoodfacts.org), Sign out, Delete account
+- Coach role adds Coach settings when that screen ships.
 
 ### Clients (Sean only)
 Roster with flag badges and filters, Review queue entry point with count, Metrics, Settings. AI settings fields show a live character counter (`caption`, `text-muted`) against their limit.
