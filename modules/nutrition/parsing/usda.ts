@@ -1,5 +1,5 @@
 import "server-only"
-import { searchFdcLocal } from "./fdc-local.ts"
+import { searchBrandedLocal, searchFdcLocal } from "./fdc-local.ts"
 
 // USDA FoodData Central search (ARCHITECTURE.md "Food data").
 const SEARCH_URL = "https://api.nal.usda.gov/fdc/v1/foods/search"
@@ -22,6 +22,9 @@ export interface UsdaFood {
   per100g: Per100g
   /** FNDDS results only: the first common portion from the search response. */
   portion?: Portion
+  /** A cached Open Food Facts product among branded candidates (default: usda by fdcId). */
+  source?: "usda" | "off"
+  sourceId?: string
 }
 
 /** A common household portion, for example "1 medium" at 118 g. */
@@ -43,7 +46,7 @@ interface SearchResponse {
 }
 
 /**
- * Searches generic foods, or branded foods when a brand is given.
+ * Searches generic foods (the local copy unless FDC_SEARCH=api).
  *
  * FDC's dataType filter is unreliable (measured 2026-10-13): a multi-value
  * filter, or "Survey (FNDDS)" alone, gets a bare nginx 400 on most requests,
@@ -52,12 +55,25 @@ interface SearchResponse {
  * branded ("marinara sauce"), so generic foods come from three parallel
  * searches: Foundation, SR Legacy, and unfiltered keeping only FNDDS.
  */
-export async function searchUsda(query: string, opts: { branded?: boolean; pageSize?: number } = {}): Promise<UsdaFood[]> {
+export async function searchUsda(query: string, opts: { pageSize?: number } = {}): Promise<UsdaFood[]> {
   const size = opts.pageSize ?? 25
-  if (opts.branded) return searchOnce(query, "Branded", size)
   // QUESTIONS.md Q40: generic foods come from our own copy. FDC_SEARCH=api
   // uses the FDC API instead, for comparing the two in the eval.
   if (process.env.FDC_SEARCH !== "api") return searchFdcLocal(query)
+  return searchApiGeneric(query, size)
+}
+
+/**
+ * Branded candidates for an item with a brand (PM 2026-10-17, Q67): the
+ * local FDC Branded copy plus cached Open Food Facts products of that brand.
+ * FDC_SEARCH=api uses the FDC API instead, for comparing in the eval.
+ */
+export async function searchBranded(brand: string, query: string, pageSize = 10): Promise<UsdaFood[]> {
+  if (process.env.FDC_SEARCH === "api") return searchOnce(`${brand} ${query}`, "Branded", pageSize)
+  return searchBrandedLocal(brand, query, pageSize)
+}
+
+async function searchApiGeneric(query: string, size: number): Promise<UsdaFood[]> {
   const pages = await Promise.all([
     searchOnce(query, "Foundation", size),
     searchOnce(query, "SR Legacy", size),

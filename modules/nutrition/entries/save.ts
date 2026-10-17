@@ -35,6 +35,8 @@ export const saveEntryBody = z.object({
   title: z.string().trim().min(1).max(200).nullable().optional(),
   /** Quick add chips: a starred favorite or a frequent food (food_logged prop). */
   quickAddSource: z.enum(["favorite", "frequent"]).optional(),
+  /** Barcode entries: the scan, whose GTIN and lookup become the audit trail. */
+  scanId: z.uuid().nullable().optional(),
 })
 
 export type SaveEntryBody = z.infer<typeof saveEntryBody>
@@ -56,7 +58,17 @@ export async function saveEntry(supabase: SupabaseClient, userId: string, body: 
       .maybeSingle()
     if (!data || data.user_id !== userId) return { ok: false, error: "Unknown parse" }
     audit = { input: data.input, output: data.output }
+  } else if (body.scanId) {
+    // CLAUDE.md rule 3 for barcodes: the GTIN, what the scanner read, and where the product came from.
+    const { data } = await supabase.from("barcode_scans").select("gtin, raw_read, source, food_item_id").eq("id", body.scanId).eq("user_id", userId).maybeSingle()
+    if (!data) return { ok: false, error: "Unknown scan" }
+    audit = { input: data.gtin ?? data.raw_read, output: { scan_id: body.scanId, raw_read: data.raw_read, source: data.source, food_item_id: data.food_item_id } }
   }
+
+  // A favorite can outlive a custom food the user deleted: log its numbers without the link.
+  const ids = [...new Set(body.items.map((i) => i.foodItemId).filter((id): id is string => id !== null))]
+  const { data: known } = ids.length ? await supabase.from("food_items").select("id").in("id", ids) : { data: [] }
+  const existing = new Set((known ?? []).map((r) => r.id as string))
 
   const meal = body.meal ?? (await defaultMeal(supabase, userId, body.loggedAt))
   const confidences = body.items.map((i) => i.confidence).filter((c): c is number => c !== null)
@@ -95,7 +107,7 @@ export async function saveEntry(supabase: SupabaseClient, userId: string, body: 
       entry_id: entry.id,
       user_id: userId,
       position,
-      food_item_id: i.foodItemId,
+      food_item_id: i.foodItemId && existing.has(i.foodItemId) ? i.foodItemId : null,
       name: i.name,
       amount: i.amount,
       unit: i.unit,

@@ -19,6 +19,8 @@ export interface StoredDraft {
   /** The local date the card logs to: the day selected when it opened. */
   date?: string
   aiCallId: string | null
+  /** A barcode card: the scan, so the entry stores the GTIN as its raw input (CLAUDE.md rule 3). */
+  scanId?: string | null
   items: DraftItem[]
   /** Stable across retries, so a save sent twice is stored once. */
   clientUuid: string

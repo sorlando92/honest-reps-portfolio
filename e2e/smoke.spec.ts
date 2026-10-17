@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test"
 import { coachEmail, expectNoAxeViolations, expectTapTargets, signInWithCode } from "./helpers"
 
-const MEMBER_TABS = ["Today", "Progress", "Coach", "Me"]
+const MEMBER_TABS = ["Progress", "Today", "Coach", "More"]
 
 test("signed out visitors land on sign in", async ({ page }) => {
   await page.goto("/today")
@@ -30,14 +30,15 @@ test("a new member signs in with the emailed code and sees the 4 tabs", async ({
 
   const nav = page.getByRole("navigation", { name: "Main" })
   for (const tab of MEMBER_TABS) {
-    await expect(nav.getByRole("link", { name: tab })).toBeVisible()
+    await expect(nav.getByRole("tab", { name: tab })).toBeVisible()
   }
-  await expect(nav.getByRole("link", { name: "Clients" })).toHaveCount(0)
+  await expect(nav.getByRole("tab", { name: "Clients" })).toHaveCount(0)
 
   for (const tab of MEMBER_TABS) {
-    await nav.getByRole("link", { name: tab }).click()
-    await expect(page.getByRole("heading", { level: 1, name: tab })).toBeVisible()
-    await expect(nav.getByRole("link", { name: tab })).toHaveAttribute("aria-current", "page")
+    await nav.getByRole("tab", { name: tab }).click()
+    // Progress greets the user (NAV_SPEC 5); Today's title is "Today".
+    await expect(page.getByRole("heading", { level: 1, name: tab === "Progress" ? "Hi" : tab === "Today" ? /^Today, / : tab })).toBeVisible()
+    await expect(nav.getByRole("tab", { name: tab })).toHaveAttribute("aria-current", "page")
     await expectNoAxeViolations(page)
     await expectTapTargets(page)
     await page.screenshot({ path: info.outputPath(`${tab.toLowerCase()}.png`), fullPage: true })
@@ -50,8 +51,8 @@ test("a new member signs in with the emailed code and sees the 4 tabs", async ({
 test("the coach gets Clients in place of Coach", async ({ page }) => {
   await signInWithCode(page, coachEmail)
   const nav = page.getByRole("navigation", { name: "Main" })
-  await expect(nav.getByRole("link")).toHaveText(["Today", "Progress", "Clients", "Me"])
-  await nav.getByRole("link", { name: "Clients" }).click()
+  await expect(nav.getByRole("tab")).toHaveText(["Progress", "Today", "Clients", "More"])
+  await nav.getByRole("tab", { name: "Clients" }).click()
   await expect(page.getByRole("heading", { level: 1, name: "Clients" })).toBeVisible()
   await expectNoAxeViolations(page)
 
@@ -61,7 +62,7 @@ test("the coach gets Clients in place of Coach", async ({ page }) => {
 
 test("signing out returns to sign in", async ({ page }, info) => {
   await signInWithCode(page, `e2e-out-${info.project.name}-${Date.now()}@example.test`)
-  await page.getByRole("navigation", { name: "Main" }).getByRole("link", { name: "Me" }).click()
+  await page.getByRole("navigation", { name: "Main" }).getByRole("tab", { name: "More" }).click()
   await page.getByRole("button", { name: "Sign out" }).click()
   await expect(page).toHaveURL(/\/sign-in$/)
 })

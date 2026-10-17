@@ -95,7 +95,7 @@ test("journal: rings, mode, week strip, past day logging, copy, weight, note", a
 
   // Week strip: yesterday's ring is labeled with its calories; tapping loads that day.
   const yesterday = localDate(-1)
-  const strip = page.getByRole("navigation", { name: "Week" })
+  const strip = page.getByRole("group", { name: "Week" })
   const isMonday = new Date(`${localDate(0)}T12:00:00Z`).getUTCDay() === 1
   if (isMonday) {
     await page.getByRole("button", { name: /^Previous day/ }).click()

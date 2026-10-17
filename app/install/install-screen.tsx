@@ -62,8 +62,8 @@ export function InstallScreen({
 }: {
   productName: string
   vapidPublicKey: string
-  /** Opened from Me or the Today banner: leaving goes back there and is not a dismissal. */
-  from: "me" | "today" | null
+  /** Opened from More or the Today banner: leaving goes back there and is not a dismissal. */
+  from: "more" | "today" | null
 }) {
   const router = useRouter()
   const found = useSyncExternalStore(noSubscribe, readDevice, () => null)
@@ -101,7 +101,7 @@ export function InstallScreen({
 
   function leave(dismissed: boolean) {
     if (dismissed && !from) dismissInstall()
-    router.replace(from === "me" ? "/me" : "/today")
+    router.replace(from === "more" ? "/more" : "/today")
   }
 
   return (

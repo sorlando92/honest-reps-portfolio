@@ -68,3 +68,11 @@ Run each case 3 times; report the median and any case that flips between pass an
 - Stable IDs. Never edit a case silently: change the expected value with a note and bump the set version.
 - During alpha, every user correction to a parsed entry is a candidate case. Promote anonymized ones weekly, plus a paraphrase and a counterexample.
 - Target: 50 cases before gym beta, at least half from real logs, at least a third weighed.
+
+# Search eval set (v1, 2026-10-17)
+
+`search.jsonl` holds 40 queries for search as you type (docs/FOOD_LOOKUP_SPEC.md "Test sets"): 18 brands, 5 typos, 7 chain items, 10 generic foods, including "ascent protein", "ascent chocolate whey", "ascnet protien", "chipotle chicken bowl", "banana" and "chicken breast". Each case names the section its food belongs in (Brands and restaurants, or Basic foods) and one or more word sets; a row matches when its brand plus name contains every word of one set. Word sets, not FDC ids, so the monthly FDC refresh does not break the set.
+
+`pnpm eval:search` runs every query through `search_food_index()` as a user with no history and reports the rank inside the expected section, as the sheet lists it. Pass: top 3 for 90% of cases, top 5 for all of them. It needs the FDC import (Foundation, SR Legacy, FNDDS, Branded) in the target database.
+
+Never tune the ranking to one case. A ranking change must state the general rule it follows, and the whole set is rerun.

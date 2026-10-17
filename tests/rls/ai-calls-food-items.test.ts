@@ -69,12 +69,17 @@ describe("food_items RLS", () => {
     expect(error?.code).toBe(PERMISSION_DENIED)
   })
 
-  it("nobody writes food items from the client", async () => {
+  // Users write only their own custom foods (FOOD_LOOKUP_SPEC 4, tests/rls/food-lookup.test.ts).
+  it("nobody writes shared food items from the client", async () => {
     const insert = await cast.a.client
       .from("food_items")
       .insert({ source: "custom", source_id: "x", name: "x", per_100g: {} })
-    expect(insert.error?.code).toBe(PERMISSION_DENIED)
-    const update = await cast.coach.client.from("food_items").update({ name: "y" }).eq("source_id", sourceId)
-    expect(update.error?.code).toBe(PERMISSION_DENIED)
+    expect(insert.error).not.toBeNull()
+    const update = await cast.coach.client.from("food_items").update({ name: "y" }).eq("source_id", sourceId).select("id")
+    expect(update.data).toEqual([])
+    const remove = await cast.a.client.from("food_items").delete().eq("source_id", sourceId).select("id")
+    expect(remove.data).toEqual([])
+    const { data } = await cast.admin.from("food_items").select("name").eq("source_id", sourceId)
+    expect(data).toEqual([{ name: "Test food" }])
   })
 })

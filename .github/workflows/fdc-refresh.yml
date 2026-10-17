@@ -1,0 +1,34 @@
+# Monthly USDA FoodData Central refresh (PM 2026-10-17, QUESTIONS.md Q66):
+# imports any FDC release newer than the last import into hosted Supabase and
+# reports rows added, changed and removed in the job summary and in
+# public.fdc_import_runs. Needs the repository secrets HOSTED_SUPABASE_URL and
+# HOSTED_SUPABASE_SERVICE_ROLE_KEY.
+name: FDC refresh
+
+on:
+  schedule:
+    # 10:00 UTC on the 2nd of each month.
+    - cron: "0 10 2 * *"
+  workflow_dispatch:
+
+concurrency:
+  group: fdc-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Refresh FDC on hosted
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.HOSTED_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.HOSTED_SUPABASE_SERVICE_ROLE_KEY }}
+        run: node scripts/fdc-refresh.mts --trigger ${{ github.event_name == 'schedule' && 'schedule' || 'manual' }}

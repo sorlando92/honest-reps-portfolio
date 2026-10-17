@@ -2,7 +2,7 @@ import { Suspense } from "react"
 import type { Metadata } from "next"
 import { cn } from "cn"
 import { getCurrentUser } from "@/core/auth/current-user"
-import { addDays, localToday } from "@/core/time/local-day"
+import { addDays, localDate, localToday } from "@/core/time/local-day"
 import { createClient } from "@/lib/supabase/server"
 import { EmptyState } from "@/components/screen"
 import { InstallBanner } from "@/components/pwa/install-banner"
@@ -16,11 +16,11 @@ import { changePhrase, ewma, formatWeight, trendAlpha, trendChange, type Units }
 import { LogFlow } from "@/modules/nutrition/ui/log-flow"
 import { MealSectionControls } from "@/modules/nutrition/ui/meal-section-controls"
 import { TimelineRow } from "@/modules/nutrition/ui/timeline-row"
-import { DayHeader } from "@/modules/nutrition/ui/today/day-header"
 import { DayNote } from "@/modules/nutrition/ui/today/day-note"
+import { HeaderBand } from "@/modules/nutrition/ui/today/header-band"
+import { TodayQuickActions } from "@/modules/nutrition/ui/today/today-quick-actions"
 import { MacroCard } from "@/modules/nutrition/ui/today/macro-card"
 import { MACRO_CHIP, MACRO_LETTER, MACRO_TEXT, type Macro } from "@/modules/nutrition/ui/today/macros"
-import { WeekStrip } from "@/modules/nutrition/ui/today/week-strip"
 import { WeightRow } from "@/modules/nutrition/ui/today/weight-row"
 
 export const metadata: Metadata = { title: "Today" }
@@ -28,11 +28,14 @@ export const metadata: Metadata = { title: "Today" }
 // Enough weigh-in history for the EWMA to settle before the shown day.
 const TREND_HISTORY_DAYS = 120
 
-/** The journal (docs/SCREENS_V2.md "Today" on top of docs/TODAY_SPEC.md). `?date=` picks a past day. */
+/**
+ * The journal (docs/NAV_SPEC.md over docs/SCREENS_V2.md "Today" over
+ * docs/TODAY_SPEC.md). `?date=` picks a past day; `?qa=` runs a quick action.
+ */
 export default function TodayPage({ searchParams }: PageProps<"/today">) {
   return (
-    // Room for the log bar pinned above the tab bar.
-    <main className="flex flex-col gap-3 pt-2 pb-20">
+    // Room for the log bar floating above the tab bar.
+    <main className="flex flex-col gap-3 pb-20">
       <Suspense fallback={<EmptyState>Loading today.</EmptyState>}>
         <Journal searchParams={searchParams} />
       </Suspense>
@@ -61,7 +64,7 @@ async function Journal({ searchParams }: { searchParams: PageProps<"/today">["se
   const yesterday = addDays(date, -1)
   const monday = weekStart(date)
 
-  const [week, streak, entries, yesterdays, chips, { data: weights }, { data: note }] = await Promise.all([
+  const [week, streak, entries, yesterdays, chips, { data: weights }, { data: note }, firstWeek] = await Promise.all([
     dailyTotals(supabase, user.id, monday, addDays(monday, 6)),
     loggingStreak(supabase, user.id, today),
     dayEntries(supabase, user.id, timezone, date),
@@ -75,6 +78,7 @@ async function Journal({ searchParams }: { searchParams: PageProps<"/today">["se
       .lte("date", date)
       .order("date"),
     supabase.from("day_notes").select("body").eq("user_id", user.id).eq("local_date", date).maybeSingle(),
+    accountFirstWeek(supabase, user.id, timezone, today),
   ])
   const { data: favorites } = entries.length
     ? await supabase.from("favorites").select("id, source_entry_id").eq("user_id", user.id).in("source_entry_id", entries.map((e) => e.id))
@@ -96,9 +100,8 @@ async function Journal({ searchParams }: { searchParams: PageProps<"/today">["se
 
   return (
     <>
-      <DayHeader date={date} today={today} />
+      <HeaderBand date={date} today={today} firstWeek={firstWeek < monday ? firstWeek : monday} week={week} day={selected} target={selected.target} />
       <InstallBanner productName={productName} />
-      <WeekStrip days={week} date={date} today={today} />
       <MacroCard
         day={selected}
         target={selected.target}
@@ -138,6 +141,7 @@ async function Journal({ searchParams }: { searchParams: PageProps<"/today">["se
         mealAnchors={mealAnchors(setting("meal_anchors"))}
         date={date}
       />
+      <TodayQuickActions date={date} timezone={timezone} mealWindows={mealWindows(setting("meal_windows"))} />
     </>
   )
 }
@@ -191,4 +195,22 @@ function MealCard({
       )}
     </section>
   )
+}
+
+/**
+ * Monday of the account's first week in the user's timezone: the earliest of
+ * sign up, the first entry and the first weigh-in (NAV_SPEC 4: the week strip
+ * slides back to it).
+ */
+async function accountFirstWeek(supabase: Awaited<ReturnType<typeof createClient>>, userId: string, timezone: string, today: string): Promise<string> {
+  const [{ data: profile }, { data: entry }, { data: weight }] = await Promise.all([
+    supabase.from("profiles").select("created_at").eq("id", userId).single(),
+    supabase.from("food_entries").select("logged_at").eq("user_id", userId).order("logged_at").limit(1).maybeSingle(),
+    supabase.from("weights").select("date").eq("user_id", userId).order("date").limit(1).maybeSingle(),
+  ])
+  const dates = [today]
+  if (profile?.created_at) dates.push(localDate(profile.created_at as string, timezone))
+  if (entry?.logged_at) dates.push(localDate(entry.logged_at as string, timezone))
+  if (weight?.date) dates.push(weight.date as string)
+  return weekStart(dates.sort()[0])
 }

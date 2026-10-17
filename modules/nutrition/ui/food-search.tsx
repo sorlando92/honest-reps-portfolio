@@ -1,94 +1,87 @@
 "use client"
 
 import { useId, useState } from "react"
-import { Search } from "lucide-react"
+import { track } from "@/core/events/client"
 import { Button } from "@/components/ui/button"
-import type { FoodResult } from "../foods/search"
+import type { FoodResult, SearchHit } from "../foods/hits"
 import type { DraftItem } from "../parsing/service"
-import { fromUnit, type WeightUnit } from "./amounts"
-import { fromManual, fromSearchResult } from "./new-items"
+import { CustomFoodForm, EMPTY_FOOD } from "./custom-food-form"
+import { fromSearchResult } from "./new-items"
+import { SearchResults } from "./search-results"
+import { resolveHit, resultCount, useFoodSearch } from "./use-food-search"
 
-type State =
-  | { kind: "idle" }
-  | { kind: "searching" }
-  | { kind: "results"; results: FoodResult[] }
-  | { kind: "error"; message: string }
-  | { kind: "adding"; results: FoodResult[] }
+export type PickMethod = "search" | "manual"
 
 /**
- * Search for a food, or enter one by hand (PRD F2). Used by Add item, the log
- * bar search button, the parse fallback, and Change food on a row.
+ * Search as you type inside the card (docs/FOOD_LOOKUP_SPEC.md 1): Add item,
+ * Change food, the parse fallback and "Not this". No AI row here. "Enter it
+ * yourself" saves a custom food (FOOD_LOOKUP_SPEC 4) and adds one serving.
  */
 export function FoodSearch({
   initialQuery = "",
-  unit,
   allowManual = true,
   onPick,
+  onLabel,
   onCancel,
   cancelLabel,
   startManual = false,
+  gtin = null,
 }: {
   /** Opens straight on "Enter it yourself" (barcode not found). */
   startManual?: boolean
   initialQuery?: string
-  unit: WeightUnit
   allowManual?: boolean
-  onPick: (pick: { item: DraftItem; result: FoodResult | null }) => void
+  onPick: (pick: { item: DraftItem; result: FoodResult; method: PickMethod }) => void
+  /** "Scan the label" when nothing matches. */
+  onLabel?: () => void
   onCancel: () => void
   cancelLabel: string
+  /** A barcode the custom food is saved on. */
+  gtin?: string | null
 }) {
   const id = useId()
   const [query, setQuery] = useState(initialQuery)
-  const [state, setState] = useState<State>({ kind: "idle" })
   const [manual, setManual] = useState(startManual)
+  const [busy, setBusy] = useState<string | null>(null)
+  const [pickError, setPickError] = useState<string | null>(null)
+  const state = useFoodSearch(query, !manual)
 
-  async function search(q: string) {
-    if (q.trim().length < 2) return
-    setState({ kind: "searching" })
-    try {
-      const res = await fetch(`/api/foods/search?q=${encodeURIComponent(q.trim())}`)
-      if (res.status === 429) throw new Error("Too many searches in an hour. Try again in a few minutes.")
-      if (!res.ok) throw new Error("Search did not work. Try again.")
-      const { results } = (await res.json()) as { results: FoodResult[] }
-      setState({ kind: "results", results })
-    } catch (error) {
-      const offline = !navigator.onLine
-      setState({ kind: "error", message: offline ? "You're offline. Search works when you're back online." : error instanceof Error ? error.message : "Search did not work. Try again." })
+  async function pick(hit: SearchHit, rank: number) {
+    setPickError(null)
+    setBusy(hit.ref)
+    const result = await resolveHit(hit)
+    setBusy(null)
+    if (!result) return setPickError(navigator.onLine ? "That food did not load. Try again." : "You're offline. Try again when you're back online.")
+    if (state.kind === "results") {
+      track("search_performed", { chars: query.trim().length, results_count: resultCount(state.sections), chosen_section: hit.section, chosen_rank: rank, chose_ai: false })
     }
-  }
-
-  // A generic USDA food starts at its common portion; SR Legacy and Foundation
-  // foods look it up once (cached on the server). Falls back to 100 g.
-  async function pick(r: FoodResult, results: FoodResult[]) {
-    let result = r
-    if (r.source === "usda" && !r.portion) {
-      setState({ kind: "adding", results })
-      const res = await fetch(`/api/foods/${r.foodItemId}/portion`, { signal: AbortSignal.timeout(4000) }).catch(() => null)
-      const portion = res?.ok ? ((await res.json()) as { portion: FoodResult["portion"] }).portion : null
-      result = { ...r, portion }
-    }
-    onPick({ item: fromSearchResult(result), result })
+    onPick({ item: fromSearchResult(result), result, method: "search" })
   }
 
   if (manual) {
-    return <ManualForm unit={unit} initialName={query} onAdd={(item) => onPick({ item, result: null })} onBack={() => setManual(false)} />
+    return (
+      <CustomFoodForm
+        initial={{ ...EMPTY_FOOD, name: query.trim(), gtin: gtin ? gtin.replace(/^0+(?=\d{12,13}$)/, "") : "" }}
+        source="manual"
+        showBarcode={Boolean(gtin)}
+        submitLabel="Save and add"
+        note="Saved to My foods, so you can find it next time."
+        onSaved={(result) => onPick({ item: fromSearchResult(result), result, method: "manual" })}
+        onCancel={() => (startManual ? onCancel() : setManual(false))}
+        cancelLabel={startManual ? cancelLabel : "Back to search"}
+      />
+    )
   }
 
   return (
     <div className="flex flex-col gap-3 pb-4">
-      <form
-        role="search"
-        onSubmit={(e) => {
-          e.preventDefault()
-          search(query)
-        }}
-        className="flex items-center gap-2"
-      >
+      <div role="search">
         <label htmlFor={`${id}-q`} className="sr-only">
           Search foods
         </label>
         <input
           id={`${id}-q`}
+          type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search foods"
@@ -96,50 +89,24 @@ export function FoodSearch({
           enterKeyHint="search"
           maxLength={100}
           autoFocus
-          className="h-12 min-w-0 flex-1 rounded-md border border-border bg-surface px-4 text-body text-text placeholder:text-text-muted"
+          aria-controls={`${id}-results`}
+          className="h-12 w-full rounded-md border border-border bg-surface px-4 text-body text-text placeholder:text-text-muted"
         />
-        <Button type="submit" size="icon" aria-label="Search" disabled={query.trim().length < 2 || state.kind === "searching"} className="size-12">
-          <Search aria-hidden />
-        </Button>
-      </form>
-
-      {state.kind === "searching" && (
-        <p role="status" className="text-body text-text-muted">
-          Searching.
-        </p>
-      )}
-      {state.kind === "error" && (
+      </div>
+      {pickError && (
         <p role="alert" className="text-body">
-          {state.message}
+          {pickError}
         </p>
       )}
-      {state.kind === "results" && state.results.length === 0 && (
-        <p role="status" className="text-body text-text-muted">
-          No foods found. Try other words{allowManual ? " or enter it yourself" : ""}.
-        </p>
-      )}
-      {state.kind === "adding" && (
-        <p role="status" className="text-body text-text-muted">
-          Adding.
-        </p>
-      )}
-      {state.kind === "results" && state.results.length > 0 && (
-        <ul aria-label="Foods" className="flex flex-col gap-1">
-          {state.results.map((r) => (
-            <li key={r.foodItemId}>
-              <button
-                type="button"
-                onClick={() => pick(r, state.results)}
-                className="flex min-h-11 w-full flex-col items-start gap-0.5 rounded-md bg-surface px-3 py-2 text-left"
-              >
-                <span className="text-body break-words">{r.name}</span>
-                <span className="text-caption text-text-muted tabular-nums">{describe(r)}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-
+      <SearchResults
+        id={`${id}-results`}
+        state={state}
+        query={query}
+        onPick={pick}
+        busyRef={busy}
+        onLabel={onLabel}
+        onManual={allowManual ? () => setManual(true) : undefined}
+      />
       {allowManual && (
         <Button variant="secondary" onClick={() => setManual(true)}>
           Enter it yourself
@@ -149,80 +116,5 @@ export function FoodSearch({
         {cancelLabel}
       </Button>
     </div>
-  )
-}
-
-function describe(r: FoodResult): string {
-  if (r.serving) {
-    const grams = r.serving.grams ? ` (${Math.round(r.serving.grams)} g)` : ""
-    return `${r.brand ? `${r.brand} · ` : ""}${r.serving.label}${grams}: ${Math.round(r.serving.kcal)} cal, ${Math.round(r.serving.protein_g)} g protein`
-  }
-  const per = r.per100g as { kcal?: number; protein_g?: number }
-  return `${r.brand ? `${r.brand} · ` : ""}per 100 g: ${Math.round(per.kcal ?? 0)} cal, ${Math.round(per.protein_g ?? 0)} g protein`
-}
-
-/** A food typed in by hand: name, weight, calories and macros. */
-function ManualForm({ unit, initialName, onAdd, onBack }: { unit: WeightUnit; initialName: string; onAdd: (item: DraftItem) => void; onBack: () => void }) {
-  const id = useId()
-  const [values, setValues] = useState({ name: initialName, weight: "", calories: "", protein: "", carbs: "", fat: "" })
-  const [error, setError] = useState<string | null>(null)
-  const num = (s: string) => (s.trim() === "" ? 0 : Number(s))
-
-  function add() {
-    const weight = Number(values.weight)
-    const numbers = [values.calories, values.protein, values.carbs, values.fat].map(num)
-    if (!values.name.trim()) return setError("Add a name for this food.")
-    if (!(weight > 0)) return setError(`Add the weight in ${unit}.`)
-    if (values.calories.trim() === "" || numbers.some((n) => !Number.isFinite(n) || n < 0)) return setError("Add calories, and use numbers of 0 or more.")
-    onAdd(fromManual({ name: values.name, grams: fromUnit(weight, unit), calories: numbers[0], proteinG: numbers[1], carbsG: numbers[2], fatG: numbers[3] }))
-  }
-
-  const field = (key: keyof typeof values, label: string, numeric = true) => (
-    <div className="flex flex-col gap-1">
-      <label htmlFor={`${id}-${key}`} className="text-label text-text-muted uppercase">
-        {label}
-      </label>
-      <input
-        id={`${id}-${key}`}
-        value={values[key]}
-        onChange={(e) => setValues({ ...values, [key]: e.target.value })}
-        type={numeric ? "number" : "text"}
-        inputMode={numeric ? "decimal" : undefined}
-        min={numeric ? 0 : undefined}
-        step={numeric ? "any" : undefined}
-        maxLength={numeric ? undefined : 300}
-        autoComplete="off"
-        className="h-12 rounded-md border border-border bg-surface px-4 text-body text-text tabular-nums"
-      />
-    </div>
-  )
-
-  return (
-    <form
-      aria-label="Enter a food"
-      onSubmit={(e) => {
-        e.preventDefault()
-        add()
-      }}
-      className="flex flex-col gap-3 pb-4"
-    >
-      {field("name", "Food", false)}
-      <div className="grid grid-cols-2 gap-3">
-        {field("weight", `Weight (${unit})`)}
-        {field("calories", "Calories")}
-        {field("protein", "Protein (g)")}
-        {field("carbs", "Carbs (g)")}
-        {field("fat", "Fat (g)")}
-      </div>
-      {error && (
-        <p role="alert" className="text-body">
-          {error}
-        </p>
-      )}
-      <Button type="submit">Add</Button>
-      <Button variant="text" onClick={onBack}>
-        Back to search
-      </Button>
-    </form>
   )
 }

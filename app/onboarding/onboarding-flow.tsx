@@ -4,7 +4,7 @@ import { useId, useMemo, useState, useTransition, type ReactNode } from "react"
 import { Grab, Hand, HandFist, ThumbsUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ageOn, computeTargets, MINIMUM_AGE, type Goal, type Sex, type TargetDefaults } from "@/modules/nutrition/targets/formula"
-import { signOut } from "../(app)/me/actions"
+import { signOut } from "../(app)/more/actions"
 import { finishOnboarding, type OnboardingAnswers } from "./actions"
 
 const LB_PER_KG = 2.20462

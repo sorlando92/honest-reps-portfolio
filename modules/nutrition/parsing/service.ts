@@ -104,7 +104,7 @@ async function cacheMatches(admin: SupabaseClient, items: ParsedItem[]): Promise
     )
   }
   const ids = new Map<string, string>()
-  for (const source of ["usda", "custom"] as const) {
+  for (const source of ["usda", "custom", "off"] as const) {
     const sourceIds = matches.filter((m) => m.source === source).map((m) => m.sourceId)
     if (!sourceIds.length) continue
     const { data } = await admin.from("food_items").select("id, source_id").eq("source", source).in("source_id", sourceIds)

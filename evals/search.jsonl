@@ -1,0 +1,48 @@
+{"id": "s01", "category": "brand", "query": "ascent protein", "section": "brands", "expect": [["ascent", "protein"]], "note": "Sean's testing, 2026-10-17"}
+{"id": "s02", "category": "brand", "query": "ascent chocolate whey", "section": "brands", "expect": [["ascent", "chocolate", "whey"]], "note": "Sean's testing, 2026-10-17"}
+{"id": "s03", "category": "brand", "query": "ascent vanilla", "section": "brands", "expect": [["ascent", "vanilla"]]}
+{"id": "s04", "category": "brand", "query": "premier protein shake", "section": "brands", "expect": [["premier protein", "shake"]]}
+{"id": "s05", "category": "brand", "query": "fairlife core power", "section": "brands", "expect": [["core power"]]}
+{"id": "s06", "category": "brand", "query": "quest bar cookies and cream", "section": "brands", "expect": [["quest", "cookies", "cream"]]}
+{"id": "s07", "category": "brand", "query": "chobani greek yogurt", "section": "brands", "expect": [["chobani", "greek", "yogurt"]]}
+{"id": "s08", "category": "brand", "query": "oikos triple zero", "section": "brands", "expect": [["oikos", "triple zero"]]}
+{"id": "s09", "category": "brand", "query": "kirkland protein bar", "section": "brands", "expect": [["kirkland", "protein bar"]]}
+{"id": "s10", "category": "brand", "query": "muscle milk", "section": "brands", "expect": [["muscle milk"]]}
+{"id": "s11", "category": "brand", "query": "clif bar", "section": "brands", "expect": [["clif"]]}
+{"id": "s12", "category": "brand", "query": "kodiak cakes", "section": "brands", "expect": [["kodiak"]]}
+{"id": "s13", "category": "brand", "query": "daves killer bread", "section": "brands", "expect": [["daves killer bread"]]}
+{"id": "s14", "category": "brand", "query": "siggis yogurt", "section": "brands", "expect": [["siggi", "yogurt"]]}
+{"id": "s15", "category": "brand", "query": "barebells protein bar", "section": "brands", "expect": [["barebells"]]}
+{"id": "s16", "category": "brand", "query": "rxbar", "section": "brands", "expect": [["rxbar"], ["rx bar"]]}
+{"id": "s17", "category": "brand", "query": "optimum nutrition gold standard whey", "section": "brands", "expect": [["gold standard"]]}
+{"id": "s18", "category": "brand", "query": "celsius energy drink", "section": "brands", "expect": [["celsius"]]}
+{"id": "s19", "category": "typo", "query": "ascnet protien", "section": "brands", "expect": [["ascent", "protein"]], "note": "spec example"}
+{"id": "s20", "category": "typo", "query": "chobanni greek yogurt", "section": "brands", "expect": [["chobani", "greek"]]}
+{"id": "s21", "category": "typo", "query": "premeir protein", "section": "brands", "expect": [["premier protein"]]}
+{"id": "s22", "category": "typo", "query": "brocoli", "section": "basic", "expect": [["broccoli"]]}
+{"id": "s23", "category": "typo", "query": "chiken breast", "section": "basic", "expect": [["chicken", "breast"]]}
+{"id": "s24", "category": "chain", "query": "chipotle chicken bowl", "section": "brands", "expect": [["chipotle", "chicken"]], "note": "Chipotle is curated by component; the chicken is the expected first pick"}
+{"id": "s25", "category": "chain", "query": "chick fil a nuggets", "section": "brands", "expect": [["chick fil a", "nuggets"]]}
+{"id": "s26", "category": "chain", "query": "chick fil a chicken sandwich", "section": "brands", "expect": [["chick fil a", "chicken sandwich"]]}
+{"id": "s27", "category": "chain", "query": "culvers butterburger", "section": "brands", "expect": [["culvers", "butterburger"]]}
+{"id": "s28", "category": "chain", "query": "subway turkey", "section": "brands", "expect": [["subway", "turkey"]]}
+{"id": "s29", "category": "chain", "query": "panera mac and cheese", "section": "brands", "expect": [["panera", "mac"]]}
+{"id": "s30", "category": "chain", "query": "dominos pepperoni pizza", "section": "brands", "expect": [["dominos", "pepperoni"]]}
+{"id": "s31", "category": "generic", "query": "banana", "section": "basic", "expect": [["banana", "raw"]]}
+{"id": "s32", "category": "generic", "query": "chicken breast", "section": "basic", "expect": [["chicken", "breast"]]}
+{"id": "s33", "category": "generic", "query": "white rice", "section": "basic", "expect": [["rice", "white"]]}
+{"id": "s34", "category": "generic", "query": "egg", "section": "basic", "expect": [["egg", "whole"], ["egg", "fried"], ["egg", "scrambled"], ["egg", "boiled"]]}
+{"id": "s35", "category": "generic", "query": "oatmeal", "section": "basic", "expect": [["oat"]]}
+{"id": "s36", "category": "generic", "query": "broccoli", "section": "basic", "expect": [["broccoli"]]}
+{"id": "s37", "category": "generic", "query": "ground beef", "section": "basic", "expect": [["beef", "ground"]]}
+{"id": "s38", "category": "generic", "query": "salmon", "section": "basic", "expect": [["salmon"]]}
+{"id": "s39", "category": "generic", "query": "sweet potato", "section": "basic", "expect": [["sweet potato"]]}
+{"id": "s40", "category": "generic", "query": "avocado", "section": "basic", "expect": [["avocado"]]}
+{"id": "s41", "category": "plain", "query": "egg", "section": "basic", "first": true, "expect": [["egg", "whole", "raw"]], "note": "PM 2026-10-17: the plain Foundation or SR item first"}
+{"id": "s42", "category": "plain", "query": "banana", "section": "basic", "first": true, "expect": [["bananas", "raw"]]}
+{"id": "s43", "category": "plain", "query": "rice", "section": "basic", "first": true, "expect": [["rice", "white", "cooked"]]}
+{"id": "s44", "category": "plain", "query": "chicken breast", "section": "basic", "first": true, "expect": [["chicken", "breast", "meat only", "cooked"]]}
+{"id": "s45", "category": "plain", "query": "milk", "section": "basic", "first": true, "expect": [["milk", "whole"]]}
+{"id": "s46", "category": "plain", "query": "oatmeal", "section": "basic", "first": true, "expect": [["oats", "regular and quick"]]}
+{"id": "s47", "category": "plain", "query": "potato", "section": "basic", "first": true, "expect": [["potatoes", "baked"]]}
+{"id": "s48", "category": "plain", "query": "salmon", "section": "basic", "first": true, "expect": [["salmon", "atlantic", "cooked"]]}

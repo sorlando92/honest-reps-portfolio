@@ -4,32 +4,46 @@ import { useEffect, useId, useMemo, useRef, useState, useSyncExternalStore, useT
 import { useRouter } from "next/navigation"
 import { ArrowUp, ScanBarcode, Search, Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { track } from "@/core/events/client"
 import { useOnline } from "@/lib/use-online"
+import type { FoodResult, SearchHit } from "../foods/hits"
 import { mealFor, type Meal, type MealAnchors, type MealWindows } from "../entries/meals"
 import { loggedAtFor } from "../entries/logged-at"
 import type { QuickAddChip } from "../entries/quick-add"
 import type { DraftItem, DraftResult } from "../parsing/service"
 import { defaultUnit, totals, type WeightUnit } from "./amounts"
-import { BarcodeScanner } from "./barcode-scanner"
+import { BarcodeScanner, type Scan } from "./barcode-scanner"
 import { CardSheet } from "./card-sheet"
 import { clearDraft, draftSnapshot, parseDraft, saveDraft, subscribeDraft, type StoredDraft } from "./draft-store"
 import { toEntryItem } from "./entry-items"
 import { FoodSearch } from "./food-search"
+import { LabelScan } from "./label-scan"
+import { SearchResults } from "./search-results"
+import { resolveHit, resultCount, useFoodSearch, type SearchState } from "./use-food-search"
 import { ItemRow } from "./item-row"
 import { MealChips } from "./meal-chips"
 import { LOG_MEAL_EVENT } from "./meal-section-controls"
+import { LOG_OPEN_EVENT, type LogOpen } from "./today/today-events"
 import { changedFood, fromSearchResult } from "./new-items"
 
 type Phase = { kind: "idle" } | { kind: "reading"; text: string } | { kind: "error"; text: string; message: string }
 
+/** "Not this" on a barcode result: the food picked next becomes the user's match for the GTIN. */
+interface NotThis {
+  scan: Scan
+  returnedId: string
+}
+
 /**
- * A panel inside the card: search to add a row (optionally opening on manual
- * entry), search to change the food on row `index`, or scan a barcode.
+ * A panel inside the card: search to add a row (optionally opening on a new
+ * custom food, saved on a barcode), search to change the food on row
+ * `index`, scan a barcode, or scan a label (docs/FOOD_LOOKUP_SPEC.md 3).
  */
 type Searching =
-  | { query: string; target: "add"; manual?: boolean }
+  | { query: string; target: "add"; manual?: boolean; gtin?: string | null; notThis?: NotThis; scan?: Scan }
   | { query: string; target: "change"; index: number }
   | { query: ""; target: "scan" }
+  | { query: ""; target: "label"; scan: Scan | null }
 
 type Method = "text" | "search" | "manual" | "barcode"
 
@@ -45,6 +59,7 @@ export function LogFlow({
   mealWindows,
   mealAnchors,
   date,
+  afterLog,
 }: {
   units: "imperial" | "metric"
   hasScale: boolean | null
@@ -54,6 +69,8 @@ export function LogFlow({
   mealAnchors: MealAnchors
   /** The selected local day; new logs go to it (PRD F3, Q52). */
   date: string
+  /** NAV_SPEC 3: on Progress, logs go to today and the app switches to Today after Log it. */
+  afterLog?: "today"
 }) {
   const router = useRouter()
   const online = useOnline()
@@ -73,13 +90,26 @@ export function LogFlow({
   // A section's "+" picks the meal for the next log and focuses the bar.
   const [pendingMeal, setPendingMeal] = useState<Meal | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  // FOOD_LOOKUP_SPEC 1: the search glyph and the "Search food" quick action open the bar's results.
+  const [browse, setBrowse] = useState(0)
   useEffect(() => {
     const onMeal = (e: Event) => {
       setPendingMeal((e as CustomEvent<Meal>).detail)
       inputRef.current?.focus()
     }
     window.addEventListener(LOG_MEAL_EVENT, onMeal)
-    return () => window.removeEventListener(LOG_MEAL_EVENT, onMeal)
+    // The "+" sheet (NAV_SPEC 2): Search food and Scan barcode.
+    const onOpen = (e: Event) => {
+      const mode = (e as CustomEvent<LogOpen>).detail
+      if (mode === "search") return setBrowse((n) => n + 1)
+      setSearching({ query: "", target: "scan" })
+      setSheetOpen(true)
+    }
+    window.addEventListener(LOG_OPEN_EVENT, onOpen)
+    return () => {
+      window.removeEventListener(LOG_MEAL_EVENT, onMeal)
+      window.removeEventListener(LOG_OPEN_EVENT, onOpen)
+    }
   }, [])
   /** The meal a new card or quick add files under: the chosen section, else the time of day. */
   const nextMeal = (): Meal => pendingMeal ?? mealFor(new Date(), timezone, mealWindows)
@@ -127,13 +157,84 @@ export function LogFlow({
     setSheetOpen(true)
   }
 
-  function picked(item: DraftItem, from: Searching, method: Method, apply: (items: DraftItem[]) => DraftItem[]) {
+  function picked(item: DraftItem, from: Searching, method: Method, apply: (items: DraftItem[]) => DraftItem[], scanId: string | null = null) {
     if (draft) {
       saveDraft({ ...draft, items: apply(draft.items) })
     } else if (from.target !== "change") {
-      saveDraft({ text: "", method, ...startFields(), aiCallId: null, items: [item], clientUuid: crypto.randomUUID(), createdAt: Date.now() })
+      saveDraft({ text: "", method, ...startFields(), aiCallId: null, scanId, items: [item], clientUuid: crypto.randomUUID(), createdAt: Date.now() })
     }
     setSearching(null)
+    setSheetOpen(true)
+  }
+
+  /** A log bar result: one item on a card, without the model (FOOD_LOOKUP_SPEC 1). A favorite logs in one tap like its chip. */
+  async function pickHit(hit: SearchHit): Promise<boolean> {
+    if (hit.favoriteItems) {
+      quickAdd({
+        key: hit.ref,
+        kind: "favorite",
+        title: hit.name,
+        calories: hit.kcal,
+        items: hit.favoriteItems.map((i) => ({ ...i, flagReason: null, confidence: null })),
+      })
+      return true
+    }
+    const result = await resolveHit(hit)
+    if (!result) {
+      setAnnounce(online ? "That food did not load. Try again." : "You're offline. Try again when you're back online.")
+      return false
+    }
+    const item = fromSearchResult(result)
+    picked(item, { query: "", target: "add" }, "search", (items) => [...items, item])
+    return true
+  }
+
+  /** Records what the user did with a barcode result in the scan log. */
+  function scanOutcome(scan: Scan, body: { outcome: "confirmed" } | { outcome: "not_this"; chosenFoodItemId: string | null } | { outcome: "replaced"; chosenFoodItemId: string }) {
+    if (!scan.scanId) return
+    void fetch(`/api/foods/barcode/scans/${scan.scanId}`, { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify(body) }).catch(() => {})
+  }
+
+  // Barcode "Log it" (FOOD_LOOKUP_SPEC 3, QUESTIONS.md Q65): with no card open it logs one
+  // serving right away; scanned from Add item it joins the open card.
+  const [scanBusy, startScanLog] = useTransition()
+  function confirmScan(result: FoodResult, scan: Scan) {
+    scanOutcome(scan, { outcome: "confirmed" })
+    const item = fromSearchResult(result)
+    if (draft) return picked(item, { query: "", target: "scan" }, "barcode", (items) => [...items, item])
+    startScanLog(async () => {
+      const res = await fetch("/api/entries", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          clientUuid: crypto.randomUUID(),
+          loggedAt: stamp(date, pendingMeal),
+          method: "barcode",
+          meal: nextMeal(),
+          aiCallId: null,
+          scanId: scan.scanId,
+          items: [toEntryItem(item)],
+        }),
+      }).catch(() => null)
+      if (!res || !res.ok) {
+        // Not lost: the product waits on a card for another try.
+        picked(item, { query: "", target: "scan" }, "barcode", (items) => [...items, item], scan.scanId)
+        setSaveError("Not logged yet. Your card is kept here. Try again.")
+        return
+      }
+      setSearching(null)
+      setPendingMeal(null)
+      setAnnounce(`Logged ${result.name}.`)
+      navigator.vibrate?.(10)
+      if (afterLog === "today") router.push("/today")
+      else router.refresh()
+    })
+  }
+
+  /** The food picked after "Not this" is saved as the user's match for that GTIN. */
+  function correctedScan(notThis: NotThis, result: FoodResult) {
+    scanOutcome(notThis.scan, { outcome: "not_this", chosenFoodItemId: result.foodItemId })
+    track("barcode_mismatch", { normalized_gtin: notThis.scan.gtin, returned_food_id: notThis.returnedId, chosen_food_id: result.foodItemId })
   }
 
   function logIt(draft: StoredDraft) {
@@ -148,6 +249,7 @@ export function LogFlow({
           method: draft.aiCallId ? "text" : (draft.method ?? "search"),
           meal: draft.meal ?? nextMeal(),
           aiCallId: draft.aiCallId,
+          scanId: draft.aiCallId ? null : (draft.scanId ?? null),
           items: draft.items.map((i) => toEntryItem(i)),
         }),
       }).catch(() => null)
@@ -160,7 +262,8 @@ export function LogFlow({
       setPhase({ kind: "idle" })
       setAnnounce("Logged.")
       navigator.vibrate?.(10)
-      router.refresh()
+      if (afterLog === "today") router.push("/today")
+      else router.refresh()
     })
   }
 
@@ -189,7 +292,8 @@ export function LogFlow({
       setPendingMeal(null)
       setAnnounce(`Logged ${chip.title}.`)
       navigator.vibrate?.(10)
-      router.refresh()
+      if (afterLog === "today") router.push("/today")
+      else router.refresh()
     })
   }
 
@@ -208,8 +312,11 @@ export function LogFlow({
       <LogBar
         disabled={phase.kind === "reading"}
         onSubmit={read}
-        onSearch={() => startSearch({ query: "", target: "add" })}
+        onPickHit={pickHit}
+        browse={browse}
         onScan={() => startSearch({ query: "", target: "scan" })}
+        onLabel={() => startSearch({ query: "", target: "label", scan: null })}
+        onManual={(text) => startSearch({ query: text, target: "add", manual: true })}
         chips={chips}
         onChip={quickAdd}
         chipsDisabled={quickBusy || !online}
@@ -229,14 +336,28 @@ export function LogFlow({
           setSearching(null)
           setSheetOpen(false)
         }}
-        title={searching ? (searching.target === "change" ? "Change food" : searching.target === "scan" ? "Scan a barcode" : "Add food") : "Your meal"}
+        title={
+          searching
+            ? searching.target === "change"
+              ? "Change food"
+              : searching.target === "scan"
+                ? "Scan a barcode"
+                : searching.target === "label"
+                  ? "Scan the label"
+                  : searching.notThis
+                    ? "Find the right food"
+                    : "Add food"
+            : "Your meal"
+        }
         summary={
           sum
             ? `${sum.calories} cal · ${sum.proteinG} g protein`
             : searching
               ? searching.target === "scan"
-                ? "Packaged foods from Open Food Facts."
-                : "Search, or enter a food yourself."
+                ? "Scan or type the number under the barcode."
+                : searching.target === "label"
+                  ? "Saved to My foods, so the next scan finds it."
+                  : "Search, or enter a food yourself."
               : phase.kind === "reading"
                 ? "Reading your meal."
                 : " "
@@ -282,32 +403,58 @@ export function LogFlow({
           </div>
         )}
         {searching?.target === "scan" && phase.kind === "idle" && (
-          <BarcodeScanner
-            onFound={(result) => {
+          <>
+            {online && saveError && (
+              <p role="alert" className="pb-3 text-body text-caution">
+                {saveError}
+              </p>
+            )}
+            <BarcodeScanner
+              confirmLabel={draft ? "Add to meal" : scanBusy ? "Logging" : "Log it"}
+              onConfirm={confirmScan}
+              onNotThis={(result, scan) => {
+                scanOutcome(scan, { outcome: "not_this", chosenFoodItemId: null })
+                const words = [result.brand, result.name].filter(Boolean).join(" ").replace(/[^\p{L}\p{N} ]+/gu, " ").replace(/\s+/g, " ").trim()
+                setSearching({ query: words.slice(0, 100), target: "add", notThis: { scan, returnedId: result.foodItemId } })
+              }}
+              onLabel={(scan) => setSearching({ query: "", target: "label", scan })}
+              onSearch={(scan) => setSearching({ query: "", target: "add", scan })}
+              onManual={(scan) => setSearching({ query: "", target: "add", manual: true, gtin: scan.gtin, scan })}
+              onCancel={() => setSearching(null)}
+            />
+          </>
+        )}
+        {searching?.target === "label" && phase.kind === "idle" && (
+          <LabelScan
+            gtin={searching.scan?.gtin ?? null}
+            onSaved={(result) => {
+              if (searching.scan) scanOutcome(searching.scan, { outcome: "replaced", chosenFoodItemId: result.foodItemId })
               const item = fromSearchResult(result)
-              picked(item, searching, "barcode", (items) => [...items, item])
+              picked(item, searching, searching.scan ? "barcode" : "manual", (items) => [...items, item], searching.scan?.scanId ?? null)
             }}
-            onSearch={() => setSearching({ query: "", target: "add" })}
-            onManual={() => setSearching({ query: "", target: "add", manual: true })}
             onCancel={() => setSearching(null)}
           />
         )}
-        {searching && searching.target !== "scan" && phase.kind === "idle" && (
+        {searching && (searching.target === "add" || searching.target === "change") && phase.kind === "idle" && (
           <FoodSearch
             startManual={searching.target === "add" && searching.manual}
-            key={`${searching.target}-${searching.query}`}
+            key={`${searching.target}-${searching.query}-${searching.target === "add" && searching.manual ? "manual" : ""}`}
             initialQuery={searching.query}
-            unit={unit}
+            gtin={searching.target === "add" ? (searching.gtin ?? null) : null}
             allowManual={searching.target === "add"}
+            onLabel={searching.target === "add" ? () => setSearching({ query: "", target: "label", scan: searching.notThis?.scan ?? searching.scan ?? null }) : undefined}
             cancelLabel={draft ? "Back to your meal" : "Cancel"}
             onCancel={() => setSearching(null)}
-            onPick={({ item, result }) => {
+            onPick={({ item, result, method }) => {
               const from = searching
-              if (from.target === "change" && result) {
+              if (from.target === "change") {
                 picked(item, from, "search", (items) => items.map((it, i) => (i === from.index ? changedFood(it, result) : it)))
-              } else {
-                picked(item, from, result === null ? "manual" : "search", (items) => [...items, item])
+                return
               }
+              if (from.notThis) correctedScan(from.notThis, result)
+              else if (from.scan) scanOutcome(from.scan, { outcome: "replaced", chosenFoodItemId: result.foodItemId })
+              const scan = from.notThis?.scan ?? from.scan ?? null
+              picked(item, from, scan ? "barcode" : method, (items) => [...items, item], scan?.scanId ?? null)
             }}
           />
         )}
@@ -348,25 +495,36 @@ export function LogFlow({
 /**
  * Pinned above the tab bar, always within thumb reach. Never more than three
  * controls (DESIGN_SYSTEM "Log bar", Q47): an empty field shows search and
- * barcode; once the user types, they give way to send.
+ * barcode; once the user types, they give way to send. One bar, two
+ * functions (docs/FOOD_LOOKUP_SPEC.md 1): typing opens live results above
+ * it, row 1 runs AI; send and Enter always mean AI.
  */
 function LogBar({
   disabled,
   onSubmit,
-  onSearch,
+  onPickHit,
+  browse,
   onScan,
+  onLabel,
+  onManual,
   chips,
   onChip,
   chipsDisabled,
   inputRef,
   placeholder,
 }: {
-  inputRef: React.Ref<HTMLInputElement>
+  inputRef: React.RefObject<HTMLInputElement | null>
   placeholder: string
   disabled: boolean
   onSubmit: (text: string) => void
-  onSearch: () => void
+  /** A tapped result; false when it could not load (the sheet stays open). */
+  onPickHit: (hit: SearchHit) => Promise<boolean>
+  /** Bumped by the "Search food" quick action: focus the field and show results. */
+  browse: number
   onScan: () => void
+  /** The empty state: "Scan the label" and "Enter it yourself" with what was typed. */
+  onLabel: () => void
+  onManual: (text: string) => void
   chips: QuickAddChip[]
   onChip: (chip: QuickAddChip) => void
   chipsDisabled: boolean
@@ -374,25 +532,119 @@ function LogBar({
   const id = useId()
   const [text, setText] = useState("")
   const [focused, setFocused] = useState(false)
+  // Opened from the search glyph: results show even before typing (the user's usual foods).
+  const [browsing, setBrowsing] = useState(false)
+  const [dismissed, setDismissed] = useState(false)
+  const [busy, setBusy] = useState<string | null>(null)
   const typing = text.trim().length > 0
+  const sheetOpen = focused && !disabled && !dismissed && (text.trim().length >= MIN_SEARCH || (browsing && !typing))
+  const search = useFoodSearch(text, sheetOpen)
+  // The last settled results, for search_performed when the user leaves without choosing.
+  const seen = useRef<{ state: SearchState; text: string; chosen: boolean } | null>(null)
+  useEffect(() => {
+    if (search.kind === "results" && search.query.length >= MIN_SEARCH) seen.current = { state: search, text: search.query, chosen: false }
+  }, [search])
+
+  function report(choice: { section: string | null; rank: number | null; ai: boolean }) {
+    const last = seen.current
+    if (!last || last.chosen || last.state.kind !== "results") return
+    last.chosen = true
+    track("search_performed", {
+      chars: last.text.length,
+      results_count: resultCount(last.state.sections),
+      chosen_section: choice.section,
+      chosen_rank: choice.rank,
+      chose_ai: choice.ai,
+    })
+  }
+
+  // A new "Search food" request opens the results (derived from the prop, not an effect).
+  const [seenBrowse, setSeenBrowse] = useState(browse)
+  if (browse !== seenBrowse) {
+    setSeenBrowse(browse)
+    setBrowsing(true)
+    setDismissed(false)
+  }
+  useEffect(() => {
+    if (browse) inputRef.current?.focus()
+  }, [browse, inputRef])
+
+  function submit() {
+    const value = text.trim()
+    if (!value || disabled) return
+    report({ section: null, rank: null, ai: true })
+    onSubmit(value)
+    setText("")
+    setBrowsing(false)
+  }
+
+  async function pick(hit: SearchHit, rank: number) {
+    setBusy(hit.ref)
+    const ok = await onPickHit(hit)
+    setBusy(null)
+    if (!ok) return
+    report({ section: hit.section, rank, ai: false })
+    setText("")
+    setBrowsing(false)
+    inputRef.current?.blur()
+  }
+
+  function close() {
+    report({ section: null, rank: null, ai: false })
+    setBrowsing(false)
+  }
+
   // DESIGN_SYSTEM "Log bar": quick add chips show while the bar has focus.
-  const showChips = focused && !typing && chips.length > 0
+  const showChips = focused && !typing && !sheetOpen && chips.length > 0
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault()
-        const value = text.trim()
-        if (!value || disabled) return
-        onSubmit(value)
-        setText("")
+        submit()
       }}
       onFocus={() => setFocused(true)}
       onBlur={(e) => {
-        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setFocused(false)
+        if (e.currentTarget.contains(e.relatedTarget as Node | null)) return
+        setFocused(false)
+        close()
       }}
-      className="fixed inset-x-0 z-30 border-t border-border bg-bg px-4 py-2"
-      style={{ bottom: "calc(var(--tab-bar-height) + env(safe-area-inset-bottom))" }}
+      onKeyDown={(e) => {
+        if (e.key === "Escape" && sheetOpen) {
+          e.preventDefault()
+          setDismissed(true)
+          close()
+        }
+      }}
+      className="log-bar hide-on-keyboard-unless-focused fixed inset-x-0 z-30 px-4"
     >
+      {sheetOpen && (
+        <div
+          role="region"
+          aria-label="Food search results"
+          className="mx-auto mb-2 max-h-[min(55dvh,30rem)] max-w-[720px] overflow-y-auto overscroll-contain rounded-lg border border-border bg-bg p-2"
+        >
+          <SearchResults
+            id={`${id}-results`}
+            state={search}
+            query={text}
+            onPick={pick}
+            busyRef={busy}
+            onAI={typing ? submit : undefined}
+            onLabel={() => {
+              report({ section: null, rank: null, ai: false })
+              onLabel()
+            }}
+            onManual={() => {
+              report({ section: null, rank: null, ai: false })
+              onManual(text.trim())
+              setText("")
+            }}
+          />
+          {!typing && search.kind === "results" && resultCount(search.sections) === 0 && (
+            <p className="px-1 py-2 text-body text-text-muted">Type a food to search, or describe a meal and send it.</p>
+          )}
+        </div>
+      )}
       {showChips && (
         <ul aria-label="Quick add" className="mx-auto mb-2 flex max-w-[720px] gap-2 overflow-x-auto pb-1">
           {chips.map((chip) => (
@@ -415,36 +667,57 @@ function LogBar({
           ))}
         </ul>
       )}
-      <div className="mx-auto flex max-w-[720px] items-center gap-2">
+      {/* DESIGN_SYSTEM "Log bar": a floating pill. Leading search, the field, then barcode, or send while typing. */}
+      <div className="mx-auto flex max-w-[720px] items-center gap-1 rounded-full border border-border bg-surface p-1">
+        <Button
+          type="button"
+          variant="text"
+          size="icon"
+          aria-label="Search foods"
+          aria-expanded={sheetOpen}
+          aria-controls={sheetOpen ? `${id}-results` : undefined}
+          onPointerDown={(e) => e.preventDefault()}
+          disabled={disabled}
+          onClick={() => {
+            setBrowsing(true)
+            setDismissed(false)
+            inputRef.current?.focus()
+          }}
+          className="size-11 shrink-0 rounded-full"
+        >
+          <Search aria-hidden />
+        </Button>
         <label htmlFor={`${id}-meal`} className="sr-only">
-          What did you eat?
+          What did you eat? Type to search foods, or describe a meal and send it.
         </label>
         <input
           ref={inputRef}
           id={`${id}-meal`}
           value={text}
-          onChange={(e) => setText(e.target.value)}
+          onChange={(e) => {
+            setText(e.target.value)
+            setDismissed(false)
+          }}
           placeholder={placeholder}
           autoComplete="off"
           enterKeyHint="send"
           maxLength={2000}
-          className="h-12 min-w-0 flex-1 rounded-md border border-border bg-surface px-4 text-body text-text placeholder:text-text-muted"
+          aria-controls={sheetOpen ? `${id}-results` : undefined}
+          className="h-11 min-w-0 flex-1 bg-transparent px-1 text-body text-text outline-none placeholder:text-text-muted"
         />
         {typing ? (
-          <Button type="submit" size="icon" aria-label="Log meal" disabled={disabled} className="size-12">
+          <Button type="submit" size="icon" aria-label="Log meal" onPointerDown={(e) => e.preventDefault()} disabled={disabled} className="size-11 shrink-0 rounded-full">
             <ArrowUp aria-hidden />
           </Button>
         ) : (
-          <>
-            <Button type="button" variant="secondary" size="icon" aria-label="Search foods" disabled={disabled} onClick={onSearch} className="size-12">
-              <Search aria-hidden />
-            </Button>
-            <Button type="button" variant="secondary" size="icon" aria-label="Scan a barcode" disabled={disabled} onClick={onScan} className="size-12">
-              <ScanBarcode aria-hidden />
-            </Button>
-          </>
+          <Button type="button" variant="text" size="icon" aria-label="Scan a barcode" onPointerDown={(e) => e.preventDefault()} disabled={disabled} onClick={onScan} className="size-11 shrink-0 rounded-full">
+            <ScanBarcode aria-hidden />
+          </Button>
         )}
       </div>
     </form>
   )
 }
+
+/** FOOD_LOOKUP_SPEC 1: results open from 2 characters. */
+const MIN_SEARCH = 2

@@ -121,13 +121,12 @@ export function EntryEditor({
           <FoodSearch
             key={`${searching.index}-${searching.query}`}
             initialQuery={searching.query}
-            unit={unit}
             allowManual={searching.index === null}
             cancelLabel="Back to this entry"
             onCancel={() => setSearching(null)}
             onPick={({ item, result }) => {
               const index = searching.index
-              setItems(index !== null && result ? items.map((it, i) => (i === index ? changedFood(it, result) : it)) : [...items, item])
+              setItems(index !== null ? items.map((it, i) => (i === index ? changedFood(it, result) : it)) : [...items, item])
               setSearching(null)
             }}
           />

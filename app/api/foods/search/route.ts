@@ -2,31 +2,35 @@ import { NextResponse } from "next/server"
 import { z } from "zod"
 import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
-import { searchFoods } from "@/modules/nutrition/foods/search"
+import { searchIndex } from "@/modules/nutrition/foods/search"
 
-// Each search spends three USDA requests from a key shared by every user
-// (3,600 an hour) until the local FDC import lands (QUESTIONS.md Q40).
-const SEARCHES_PER_HOUR = 120
+// Search as you type runs on the local index (docs/FOOD_LOOKUP_SPEC.md 2):
+// one request per pause in typing, so the limit only stops runaway clients.
+const SEARCHES_PER_HOUR = 1500
 
-const query = z.string().trim().min(2).max(100)
+// Empty returns the user's most logged foods (the sheet opened from the search glyph).
+const query = z.string().trim().max(100)
 
-/** Food search for Add item, search logging and the parse fallback. */
+/** Food search for the log bar, Add item, Change food and Not this. */
 export async function GET(request: Request) {
   const supabase = await createClient()
   const { data } = await supabase.auth.getClaims()
   const userId = data?.claims?.sub
   if (!userId) return NextResponse.json({ error: "Sign in required" }, { status: 401 })
 
-  const q = query.safeParse(new URL(request.url).searchParams.get("q"))
+  const q = query.safeParse(new URL(request.url).searchParams.get("q") ?? "")
   if (!q.success) return NextResponse.json({ error: "Invalid search" }, { status: 400 })
 
-  const admin = createAdminClient()
-  const { data: allowed } = await admin.rpc("hit_rate_limit", {
+  const { data: allowed } = await createAdminClient().rpc("hit_rate_limit", {
     p_key: `food-search:${userId}`,
     p_limit: SEARCHES_PER_HOUR,
     p_window_seconds: 3600,
   })
   if (allowed === false) return NextResponse.json({ error: "Too many requests" }, { status: 429 })
 
-  return NextResponse.json({ results: await searchFoods(admin, q.data) })
+  try {
+    return NextResponse.json({ sections: await searchIndex(supabase, q.data) })
+  } catch {
+    return NextResponse.json({ error: "Search failed" }, { status: 500 })
+  }
 }

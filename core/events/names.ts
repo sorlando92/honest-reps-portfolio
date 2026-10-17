@@ -29,6 +29,13 @@ export const EVENT_NAMES = [
   "progress_viewed",
   "progress_week_changed",
   "weight_range_changed",
+  "quick_action_used",
+  "calendar_expanded",
+  "search_performed",
+  "barcode_scanned",
+  "barcode_mismatch",
+  "label_scanned",
+  "custom_food_created",
 ] as const
 
 export type EventName = (typeof EVENT_NAMES)[number]

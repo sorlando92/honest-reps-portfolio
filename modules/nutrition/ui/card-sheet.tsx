@@ -14,6 +14,8 @@ export function CardSheet({
   summary,
   children,
   footer,
+  returnFocus = true,
+  onClosed,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -21,6 +23,10 @@ export function CardSheet({
   summary: string
   children: ReactNode
   footer?: ReactNode
+  /** False when an action in the sheet moves focus elsewhere (a quick action focusing the day note). */
+  returnFocus?: boolean
+  /** After the sheet has closed and released focus. */
+  onClosed?: () => void
 }) {
   const id = useId()
   return (
@@ -29,6 +35,10 @@ export function CardSheet({
         <Dialog.Overlay className="fixed inset-0 z-50 bg-bg/70" />
         <Dialog.Content
           aria-describedby={`${id}-summary`}
+          onCloseAutoFocus={(e) => {
+            if (!returnFocus) e.preventDefault()
+            onClosed?.()
+          }}
           className="fixed inset-x-0 bottom-0 z-50 mx-auto flex max-h-[88dvh] w-full max-w-[720px] flex-col rounded-t-lg border-t border-border bg-bg pb-[env(safe-area-inset-bottom)] data-[state=open]:animate-in data-[state=open]:slide-in-from-bottom data-[state=open]:duration-250 motion-reduce:animate-none"
         >
           <div className="flex flex-col gap-1 px-4 pt-4 pb-3">

@@ -37,8 +37,13 @@ export async function signInWithCode(page: Page, email: string, { onboarded = tr
 }
 
 async function markOnboarded(email: string) {
-  const { data } = await admin.auth.admin.listUsers({ perPage: 1000 })
-  const user = data.users.find((u) => u.email?.toLowerCase() === email.toLowerCase())
+  // Local databases collect thousands of test accounts: look through every page.
+  let user: { id: string } | undefined
+  for (let page = 1; !user; page++) {
+    const { data } = await admin.auth.admin.listUsers({ page, perPage: 1000 })
+    user = data.users.find((u) => u.email?.toLowerCase() === email.toLowerCase())
+    if (data.users.length < 1000) break
+  }
   if (!user) throw new Error(`No user ${email}`)
   const { data: profile } = await admin.from("profiles").select("onboarding_completed_at").eq("id", user.id).single()
   if (profile?.onboarding_completed_at) return
@@ -69,7 +74,7 @@ async function waitForCode(email: string, since: number): Promise<string> {
 /** WCAG 2.2 AA scan; fails the test on any violation. */
 export async function expectNoAxeViolations(page: Page) {
   const results = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"]).analyze()
-  expect(results.violations.map((v) => `${v.id}: ${v.help} (${v.nodes.length})`)).toEqual([])
+  expect(results.violations.map((v) => `${v.id}: ${v.help} (${v.nodes.length}) ${v.nodes[0]?.target.join(" ")}`)).toEqual([])
 }
 
 /** Every visible interactive element is at least 44 by 44 CSS pixels. */

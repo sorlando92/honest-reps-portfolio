@@ -217,6 +217,8 @@ test("star an entry, then log it again from a quick add chip", async ({ page }, 
   const chips = page.getByRole("list", { name: "Quick add" })
   await expect(chips.getByRole("button").first()).toHaveAccessibleName("Log white rice, chicken, 468 calories, favorite")
   await expect(chips.getByRole("button", { name: /^Log chicken, 263 calories$/ })).toBeVisible()
+  // The floating chips cover whatever is scrolled under them; scan with the page at the top.
+  await page.evaluate(() => window.scrollTo(0, 0))
   await expectNoAxeViolations(page)
   await expectTapTargets(page)
   await page.screenshot({ path: info.outputPath("chips.png"), fullPage: true })

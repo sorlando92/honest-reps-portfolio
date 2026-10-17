@@ -1,11 +1,12 @@
 "use client"
 
-import { useId, useState, useTransition } from "react"
+import { useEffect, useId, useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { CardSheet } from "../card-sheet"
 import { shortDate } from "../../days/week"
 import { formatWeight, toDisplay, unitLabel, type Units } from "../../weight/trend"
+import { WEIGHT_OPEN_EVENT } from "./today-events"
 
 /**
  * "Weight" with the day's weigh-in or "Log weight", and the trend line
@@ -29,6 +30,12 @@ export function WeightRow({
   units: Units
 }) {
   const [open, setOpen] = useState(false)
+  // "+" Log weight (NAV_SPEC 2).
+  useEffect(() => {
+    const onOpen = () => setOpen(true)
+    window.addEventListener(WEIGHT_OPEN_EVENT, onOpen)
+    return () => window.removeEventListener(WEIGHT_OPEN_EVENT, onOpen)
+  }, [])
   return (
     <section aria-labelledby="weight-heading" className="flex min-h-11 items-center gap-3 rounded-lg bg-surface px-4 py-3">
       <div className="flex flex-1 flex-col">

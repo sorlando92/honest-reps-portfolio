@@ -7,6 +7,7 @@ import { track } from "@/core/events/client"
 import { formatNumber, isStreakMilestone, shortDate, type DayTotals } from "../../days/week"
 import { MACRO_LABEL, MacroRing, Ring, macroSentence, type Macro, type MacroMode } from "./macro-ring"
 import { fill } from "../../days/week"
+import { setMacroCardAway } from "./header-store"
 
 const MACROS: Macro[] = ["protein", "carbs", "fat", "calories"]
 const MODE_KEY = "hr:macro-mode"
@@ -84,14 +85,29 @@ export function MacroCard({
   const [page, setPage] = useState(0)
   const pages = useRef<HTMLDivElement>(null)
   const card = useRef<HTMLElement>(null)
-  const [pinned, setPinned] = useState(false)
 
+  // NAV_SPEC 4: once the card is under the header band, the band shows the
+  // compact macro row instead of the week strip.
   useEffect(() => {
     const el = card.current
-    if (!el || typeof IntersectionObserver === "undefined") return
-    const io = new IntersectionObserver(([e]) => setPinned(!e.isIntersecting && e.boundingClientRect.top < 0))
-    io.observe(el)
-    return () => io.disconnect()
+    if (!el) return
+    let frame = 0
+    const check = () => {
+      frame = 0
+      const band = document.getElementById("today-band")
+      const bottom = band ? band.getBoundingClientRect().bottom : 0
+      setMacroCardAway(el.getBoundingClientRect().bottom < bottom)
+    }
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(check)
+    }
+    window.addEventListener("scroll", onScroll, { passive: true })
+    check()
+    return () => {
+      window.removeEventListener("scroll", onScroll)
+      cancelAnimationFrame(frame)
+      setMacroCardAway(false)
+    }
   }, [])
 
   function toggleMode() {
@@ -129,7 +145,7 @@ export function MacroCard({
               ))}
             </button>
             {!target && (
-              <Link href="/me#targets" className="mt-1 flex min-h-11 items-center justify-center text-caption text-accent-strong underline">
+              <Link href="/more#targets" className="mt-1 flex min-h-11 items-center justify-center text-caption text-accent-strong underline">
                 Set your targets
               </Link>
             )}
@@ -154,16 +170,15 @@ export function MacroCard({
         </div>
       </section>
       <StreakMoment streak={streak} active={date === today} today={today} />
-      {pinned && <CompactHeader day={day} target={target} />}
     </>
   )
 }
 
-/** One line of 4 small rings with "eaten of target" (DESIGN_SYSTEM.md "Sticky compact header"). */
-function CompactHeader({ day, target }: { day: DayMacros; target: Targets }) {
+/** 4 small rings with "eaten of target", for the header band (DESIGN_SYSTEM.md "Compact macro row"). */
+export function CompactMacroRow({ day, target }: { day: DayMacros; target: Targets }) {
   return (
-    <div className="fixed inset-x-0 top-0 z-30 border-b border-border bg-bg pt-[env(safe-area-inset-top)]">
-      <ul aria-label="Macros" className="mx-auto grid max-w-[720px] grid-cols-4 gap-1 px-4 py-2">
+    <div>
+      <ul aria-label="Macros" className="grid grid-cols-4 gap-1 py-2">
         {MACROS.map((m) => {
           const eaten = eatenOf(day, m)
           const t = targetOf(target, m)

@@ -8,6 +8,7 @@
  */
 :root {
   --bg: #ffffff;
+  --band: #f0f0f0;
   --surface: #f5f5f5;
   --border: #e5e5e5;
   --text: #0a0a0a;
@@ -30,6 +31,9 @@
   --macro-calories-text: #9a3412;
 
   --tab-bar-height: 4rem;
+  /* NAV_SPEC 1: the floating tab bar sits 12pt above the safe area; this is
+     how far from the bottom its top edge is. Log bar and content clear it. */
+  --nav-clearance: calc(var(--tab-bar-height) + 0.75rem + env(safe-area-inset-bottom));
 
   color-scheme: light dark;
 }
@@ -37,6 +41,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --bg: #0a0a0a;
+    --band: #000000;
     --surface: #161616;
     --border: #262626;
     --text: #f5f5f5;
@@ -89,6 +94,7 @@
 
   --color-bg: var(--bg);
   --color-surface: var(--surface);
+  --color-band: var(--band);
   --color-border: var(--border);
   --color-text: var(--text);
   --color-text-muted: var(--text-muted);
@@ -195,4 +201,22 @@
 @utility tap-target {
   min-width: 2.75rem;
   min-height: 2.75rem;
+}
+
+/* NAV_SPEC 1: the floating bars hide while the keyboard is open. The log bar
+   stays while its own field has focus. */
+html[data-keyboard="open"] .hide-on-keyboard {
+  display: none;
+}
+html[data-keyboard="open"] .hide-on-keyboard-unless-focused:not(:focus-within) {
+  display: none;
+}
+
+/* The log bar floats just above the tab bar; with the keyboard open the tab
+   bar is hidden, so it drops to the bottom edge. */
+.log-bar {
+  bottom: calc(var(--nav-clearance) + 0.5rem);
+}
+html[data-keyboard="open"] .log-bar {
+  bottom: 0.5rem;
 }

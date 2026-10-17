@@ -1,6 +1,7 @@
 "use client"
 
-import { useId, useRef, useState } from "react"
+import { useEffect, useId, useRef, useState } from "react"
+import { NOTE_FOCUS_EVENT } from "./today-events"
 
 /**
  * One note per local day at the end of Today, saved on blur with a quiet
@@ -11,6 +12,19 @@ export function DayNote({ date, initial }: { date: string; initial: string }) {
   const [value, setValue] = useState(initial)
   const saved = useRef(initial)
   const [status, setStatus] = useState("")
+  const field = useRef<HTMLTextAreaElement>(null)
+
+  // "+" Day note and the header menu (NAV_SPEC 2, 4).
+  useEffect(() => {
+    const onFocus = () => {
+      const el = field.current
+      if (!el) return
+      el.scrollIntoView({ block: "center", behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" })
+      el.focus({ preventScroll: true })
+    }
+    window.addEventListener(NOTE_FOCUS_EVENT, onFocus)
+    return () => window.removeEventListener(NOTE_FOCUS_EVENT, onFocus)
+  }, [])
 
   async function save() {
     const text = value.trim()
@@ -35,6 +49,7 @@ export function DayNote({ date, initial }: { date: string; initial: string }) {
         Note for this day
       </label>
       <textarea
+        ref={field}
         id={id}
         value={value}
         maxLength={1000}

@@ -39,13 +39,13 @@ test("Not now once; 3 days later one banner on Today; after that never again (Q6
   await expect(third.getByRole("region", { name: "Install" })).toHaveCount(0)
 })
 
-test("Me opens the install screen, and Back returns to Me without counting a dismissal", async ({ page }, info) => {
+test("More opens the install screen, and Back returns to More without counting a dismissal", async ({ page }, info) => {
   await signInWithCode(page, `e2e-install-me-${info.project.name}-${Date.now()}@example.test`)
-  await page.goto("/me")
+  await page.goto("/more")
   await page.getByRole("link", { name: "Add to Home Screen and turn on reminders" }).click()
-  await page.waitForURL("**/install?from=me")
+  await page.waitForURL("**/install?from=more")
   await page.getByRole("button", { name: "Back" }).click()
-  await page.waitForURL(/\/me$/)
+  await page.waitForURL(/\/more$/)
   expect(await page.evaluate(() => localStorage.getItem("hr:install-dismissed-at"))).toBeNull()
 })
 

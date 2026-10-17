@@ -6,7 +6,7 @@ import type { AiCallRecord } from "../../../lib/ai/client.ts"
 import { curatedSourceId, findCuratedChain, isUncuratedChain, type ChainData } from "../data/chains/index.ts"
 import { DEFAULT_HAND_PORTIONS, handPortionFor, handPortionGrams, type HandPortions } from "./hand.ts"
 import { rank, rankMenu, searchText, wantedState } from "./match.ts"
-import { searchUsda, type Per100g, type UsdaFood } from "./usda.ts"
+import { searchBranded, searchUsda, type Per100g, type UsdaFood } from "./usda.ts"
 
 // QUESTIONS.md Q11: starts at 0.5, tuned against the parsing eval. Read from
 // app_config by callers that have a database; the eval uses this default.
@@ -30,7 +30,7 @@ export interface Serving {
 }
 
 export interface MatchedFood {
-  source: "usda" | "custom" | "off"
+  source: "usda" | "custom" | "off" | "user"
   sourceId: string
   name: string
   brand: string | null
@@ -185,13 +185,13 @@ async function matchUsda(item: P1Item, ctx: MatchContext): Promise<ParsedItem> {
   const query = searchQuery(item)
   const [generic, branded] = await Promise.all([
     searchUsda(query).catch(() => [] as UsdaFood[]),
-    item.brand ? searchUsda(`${item.brand} ${query}`, { branded: true, pageSize: 10 }).catch(() => [] as UsdaFood[]) : [],
+    item.brand ? searchBranded(item.brand, query, 10).catch(() => [] as UsdaFood[]) : [],
   ])
-  const candidates = [...branded, ...generic].map((f) => ({ ...f, id: String(f.fdcId) }))
+  const candidates = [...branded, ...generic].map((f) => ({ ...f, id: f.source === "off" ? `off:${f.sourceId}` : String(f.fdcId) }))
   const ranked = rank({ name: item.name, brand: item.brand, state: item.state }, candidates)
   const toMatched = (r: (typeof ranked)[number]): MatchedFood => ({
-    source: "usda",
-    sourceId: r.candidate.id,
+    source: r.candidate.source ?? "usda",
+    sourceId: r.candidate.sourceId ?? r.candidate.id,
     name: r.candidate.description,
     brand: r.candidate.brand,
     dataType: r.candidate.dataType,

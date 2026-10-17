@@ -59,7 +59,7 @@ test("all sections populated; tiles match the database; weeks, range and long pr
   await seed(id)
   await page.goto("/progress")
 
-  await expect(page.getByRole("heading", { level: 1, name: "Progress" })).toBeVisible()
+  await expect(page.getByRole("heading", { level: 1, name: /^Hi/ })).toBeVisible()
   await expect(chart(page).getByRole("heading", { name: "This week" })).toBeVisible()
   await expect(page.getByRole("region", { name: "Week averages" })).toBeVisible()
   await expect(page.getByRole("region", { name: "Consistency, 30 days" })).toContainText("days logged")

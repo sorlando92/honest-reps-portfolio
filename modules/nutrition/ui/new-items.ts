@@ -4,6 +4,7 @@
 import type { FoodResult } from "../foods/search"
 import type { DraftAlternative, DraftItem } from "../parsing/service"
 import type { Per100g } from "../parsing/usda"
+import { qualityIssue } from "../foods/label"
 import { swapped, withServings } from "./amounts"
 
 const round1 = (n: number) => Math.round(n * 10) / 10
@@ -44,6 +45,8 @@ export function fromSearchResult(r: FoodResult): DraftItem {
   const base = { name: r.name, brand: r.brand, state: r.state, match, matchScore: 1, foodItemId, alternatives: [] }
 
   if (r.serving) {
+    // FOOD_LOOKUP_SPEC 3 "Data quality": a product whose numbers do not add up gets "Check this".
+    const issue = isProduct(r) ? qualityIssue(r.serving) : null
     return withServings(
       {
         ...base,
@@ -57,13 +60,28 @@ export function fromSearchResult(r: FoodResult): DraftItem {
         proteinG: 0,
         carbsG: 0,
         fatG: 0,
-        flagged: false,
-        flagReason: null,
+        flagged: issue !== null,
+        flagReason: issue ? "match" : null,
       },
       1
     )
   }
+  // A product with no serving size is a label food missing its label.
+  if (isProduct(r)) {
+    const item = genericItem(r, base, match.per100g)
+    return { ...item, flagged: true, flagReason: "match" }
+  }
+  return genericItem(r, base, match.per100g)
+}
 
+/** Packaged products: Open Food Facts, FDC Branded and custom foods (not curated chain menus). */
+function isProduct(r: FoodResult): boolean {
+  return r.source === "off" || r.source === "user" || r.dataType === "Branded"
+}
+
+type ItemBase = Pick<DraftItem, "name" | "brand" | "state" | "match" | "matchScore" | "foodItemId" | "alternatives">
+
+function genericItem(r: FoodResult, base: ItemBase, per: Per100g): DraftItem {
   const grams = r.portion?.grams ?? SEARCH_DEFAULT_GRAMS
   const f = grams / 100
   return {
@@ -73,10 +91,10 @@ export function fromSearchResult(r: FoodResult): DraftItem {
     grams,
     amountSource: "estimated",
     confidence: 0.6,
-    calories: Math.round(match.per100g.kcal * f),
-    proteinG: round1(match.per100g.protein_g * f),
-    carbsG: round1(match.per100g.carbs_g * f),
-    fatG: round1(match.per100g.fat_g * f),
+    calories: Math.round(per.kcal * f),
+    proteinG: round1(per.protein_g * f),
+    carbsG: round1(per.carbs_g * f),
+    fatG: round1(per.fat_g * f),
     flagged: true,
     flagReason: "amount",
   }
