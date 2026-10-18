@@ -52,13 +52,13 @@ Guardrails:
 
 ### Metrics and instrumentation (emit from day one)
 
-Events: `signup_started`, `signup_completed`, `onboarding_completed` (the first time the user reaches Today after onboarding), `pwa_installed`, `push_enabled`, `food_logged` (method: text, photo, barcode, search, manual, quick_add; meal; confidence; offline; counts per amount source), `food_entry_corrected`, `food_entry_deleted`, `weight_logged`, `habit_checked`, `checkin_started`, `checkin_submitted` (on_time boolean), `report_viewed`, `message_sent` (role), `upgrade_viewed` (source), `upgrade_completed`, `subscription_canceled`, `review_card_opened`, `review_reply_sent` (seconds_on_card, draft_edit_distance), `meal_copied` (meal, from_date), `day_switched` (days_from_today), `streak_milestone` (days), `day_note_saved`, `macro_card_mode_changed` (mode: eaten, left), `progress_viewed`, `progress_week_changed` (weeks_from_current), `weight_range_changed` (days), `quick_action_used` (action), `calendar_expanded`, `search_performed` (chars, results_count, chosen_section, chosen_rank, chose_ai), `barcode_scanned` (result: hit or miss, source, normalized_gtin, reads_to_confirm, ms_to_result), `barcode_mismatch` (normalized_gtin, returned_food_id, chosen_food_id), `label_scanned` (success, edited_fields_count), `custom_food_created` (source: label, manual).
+Events: `signup_started`, `signup_completed` (method: google, email_code, email_link), `sign_in_completed` (method), `auth_error` (method, reason: canceled, unverified_email, provider_error), `onboarding_completed` (the first time the user reaches Today after onboarding), `pwa_installed`, `push_enabled`, `food_logged` (method: text, photo, barcode, search, manual, quick_add; meal; confidence; offline; counts per amount source), `food_entry_corrected`, `food_entry_deleted`, `weight_logged`, `habit_checked`, `checkin_started`, `checkin_submitted` (on_time boolean), `report_viewed`, `message_sent` (role), `upgrade_viewed` (source), `upgrade_completed`, `subscription_canceled`, `review_card_opened`, `review_reply_sent` (seconds_on_card, draft_edit_distance), `meal_copied` (meal, from_date), `day_switched` (days_from_today), `streak_milestone` (days), `day_note_saved`, `macro_card_mode_changed` (mode: eaten, left), `progress_viewed`, `progress_week_changed` (weeks_from_current), `weight_range_changed` (days), `quick_action_used` (action), `calendar_expanded`, `search_performed` (chars, results_count, chosen_section, chosen_rank, chose_ai), `barcode_scanned` (result: hit or miss, source, normalized_gtin, reads_to_confirm, ms_to_result), `barcode_mismatch` (normalized_gtin, returned_food_id, chosen_food_id), `label_scanned` (success, edited_fields_count), `custom_food_created` (source: label, manual).
 
 Test profiles (`profiles.is_test`, the demo account) are excluded from every metric, the north star and the coach roster flags count.
 
 Coach review time = time from `review_card_opened` to `review_reply_sent`.
 
-`signup_completed`, `upgrade_completed`, `subscription_canceled` and `review_reply_sent` are written only by the server, never by the client. `signup_started` may count a returning user once on a new device (accepted).
+`signup_completed`, `sign_in_completed`, `upgrade_completed`, `subscription_canceled` and `review_reply_sent` are written only by the server, never by the client. `signup_started` may count a returning user once on a new device (accepted).
 
 ## 6. Rollout
 
@@ -77,7 +77,11 @@ Stories
 - As a coach, I can override any client's targets.
 
 Acceptance
-- Passwordless email sign in. Every sign-in email contains both a magic link and a 6-digit code. The code can be typed inside the installed app, which fixes iPhone home screen apps keeping a separate session from Safari. Invite links from the coach preassign the coach and paid flag.
+- Passwordless sign in, no passwords (`docs/AUTH_SPEC.md`, Sean 2026-10-17): Continue with Google, then Continue with email. Every sign-in email contains both a magic link and a 6-digit code. The code can be typed inside the installed app, which fixes iPhone home screen apps keeping a separate session from Safari. Google shows in Safari on iPhone and in Chrome on Android (browser and installed app). Inside the installed iPhone app only Continue with email shows, with the line "Used Google before? Enter the same email and we'll send you a code."
+- One flow for new and returning users: after sign in, onboarding if it is not complete, else Today. Canceling the Google consent screen returns to sign in with "Sign in was canceled." and creates no account. A Google account with an unverified email confirms with the email code before an account is created.
+- One account per verified email: Google and the email code with the same address open the same account, in either order (automatic identity linking). Different emails are different accounts; merging them is a post-MVP admin tool.
+- From Google only the email, its verified status and the full name are kept; the first name feeds "Hi, {first name}". The Google profile photo is not stored; the initial avatar stays (QUESTIONS.md Q68).
+- Coach invite links carry a single-use token that assigns the coach and paid flag whatever method or email the person signs in with (F12).
 - Minimum age 18. Date of birth collected; under 18 cannot create an account and sees "Honest Reps is for adults 18 and over for now."
 - Collects goal (lose fat, maintain, build muscle, performance), sex, date of birth, height, current weight, optional goal weight, activity level, units (imperial default, metric toggle).
 - Food scale step: "Do you have a food scale?" Yes / Not yet, stored as `has_scale` and changeable in More. Not yet shows one skippable screen ("A food scale is the biggest upgrade to your accuracy. Most cost less than lunch. Until then, use hand portions.") followed by a 4 item hand portion guide: palm, fist, cupped hand, thumb.
@@ -235,6 +239,9 @@ Acceptance
 ### F12. Client invite (coach)
 Acceptance
 - Invite by email with paid flag set to comped or external.
+- The invite link carries a single-use token. Opening the link, then signing in by any method, assigns the coach and paid flag from the token, even when the person signs in with a different email than the one invited (`docs/AUTH_SPEC.md`).
+- The token expires after 14 days or on use. An expired link shows "This invite expired. Ask your coach for a new one." (Q69)
+- The coach sees the invited email and the email each client actually signed in with.
 - Invited client skips the upgrade screen.
 
 ### F13. AI review assist settings (coach)
@@ -277,6 +284,7 @@ Acceptance
   - Kept: analytics events with the user id removed.
   - Kept for 3 years, then purged: consent records with the user id removed and the email replaced by a one-way hash, so a disclosure acceptance can still be proven.
   - Stripe: any active subscription is canceled immediately. Stripe keeps its own customer and payment records; our subscription row is deleted.
+- Google sign in: the privacy policy adds "When you use Google, we receive your name and email address only." (see Q68). Account deletion also removes linked sign in identities.
 - Users can delete any progress photo. Photos visible only to the user and their coach (private storage bucket, signed URLs).
 
 ### F17. Notifications
@@ -288,7 +296,7 @@ Acceptance
 
 ## 8. Non-goals for v1
 
-Meal plans, recipes, micronutrients, wearables and Apple Health sync, social features, native App Store apps, smart adaptive targets, progress photo comparison timeline, AI-drafted messages outside the weekly review, multiple coaches, workout delivery, billing migration, multi-factor authentication (sign in stays passwordless email OTP), exercise calorie add-back (activity is built into targets). Water tracking is post-MVP and stays a paid habit in the library, not a tracker.
+Meal plans, recipes, micronutrients, wearables and Apple Health sync, social features, native App Store apps, smart adaptive targets, progress photo comparison timeline, AI-drafted messages outside the weekly review, multiple coaches, workout delivery, billing migration, multi-factor authentication and passwords (sign in stays passwordless: email code and link, plus Google), Facebook and Apple sign in (prerequisites for Facebook in `docs/AUTH_SPEC.md`), exercise calorie add-back (activity is built into targets). Water tracking is post-MVP and stays a paid habit in the library, not a tracker.
 
 ## 9. Open items
 

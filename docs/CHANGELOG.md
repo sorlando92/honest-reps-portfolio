@@ -360,6 +360,15 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
 - More (was Me; `/me` redirects): Goals (Targets), App (Units, Add to Home Screen and turn on reminders, Food scale), Account (Name per Q63, signed in email, Privacy and data, Terms, About with Open Food Facts, Sign out). Reminders times, Subscription, Delete account and Coach settings appear when they ship (Q64).
 - Tests: e2e at 375px light and dark for tab order, labels and selection, Progress greeting and avatar, More name, /me redirect, week slide without changing the day, never past the current week, tap to select, month calendar select and collapse, tap outside, compact row swap and back, quick actions on a past day (copy at the anchor, weight sheet, day note focus), bars hidden while typing, Search food from Progress, log bar from Progress to Today, events; existing specs updated for tabs, the band and the log bar. The "+" button exposes `data-hydrated` so tests wait until a tap can work.
 
+### 2026-10-18: AUTH_SPEC applied to docs (build in MVP step 4)
+
+- `docs/AUTH_SPEC.md` (Sean 2026-10-17) added: Google sign in alongside the email code and link, hidden inside the installed iPhone app; token-based coach invites that bind regardless of the sign in email.
+- PRD F1 (sign in, one flow, identity linking, Google data kept), F12 (single-use token, 14 days, expired copy, coach sees the sign in email), F16 (privacy line, identities removed on deletion), section 5 events (`signup_completed` and `sign_in_completed` with method, `auth_error`), section 8 non-goals.
+- ARCHITECTURE: Auth row, Google OAuth and the custom auth domain under Domains, `invites` table and `claim_invite`, sign in and invite claim flows, identities in account deletion, e2e list.
+- DESIGN_SYSTEM: Sign in screen and its copy. MILESTONES step 4: sign in, token invites, events.
+- QUESTIONS: owner task 15 (Google and Supabase setup); Q68 (Google identity data), Q69 (invite delivery and edge cases), Q70 (email field or button), Q71 (when `signup_completed` fires).
+- Not built yet: step 4 starts after Sean approves step 3.
+
 ### 2026-10-17: food lookup (FOOD_LOOKUP_SPEC), before step 4
 
 Root causes, from the hosted records of Sean's Ascent attempts (no scan or search events existed yet): the only barcode hit ever recorded is 815863022027 (stored as read, 12 digits), Open Food Facts "Native Whey Protein Blend - Key Lime Pie", Ascent, 1 rounded scoop (31 g), 120 kcal, 25 g protein. Open Food Facts files it as 0815863022027, so the 12 and 13 digit forms were different cache keys. The scan was a single read with no check digit test. FDC Branded has 25 Ascent GTINs but not this one, and search never queried Branded at all, so "ascent" could not be found by text.

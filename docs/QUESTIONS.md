@@ -19,6 +19,8 @@ Engineering adds questions here with: feature ID, the decision needed, and a rec
 13. **Logs before alpha.** Upgrade Vercel to Pro (also owner task 8 and Q6) so runtime logs persist, or add a log drain. The Hobby plan keeps about 30 minutes, which lost the logs for the onboarding bug on 2026-10-16. Blocks alpha.
 14. **Gate production deploys on CI.** In Vercel, Project Settings, Deployment Checks: add the GitHub check "CI / check" as required for Production, so a push to main is promoted only after CI passes. It is a dashboard setting; engineering cannot reach it without a Vercel token, and the alternative (deploying from GitHub Actions) also needs a `VERCEL_TOKEN` secret from you. Until then, a red CI run still deploys.
 
+15. **Google sign in setup (AUTH_SPEC, MVP step 4).** Google Cloud project, consent screen, OAuth client, publish to Production, then the client ID and secret in Supabase (Authentication, Providers, Google) and the app callback in the Supabase redirect URLs. Engineering sent the exact values on 2026-10-18. Optional: the Supabase custom domain `auth.honestreps.app` (about $10 a month) so Google's consent screen shows honestreps.app; until then it shows the supabase.co host. Blocks the step 4 demo of Google sign in only.
+
 ## Engineering questions
 
 Numbering follows the kickoff review (2026-10-12).
@@ -45,6 +47,18 @@ Recommendation: use the first word of `display_name` when set; otherwise show "H
 
 **Q64. [NAV_SPEC 6] More rows that have no screen yet.** Reminders (time and toggle per reminder) is step 4 (F17), Delete account is step 6, Subscription comes with billing, Coach settings with step 5.
 Recommendation: show only rows that work; add each row when its feature ships. Until step 4, reminders are reached through "Add to Home Screen and turn on reminders". Blocks: nothing.
+
+**Q68. [AUTH_SPEC, F1, F16] What "only email, verified flag and name" can mean.** Supabase must keep the Google account id (`sub`) and provider in `auth.identities` to sign the person in again and to link identities. It also copies the picture URL and other claims into the identity data and user metadata on every Google sign in.
+Recommendation: a trigger on insert and update trims the Google identity data and user metadata to email, email_verified, full name and the account id; the picture is never kept, and a test checks it. The privacy policy line becomes "When you use Google, we receive your name and email address only. We keep an account identifier from Google so you can sign in again." Blocks: the privacy line wording only; building continues with the trim.
+
+**Q69. [F12, AUTH_SPEC] Invite delivery and edge cases.** (a) Delivery: the app emails the invite link from Clients through Resend, and the coach can also copy the link to text it. (b) A used link reopened by the person who used it goes to Today; anyone else sees "This invite expired. Ask your coach for a new one." (c) The coach's own account cannot claim an invite. (d) An existing free member who opens an invite becomes a paid client of the coach with the token's billing source; their data stays. (e) The coach can revoke an unused invite.
+Recommendation: all five. Blocks: the invite screen in step 4.
+
+**Q70. [AUTH_SPEC, Design system] "Continue with email" as a button or a field.** AUTH_SPEC lists two buttons. Today the screen shows the email field with Send code.
+Recommendation: keep the email field visible below Continue with Google and label its button "Continue with email", so email users save a tap and the code step is unchanged. Blocks: nothing; built this way unless changed.
+
+**Q71. [PRD section 5] When `signup_completed` fires.** It needs a method (google, email_code, email_link), but the database trigger fires when the email code is requested, before the method is known and before the person proves the address.
+Recommendation: move `signup_completed` to the first completed sign in, written by the server step with its method. Accounts that requested a code and never entered it stop counting as signups. Blocks: nothing; the trigger keeps creating the profile and consent.
 
 ### Resolved by the PM (food lookup, 2026-10-17)
 

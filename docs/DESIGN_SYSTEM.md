@@ -139,6 +139,16 @@ Stacks for drill-ins, bottom sheets for short tasks (log confirm, weight entry, 
 
 ## Screens
 
+### Sign in
+Spec: `docs/AUTH_SPEC.md` (Sean 2026-10-17).
+1. Title: product name (Honest Reps). Line below: "Your coach can see what you log so he can help." (unchanged, shown before any account exists)
+2. Continue with Google: full width secondary button with Google's multicolor "G" mark, per Google's branding rules. Hidden inside the installed iPhone app.
+3. Continue with email: the email field and the primary button (Q70). The button sends the 6-digit code and link; the code step is unchanged.
+4. Inside the installed iPhone app only, under the email button in `caption`, `text-muted`: "Used Google before? Enter the same email and we'll send you a code."
+5. Footer in `caption`: "By continuing you agree to the Terms and Privacy Policy." Terms and Privacy Policy are links with 44pt tap areas.
+
+Errors show in a `role="alert"` line above the buttons: "Sign in was canceled." and "This invite expired. Ask your coach for a new one." Both buttons are 48px tall. Checked at 375px in light and dark mode.
+
 ### Onboarding: food scale step
 "Do you have a food scale?" with two large buttons, Yes and Not yet. Not yet opens one skippable screen with the copy below and a 4 row hand portion guide (palm, fist, cupped hand, thumb), each row an outline icon, the hand portion name and what it measures.
 
@@ -232,6 +242,13 @@ Examples
 | No targets | Set your targets |
 | Hand portion tag | Hand portion |
 | Report and Progress stat label | Weighed |
+| Sign in, coach visibility | Your coach can see what you log so he can help. |
+| Sign in, Google button | Continue with Google |
+| Sign in, email button | Continue with email |
+| Sign in, installed iPhone app | Used Google before? Enter the same email and we'll send you a code. |
+| Sign in, footer | By continuing you agree to the Terms and Privacy Policy. |
+| Sign in, canceled | Sign in was canceled. |
+| Invite expired | This invite expired. Ask your coach for a new one. |
 | Onboarding scale question | Do you have a food scale? |
 | Onboarding, no scale yet | A food scale is the biggest upgrade to your accuracy. Most cost less than lunch. Until then, use hand portions. |
 

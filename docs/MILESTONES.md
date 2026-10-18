@@ -47,13 +47,14 @@ Done when: the parsing eval meets every pass bar in `evals/README.md`, including
 - Food lookup (`docs/FOOD_LOOKUP_SPEC.md`, PM 2026-10-17), before step 4: one bar for search as you type and AI; local FDC index with Foundation, SR Legacy, FNDDS and Branded Foods (Q40 pulled forward); GTIN normalization, check digit and two read confirmation, lookup order with FDC Branded before Open Food Facts; confirm before logging with Not this; label scan (P2 label mode, free) and Enter it yourself as custom foods; My foods in More; coach Food lookups list in Clients; `evals/search.jsonl` (top 3 for 90%, top 5 for 100%). After it ships, Sean scans 25 real products (90% correct on first scan, every miss leads to label scan and an instant next scan)
 - Events: `signup_started`, `signup_completed`, `onboarding_completed`, `pwa_installed`, `push_enabled`, `weight_logged`, `day_switched`, `streak_milestone`, `day_note_saved`, `macro_card_mode_changed`, `progress_viewed`, `progress_week_changed`, `weight_range_changed`, `quick_action_used`, `calendar_expanded`, `search_performed`, `barcode_scanned`, `barcode_mismatch`, `label_scanned`, `custom_food_created`
 
-### 4. Client loop (F5, F12, F16 disclosure)
-- Coach invite by email with the paid flag set to comped or external; the invited client skips any upgrade step
+### 4. Client loop (F1 sign in, F5, F12, F16 disclosure)
+- Sign in (`docs/AUTH_SPEC.md`, Sean 2026-10-17): Continue with Google and Continue with email (code and link); Google hidden inside the installed iPhone app with the "Used Google before?" line; one flow for new and returning users (onboarding or Today); canceled and unverified email handling; automatic identity linking tested in both directions; only email, verified flag and name kept from Google; Terms and Privacy footer. Owner task 15 (Google Cloud and Supabase setup) before the demo
+- Coach invite by email with a single-use token (expires after 14 days or on use) carrying the coach and the paid flag set to comped or external; it binds whatever method or email the client signs in with; the coach sees the email each client signed in with; the invited client skips any upgrade step
 - State disclosure accepted during invited client onboarding
 - Weekly check-in on the seeded schedule with the seeded questions: weight, up to 3 progress photos, then the questions. Overdue after the seeded window.
 - Check-in reminder push (morning of check-in day, one evening follow-up) at the user's local time
 - Coach reply to each check-in; push to the client; the client reads the reply in the app
-- Events: `checkin_started`, `checkin_submitted`, `message_sent` (coach reply)
+- Events: `signup_completed` and `sign_in_completed` with method, `auth_error`, `checkin_started`, `checkin_submitted`, `message_sent` (coach reply)
 
 ### 5. Coach view (F9 subset, F10 subset)
 - Roster sorted by flags: logged under 4 of the last 7 days, check-in overdue, medical flag, unread reply

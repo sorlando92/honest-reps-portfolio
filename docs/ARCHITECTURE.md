@@ -7,7 +7,7 @@
 | App | Next.js App Router, TypeScript strict | Installable PWA (manifest, service worker) |
 | UI | Tailwind CSS, shadcn/ui, Lucide | Theme from DESIGN_SYSTEM.md tokens as CSS variables |
 | Data | Supabase Postgres | RLS on every table |
-| Auth | Supabase email OTP with a 6-digit code and a link in the same email | Roles: member, coach. "Client" is UI language for a member with tier paid, never a stored role. Coach reads all data for users assigned to him (free and paid). No MFA in v1. |
+| Auth | Supabase Auth: email OTP with a 6-digit code and a link in the same email, plus Google OAuth (`docs/AUTH_SPEC.md`) | No passwords. Automatic identity linking on the same verified email stays on. Roles: member, coach. "Client" is UI language for a member with tier paid, never a stored role. Coach reads all data for users assigned to him (free and paid). No MFA in v1. |
 | Files | Supabase Storage | Private buckets, signed URLs |
 | Jobs | Supabase pg_cron + Edge Functions | Runs every 15 minutes. Reminders fire at each user's local time; the check-in window and review prep run on the coach's timezone. Not Vercel cron. |
 | Push | Web Push (VAPID) | iOS requires home screen install |
@@ -26,6 +26,8 @@
 - Email: sending domain `mail.honestreps.app`, verified in Resend (DKIM and SPF records in Cloudflare DNS). Sender `auth@mail.honestreps.app`, sender name "Honest Reps". Supabase Auth uses Resend over SMTP.
 - `.app` is on the HSTS preload list, so every URL must be HTTPS, including previews and redirects. Vercel issues the TLS certificates.
 - Supabase Auth Site URL is `https://app.honestreps.app`; Vercel preview URLs are added to the allowed redirect URLs.
+- Google sign in: Google Cloud project "Honest Reps", OAuth consent screen External with scopes openid, email and profile only, and one OAuth client (Web application) with JavaScript origin `https://app.honestreps.app` and redirect URI `https://<project-ref>.supabase.co/auth/v1/callback`. Supabase does the Google code exchange; the client ID and secret live only in Supabase (Authentication, Providers, Google), never in Vercel or the repo. Supabase then returns to the app at `/auth/callback` (PKCE), which must be in the redirect URLs: `https://app.honestreps.app/auth/callback` for production; previews and local are covered by their wildcards. Local Supabase can read a client from `[auth.external.google]` with env values in `supabase/.env` (gitignored), redirect `http://127.0.0.1:54321/auth/v1/callback`. CI and e2e never call Google; the provider is stubbed.
+- Custom auth domain (Sean decides, AUTH_SPEC): `auth.honestreps.app` (Supabase Pro add-on, about $10 a month) makes Google's consent screen name honestreps.app instead of the supabase.co host. If adopted, the Google redirect URI changes to `https://auth.honestreps.app/auth/v1/callback` and `NEXT_PUBLIC_SUPABASE_URL` to `https://auth.honestreps.app`. Ships with the default host.
 - Hosted auth settings are kept in code, not set by hand: a script uses the Supabase Management API to apply and verify the sign in email templates (from `supabase/templates/`), OTP length 6, OTP expiry 3600 seconds, Site URL, redirect URLs and the SMTP sender fields. Its verify-only mode runs before each release and fails on any drift. The Supabase personal access token lives in the gitignored `.env.hosted`, never in the repo.
 
 ## Module boundaries
@@ -59,6 +61,7 @@ Core
 - `notification_prefs` (user_id, kind, enabled, local_time)
 - `push_subscriptions` (user_id, endpoint, keys)
 - `subscriptions` (user_id, stripe_customer_id, stripe_subscription_id, status)
+- `invites` (id, coach_id, email, billing_source: comped|external, token_hash unique, expires_at, claimed_by, claimed_at, revoked_at, created_at) — coach invites (PRD F12, AUTH_SPEC). Only a SHA-256 hash of the token is stored; the raw token exists only in the link. Expires 14 days after creation or on use. The coach reads and creates their own invites and reads the claimer's sign in email; members cannot read the table. Claiming goes through the server: `claim_invite(token)` (security definer, `private` schema) checks the hash, expiry and use, then sets the claimer's `coach_id`, `tier = paid` and `billing_source` and marks the invite claimed, in one transaction.
 - `consents` (user_id, kind: terms|privacy|disclaimer|coach_visibility|mo_disclosure, version, accepted_at, email_hash). On account deletion `user_id` is set to null and `email_hash` is filled; rows are purged 3 years after deletion.
 - `day_notes` (user_id, local_date, body, updated_at; unique on user_id plus local_date) — one note per local day on Today (docs/SCREENS_V2.md). Owner reads and writes; the assigned coach reads only.
 - `events` (id, user_id, name, props jsonb, created_at) — product analytics only (PRD section 5). `user_id` is set to null on account deletion.
@@ -110,7 +113,11 @@ Store everything in metric; convert at the edge.
 6. Sunday (review day): the review queue is open for the coach.
 7. On send: save final reply, generate P4 headline, create `reports` row, push notify client.
 
-**Account deletion (PRD F16):** cancel any active Stripe subscription immediately → fill `consents.email_hash` and null their `user_id` → delete all storage objects → delete the auth user, which cascades every user-owned row; `events.user_id` is set to null. A daily job purges consents 3 years after deletion.
+**Sign in (AUTH_SPEC):** Continue with Google calls `signInWithOAuth` (provider google, PKCE, `redirectTo` `/auth/callback`), hidden when the page runs as an installed iPhone app (`navigator.standalone` or `display-mode: standalone` on iOS). Continue with email sends the OTP email as before; the link lands on `/auth/confirm` and the typed code is verified on the server. All three paths end in one server step that records `sign_in_completed` (and `signup_completed` the first time, Q71) with the method, claims a pending invite, and redirects to onboarding or Today. A canceled consent or provider error returns to `/sign-in?error=canceled|provider` and records `auth_error` (service role; no user id). A `before_user_created` auth hook refuses a Google sign-up whose email is not verified, and the sign in screen asks for the email code instead. Google identity data and user metadata are trimmed by a trigger to email, email_verified, full name and the provider account id (Q68); the full name fills an empty `profiles.display_name`. Supabase links identities automatically on the same verified email, so Google first then the email code (and the reverse) open the same user.
+
+**Invite claim (PRD F12):** the coach creates an invite (email, comped or external); the server stores the token hash and emails the link `/invite/{token}` through Resend (Q69). Opening the link checks the token, keeps it in an httpOnly cookie until it expires and shows sign in; the server step after any sign in calls `claim_invite`, then clears the cookie. The binding comes from the token, not the email. Expired or used: "This invite expired. Ask your coach for a new one."
+
+**Account deletion (PRD F16):** cancel any active Stripe subscription immediately → fill `consents.email_hash` and null their `user_id` → delete all storage objects → delete the auth user, which cascades every user-owned row and the linked identities (`auth.identities`, Google included); `events.user_id` is set to null. A daily job purges consents 3 years after deletion.
 
 **Downgrade or cancel (PRD F11):** the Stripe webhook sets `tier = free`. No data is deleted. Paid features lock in RLS and UI; past reports and the message thread stay readable but read only; the latest coach-set target stays and becomes user-editable.
 
@@ -138,6 +145,6 @@ Store everything in metric; convert at the edge.
 
 - Vitest for units, including target math, trend smoothing, adherence, and flag rules.
 - RLS tests for every table using two users and the coach.
-- Playwright e2e at 375px: onboarding, text log, barcode fallback, offline log and sync, check-in, review send, upgrade with Stripe test mode.
+- Playwright e2e at 375px: sign in (Google stubbed; canceled; installed iPhone app; identity linking both ways; invite claimed with a different email), onboarding, text log, barcode fallback, offline log and sync, check-in, review send, upgrade with Stripe test mode.
 - AI calls mocked in tests with recorded fixtures; a separate `pnpm eval:parsing` runs the parsing eval set in `evals/parsing.jsonl`.
 - `pnpm eval:search` runs `evals/search.jsonl` (40 queries) against the local food index. Pass: the expected food in the top 3 for 90% of queries and the top 5 for all of them.
