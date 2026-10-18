@@ -1,6 +1,7 @@
 import "server-only"
 import { cache } from "react"
 import { redirect } from "next/navigation"
+import * as Sentry from "@sentry/nextjs"
 import { createClient } from "@/lib/supabase/server"
 
 // A "client" is a member with tier paid (QUESTIONS.md Q3), not a role.
@@ -35,6 +36,9 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser> => {
     .single()
 
   if (!profile) redirect("/sign-in")
+
+  // Server errors in this request carry the user id only (lib/monitoring).
+  Sentry.setUser({ id: claims.sub })
 
   return {
     id: claims.sub,

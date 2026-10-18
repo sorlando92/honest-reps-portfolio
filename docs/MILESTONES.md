@@ -47,14 +47,14 @@ Done when: the parsing eval meets every pass bar in `evals/README.md`, including
 - Food lookup (`docs/FOOD_LOOKUP_SPEC.md`, PM 2026-10-17), before step 4: one bar for search as you type and AI; local FDC index with Foundation, SR Legacy, FNDDS and Branded Foods (Q40 pulled forward); GTIN normalization, check digit and two read confirmation, lookup order with FDC Branded before Open Food Facts; confirm before logging with Not this; label scan (P2 label mode, free) and Enter it yourself as custom foods; My foods in More; coach Food lookups list in Clients; `evals/search.jsonl` (top 3 for 90%, top 5 for 100%). After it ships, Sean scans 25 real products (90% correct on first scan, every miss leads to label scan and an instant next scan)
 - Events: `signup_started`, `signup_completed`, `onboarding_completed`, `pwa_installed`, `push_enabled`, `weight_logged`, `day_switched`, `streak_milestone`, `day_note_saved`, `macro_card_mode_changed`, `progress_viewed`, `progress_week_changed`, `weight_range_changed`, `quick_action_used`, `calendar_expanded`, `search_performed`, `barcode_scanned`, `barcode_mismatch`, `label_scanned`, `custom_food_created`
 
-### 4. Client loop (F1 sign in, F5, F12, F16 disclosure)
-- Sign in (`docs/AUTH_SPEC.md`, Sean 2026-10-17): Continue with Google and Continue with email (code and link); Google hidden inside the installed iPhone app with the "Used Google before?" line; one flow for new and returning users (onboarding or Today); canceled and unverified email handling; automatic identity linking tested in both directions; only email, verified flag and name kept from Google; Terms and Privacy footer. Owner task 15 (Google Cloud and Supabase setup) before the demo
+### 4. Client loop (F5, F12, F16 disclosure)
+- Sign in stays the email code and link only (PM 2026-10-18); Google sign in (AUTH_SPEC) is post-MVP
 - Coach invite by email with a single-use token (expires after 14 days or on use) carrying the coach and the paid flag set to comped or external; it binds whatever method or email the client signs in with; the coach sees the email each client signed in with; the invited client skips any upgrade step
 - State disclosure accepted during invited client onboarding
 - Weekly check-in on the seeded schedule with the seeded questions: weight, up to 3 progress photos, then the questions. Overdue after the seeded window.
 - Check-in reminder push (morning of check-in day, one evening follow-up) at the user's local time
 - Coach reply to each check-in; push to the client; the client reads the reply in the app
-- Events: `signup_completed` and `sign_in_completed` with method, `auth_error`, `checkin_started`, `checkin_submitted`, `message_sent` (coach reply)
+- Events: `checkin_started`, `checkin_submitted`, `message_sent` (coach reply)
 
 ### 5. Coach view (F9 subset, F10 subset)
 - Roster sorted by flags: logged under 4 of the last 7 days, check-in overdue, medical flag, unread reply
@@ -66,13 +66,15 @@ Done when: the parsing eval meets every pass bar in `evals/README.md`, including
 ### 6. Trust (F16)
 - Privacy policy and terms templates for Sean's approval; the privacy policy states the Q16 deletion terms exactly
 - Self-serve account deletion per Q16
-- Error monitoring (PM 2026-10-16): Sentry free tier for client and server errors, tagged with the release, source maps uploaded at build. Payloads carry the user id only: no email, no food, weight, health or note data. Sean gets an email alert on each new error type.
+- Error monitoring (PM 2026-10-16; pulled forward and built 2026-10-18, live once owner task 12 is done): Sentry free tier for client and server errors, tagged with the release, source maps uploaded at build. Payloads carry the user id only: no email, no food, weight, health or note data. Sean gets an email alert on each new error type.
 - Logs kept at least 7 days before alpha: Vercel Pro (already required before clients, Q6) or a log drain
+- Backups (PM 2026-10-18, built early): weekly GitHub Action dumps hosted roles, schema and data (FDC reference tables left out), encrypted, kept 30 days as a private artifact; restore steps in ARCHITECTURE "Backups and restore". Live once owner task 16 is done
 
-**MVP exit:** Sean plus at least 3 clients log food for 7 days, each completes one check-in, and Sean reviews all of them in the app with no Google Form.
+**MVP exit:** Sean plus at least 3 clients log food for 7 days, each completes one check-in, and Sean reviews all of them in the app with no Google Form. Free testing runs on Vercel Hobby and Supabase Free (PM 2026-10-18); **both are upgraded (Vercel Pro, Supabase Pro) before any paying client uses the app.**
 
 ## Post-MVP (before the gym beta)
 
+- Google sign in (`docs/AUTH_SPEC.md`, paused by the PM 2026-10-18): Continue with Google beside the email code, hidden in the installed iPhone app; identity linking both ways; only email, verified flag and name kept; `signup_completed` and `sign_in_completed` with method, `auth_error`; owner task 15. Docs already describe it (PRD F1, ARCHITECTURE, DESIGN_SYSTEM "Sign in")
 - AI review prep (P3) and drafted replies, review queue
 - Coach settings screen, including AI settings (F13, F14)
 - Habits (F6)

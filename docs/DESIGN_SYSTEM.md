@@ -140,7 +140,7 @@ Stacks for drill-ins, bottom sheets for short tasks (log confirm, weight entry, 
 ## Screens
 
 ### Sign in
-Spec: `docs/AUTH_SPEC.md` (Sean 2026-10-17).
+Spec: `docs/AUTH_SPEC.md` (Sean 2026-10-17). Post-MVP (PM 2026-10-18): until Google ships the screen keeps the email field and Send code.
 1. Title: product name (Honest Reps). Line below: "Your coach can see what you log so he can help." (unchanged, shown before any account exists)
 2. Continue with Google: full width secondary button with Google's multicolor "G" mark, per Google's branding rules. Hidden inside the installed iPhone app.
 3. Continue with email: the email field and the primary button (Q70). The button sends the 6-digit code and link; the code step is unchanged.

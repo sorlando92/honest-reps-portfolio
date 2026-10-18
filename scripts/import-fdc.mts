@@ -292,11 +292,17 @@ async function importBranded(dir: { path: string; name: string }): Promise<numbe
     if (error) throw new Error(`${release}: ${error.message}`)
     if ((i / BRANDED_BATCH) % 50 === 0) console.log(`${release}: ${i + BRANDED_BATCH > rows.length ? rows.length : i + BRANDED_BATCH} of ${rows.length}`)
   }
-  // Products no longer in the release (discontinued, withdrawn) go.
-  const { error, count } = await admin.from("fdc_branded").delete({ count: "exact" }).neq("release", release)
-  if (error) throw new Error(`${release}: removing old products: ${error.message}`)
-  console.log(`${release}: ${rows.length} products (${byGtin.size - rows.length} skipped without calories, ${count ?? 0} old products removed)`)
-  await recordRun("Branded", release, { added, changed, removed: count ?? 0, total: rows.length })
+  // Products no longer in the release (discontinued, withdrawn) go. Deleted
+  // by GTIN in batches: one delete over the whole table hits the hosted
+  // statement timeout.
+  const current = new Set(rows.map((r) => r.gtin))
+  const gone = [...before.keys()].filter((g) => !current.has(g))
+  for (let i = 0; i < gone.length; i += BATCH) {
+    const { error } = await admin.from("fdc_branded").delete().in("gtin", gone.slice(i, i + BATCH))
+    if (error) throw new Error(`${release}: removing old products: ${error.message}`)
+  }
+  console.log(`${release}: ${rows.length} products (${byGtin.size - rows.length} skipped without calories, ${gone.length} old products removed)`)
+  await recordRun("Branded", release, { added, changed, removed: gone.length, total: rows.length })
   return rows.length
 }
 

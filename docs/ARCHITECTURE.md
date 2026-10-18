@@ -7,7 +7,7 @@
 | App | Next.js App Router, TypeScript strict | Installable PWA (manifest, service worker) |
 | UI | Tailwind CSS, shadcn/ui, Lucide | Theme from DESIGN_SYSTEM.md tokens as CSS variables |
 | Data | Supabase Postgres | RLS on every table |
-| Auth | Supabase Auth: email OTP with a 6-digit code and a link in the same email, plus Google OAuth (`docs/AUTH_SPEC.md`) | No passwords. Automatic identity linking on the same verified email stays on. Roles: member, coach. "Client" is UI language for a member with tier paid, never a stored role. Coach reads all data for users assigned to him (free and paid). No MFA in v1. |
+| Auth | Supabase Auth: email OTP with a 6-digit code and a link in the same email; Google OAuth post-MVP (`docs/AUTH_SPEC.md`, paused 2026-10-18) | No passwords. Automatic identity linking on the same verified email stays on. Roles: member, coach. "Client" is UI language for a member with tier paid, never a stored role. Coach reads all data for users assigned to him (free and paid). No MFA in v1. |
 | Files | Supabase Storage | Private buckets, signed URLs |
 | Jobs | Supabase pg_cron + Edge Functions | Runs every 15 minutes. Reminders fire at each user's local time; the check-in window and review prep run on the coach's timezone. Not Vercel cron. |
 | Push | Web Push (VAPID) | iOS requires home screen install |
@@ -17,6 +17,8 @@
 | Billing | Stripe Checkout + Billing + webhooks | Stripe is the source of truth for price. `coach_settings` stores only `stripe_price_id`; the display amount is read from Stripe and cached. |
 | Analytics | `events` table (first party) | Product analytics only; feeds the metrics page. LLM call logs go to `ai_calls`. A database check limits names to the PRD list. Server-only events are written with the service role. Events before sign in are rate limited per IP (hashed, never stored raw). |
 | Hosting | Vercel (paid plan before any real users; the free plan does not allow commercial use) | Preview deploy per PR. Production at `app.honestreps.app` (see Domains and email). |
+| Monitoring | Sentry free tier (`@sentry/nextjs`) | Client, server and edge errors only: no tracing, no Session Replay. Release from the Vercel commit; source maps uploaded and removed from the build when `SENTRY_AUTH_TOKEN` is set. `lib/monitoring/scrub.ts` keeps the user id only and drops request bodies, headers, cookies, query strings, console and UI breadcrumbs, and Postgres row values. Off without a DSN (local, CI). |
+| Backups | Weekly GitHub Action (`.github/workflows/backup.yml`) | Supabase Free keeps none. See "Backups and restore". |
 | Email | Resend as Supabase Auth SMTP | Sender `auth@mail.honestreps.app`, name "Honest Reps". Required: Supabase only allows custom email templates with custom SMTP. |
 
 ## Domains and email
@@ -137,9 +139,22 @@ Store everything in metric; convert at the edge.
 - Fat: 30% of calories (lose fat, maintain) or 25% (build muscle, performance), floor 0.3 g per lb of goal weight. Carbs fill the remainder, minimum 50 g; fat gives way toward its floor first, then calories rise to fit and `targets.note` tells the coach (Q54). Keys: `fat_pct_of_calories`, `fat_min_g_per_lb_goal_weight`, `carbs_min_g`.
 - Weight trend: EWMA with alpha 0.1 (`app_config.weight_trend`).
 
+## Backups and restore
+
+Monday 09:00 UTC, and on demand from Actions, `backup.yml` dumps the hosted database with the Supabase CLI: `roles.sql`, `schema.sql` and `data.sql` (COPY format, auth and storage metadata included; `fdc_foods`, `fdc_branded` and `food_words` left out because the FDC import rebuilds them). The three files are tarred, encrypted with AES-256 (`gpg --symmetric`, passphrase in the `BACKUP_PASSPHRASE` secret) and uploaded as the artifact `honest-reps-YYYY-MM-DD`, kept 30 days. Only repository collaborators can download artifacts. Not covered: Storage files (check-in photos from step 4) and dashboard settings (auth templates, SMTP, providers, URLs), which ARCHITECTURE "Domains and email" lists.
+
+Restore into a new Supabase project (or the same one after a reset):
+1. Download: `gh run download <run id> -n honest-reps-YYYY-MM-DD` (the run id is on the Actions page for "Backup").
+2. Decrypt and unpack: `gpg -d honest-reps-YYYY-MM-DD.tar.gz.gpg | tar -xz` (asks for the passphrase).
+3. Restore, with the target project's session pooler URL: `psql "$TARGET_DB_URL" --single-transaction -v ON_ERROR_STOP=1 -f roles.sql -f schema.sql -c 'SET session_replication_role = replica' -f data.sql`. `session_replication_role = replica` keeps triggers (signup, `log_count`, events) from firing on restored rows.
+4. Reload the FDC reference data: `node --env-file=<target env> scripts/fdc-refresh.mts` (about 20 minutes).
+5. Reapply the dashboard settings: email templates and SMTP, Site URL and redirect URLs, OTP length 6 and expiry 3600.
+6. If it is a new project, point Vercel's `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` and `SUPABASE_SERVICE_ROLE_KEY` at it and redeploy.
+7. Check: sign in as the coach, open Today and Progress for a real account, and compare row counts of `profiles`, `food_entries` and `weights` with the old project.
+
 ## Environment variables
 
-`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL`, `USDA_API_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT`, `APP_URL`, `COACH_EMAIL` (the account `pnpm db:seed` makes the coach).
+`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL`, `USDA_API_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT`, `APP_URL`, `COACH_EMAIL` (the account `pnpm db:seed` makes the coach), `NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_AUTH_TOKEN`, `SENTRY_ORG` and `SENTRY_PROJECT` (Vercel Production and Preview only). GitHub secrets: `HOSTED_SUPABASE_URL`, `HOSTED_SUPABASE_SERVICE_ROLE_KEY` (FDC refresh), `HOSTED_DB_URL`, `BACKUP_PASSPHRASE` (backup).
 
 ## Testing
 

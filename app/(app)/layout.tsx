@@ -2,6 +2,7 @@ import { Suspense } from "react"
 import { redirect } from "next/navigation"
 import { getCurrentUser } from "@/core/auth/current-user"
 import { createClient } from "@/lib/supabase/server"
+import { MonitoringUser } from "@/components/monitoring-user"
 import { KeyboardWatcher } from "@/components/nav/keyboard-watcher"
 import { TabBar } from "@/components/nav/tab-bar"
 import { TimezoneSync } from "@/core/time/timezone-sync"
@@ -32,6 +33,7 @@ async function RoleAwareTabBar() {
     <>
       <TabBar isCoach={user.role === "coach"} mealWindows={mealWindows(windows?.value)} />
       <TimezoneSync profileTimezone={user.timezone} />
+      <MonitoringUser id={user.id} />
     </>
   )
 }
