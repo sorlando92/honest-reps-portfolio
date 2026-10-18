@@ -360,6 +360,47 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
 - More (was Me; `/me` redirects): Goals (Targets), App (Units, Add to Home Screen and turn on reminders, Food scale), Account (Name per Q63, signed in email, Privacy and data, Terms, About with Open Food Facts, Sign out). Reminders times, Subscription, Delete account and Coach settings appear when they ship (Q64).
 - Tests: e2e at 375px light and dark for tab order, labels and selection, Progress greeting and avatar, More name, /me redirect, week slide without changing the day, never past the current week, tap to select, month calendar select and collapse, tap outside, compact row swap and back, quick actions on a past day (copy at the anchor, weight sheet, day note focus), bars hidden while typing, Search food from Progress, log bar from Progress to Today, events; existing specs updated for tabs, the band and the log bar. The "+" button exposes `data-hydrated` so tests wait until a tap can work.
 
+### 2026-10-18: MVP step 4, client loop (branch `step-4`, not deployed)
+
+- Migration 20261018000001_client_loop (additive; applied to hosted 2026-10-18 under the standing rule). New tables: `invites`, `checkin_questions`, `checkins`, `checkin_photos`, `messages`, `notifications_sent`; new column `coach_settings.disclosure_title`; private `checkin-photos` bucket (no app-user storage policies). Functions: `claim_invite`, `checkin_state`, `due_checkin_reminders`, `private.checkin_window` and `private.run_checkin_reminders`. pg_cron job `checkin-reminders` every 15 minutes, which does nothing until the Vault secrets `app_url` and `jobs_secret` exist. Seed (local and hosted): the Q72 check-in steps, the Q73 disclosure, and `consent_versions.mo_disclosure` = draft-2026-10.
+- Invites (F12, Q69, Q75): Clients has Invite a client (email, optional first name, comped or billed outside the app). The invite email goes through the Resend API with reply-to the coach. The link is shown once with Copy link (Q79). Pending invites have Resend (new token; the old one dies) and Revoke; accepted invites show "Joined as {email}". `/invite/{token}`:
+  - Signed out: the token waits in an httpOnly cookie, and the next sign in claims it, whatever the email.
+  - Signed in with the invited email: claimed at once.
+  - Signed in as someone else: "This invite was sent to another account. Sign out to accept it." with Sign out.
+  - Used: "This invite was already used." (the person who used it goes to Today). Expired or revoked: "This invite expired. Ask your coach for a new one."
+  - Claiming sets the coach, `tier = paid` and the billing source. Existing accounts skip onboarding.
+- State disclosure (F16, Q73): the app layout sends a paid client without the current `mo_disclosure` consent to `/disclosure`. The checkbox is required, and the consent is stored with a server timestamp.
+- Weekly check-in (F5, Q72): `/checkin`, one question per screen, with progress dots and focus moved to each question.
+  - Weight is prefilled from today's weigh-in, else the trend, in the user's units.
+  - Up to 3 photos, resized on the phone and uploaded through the server, removable before submit; Skip when there are none.
+  - 1 to 5 scales with labels, text steps, then Submit.
+  - On time until the overdue time, late until the review day starts (Q77).
+  - Today card while open and unsent ("Overdue. Still open through {weekday}." when late).
+  - Events: `checkin_started`, and `checkin_submitted` with `on_time`.
+- Coach reply (F5, Q74):
+  - Clients lists this week's check-ins, unreplied first. The detail screen shows weight, answers with scale labels, photos (1 hour signed URLs) and the reply composer.
+  - A reply is saved as a `messages` row, pushes "{coach} replied to your check-in" with its first 80 characters, and fires `message_sent` (role coach). Submitting pushes "New check-in" to the coach.
+  - The client sees "Your coach replied." on Today and reads replies on the Coach tab, which marks them read.
+- Reminders (F5, F17, Q74, Q76): `POST /api/jobs/checkin-reminders` (Bearer `JOBS_SECRET`) sends the morning reminder and evening follow-up at the client's local times, once each per week; only the follow-up goes if both are due. Push sending lives in `core/notifications/push.ts`, which removes dead subscriptions.
+- Ops (PM 2026-10-18): the FDC import reruns the word rebuild over `HOSTED_DB_URL` when the API path hits the statement timeout; `fdc-refresh.yml` passes the secret.
+- Fixes found while testing:
+  - Route handler redirects built from `request.url` or `nextUrl` named `localhost`, which lost the session behind 127.0.0.1. The invite routes now redirect with a relative Location.
+  - Controlled forms typed into before hydration never submitted. The reply and disclosure forms now use form actions.
+  - `/clients/checkins/[id]` could not prerender under the tab bar, so the detail screen is `/clients/checkin?id=`.
+- Tests:
+  - RLS and database (`tests/rls/client-loop.test.ts`): invites visibility and writes; `claim_invite` with another email, yours, used, expired, revoked, invalid, coach and signed out; questions, check-ins, photos and messages read rules; no direct writes; read_at only; notifications_sent and the bucket server only; the window in Chicago (open, overdue, close); state for coach and outsiders; reminders due at New York local times, once, stopped by submission; service role only.
+  - Unit: submission validation, push and email copy, tokens.
+  - e2e at 375px light and dark (`e2e/client-loop.spec.ts`): invite to sign in with a different email to claim, disclosure, check-in with photo, scale and text, events, coach reply, client reads it; used, expired, resent, revoked and other-account links; the job refuses without the secret. axe and 44pt checks on each new screen.
+  - Full suite: 307 unit and RLS tests, 98 e2e.
+- Not done:
+  - Restore test: blocked; the repository has no secrets yet (owner task 16), so no backup has run.
+  - Preview builds: blocked on owner task 17, so there is no step 4 PR yet.
+  - Invite emails need `RESEND_API_KEY` (owner task 18).
+  - `JOBS_SECRET` and the Vault secrets are set at deploy.
+  - The hosted coach has no display name, so pushes and the invite email say "Your coach" until Sean sets Name in More.
+  - Coach roster flags and the client week view are step 5.
+  - Photo deletion after submit is step 6 with account deletion.
+
 ### 2026-10-18: step 3 shipped; Sentry, backups, hosted Branded Foods
 
 - Step 3 approved by the PM. PR #1 merged to main and deployed to production. Hosted already had every migration through 20261017000001_food_lookup.

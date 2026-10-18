@@ -41,7 +41,8 @@ const APP_CONFIG: Record<string, unknown> = {
   target_defaults: TARGET_DEFAULTS,
   product_name: "Honest Reps",
   // Q55: legal documents stay "draft-2026-10" until Sean approves the final text.
-  consent_versions: { coach_visibility: "2026-10-12", terms: "draft-2026-10", privacy: "draft-2026-10", disclaimer: "draft-2026-10" },
+  // Q73: the state disclosure is a draft too until Sean verifies the statute.
+  consent_versions: { coach_visibility: "2026-10-12", terms: "draft-2026-10", privacy: "draft-2026-10", disclaimer: "draft-2026-10", mo_disclosure: "draft-2026-10" },
   adherence: { calorie_tolerance_pct: 10, protein_hit_pct: 90 },
   weight_trend: { method: "ewma", alpha: 0.1 },
   // QUESTIONS.md Q11: food match score below this flags the item.
@@ -65,6 +66,29 @@ const COACH_SETTINGS = {
   reminder_defaults: { evening_nudge: "19:00", checkin_reminder: "08:00", checkin_followup: "19:00" },
 }
 
+// PM 2026-10-18 (Q73). Seeded as version draft-2026-10.
+const DISCLOSURE = {
+  title: "About your coaching",
+  body: [
+    "Sean Orlando provides general nutrition coaching. This is not medical nutrition therapy.",
+    "Sean is not a dietitian licensed by the state.",
+    "The information and advice you receive may be considered alternative care by licensed practitioners in the state.",
+    "Qualifications: Certified Strength and Conditioning Specialist (CSCS), Certified Special Population Specialist (CSPS), NSCA Certified Personal Trainer (NSCA-CPT), CrossFit Level 3 Trainer (CF-L3), BA in Mathematics and BA in Economics. Head coach since 2019 and co-owner of a CrossFit gym. Coaching and personal training since 2012.",
+    "If you have a medical condition, talk with your doctor before changing how you eat.",
+  ].join("\n\n"),
+}
+
+// PM 2026-10-18 (Q72), with the Q18 report tags.
+const CHECKIN_QUESTIONS = [
+  { type: "weight", prompt: "This week's weight" },
+  { type: "photos", prompt: "Progress photos. Optional. Front, side and back in the same spot and light each week.", optional: true },
+  { type: "scale", prompt: "Energy this week", low_label: "Drained", high_label: "Strong", report_tag: "energy" },
+  { type: "scale", prompt: "Sleep quality", low_label: "Poor", high_label: "Great", report_tag: "sleep" },
+  { type: "scale", prompt: "Hunger", low_label: "Rarely hungry", high_label: "Always hungry", report_tag: "hunger" },
+  { type: "text", prompt: "How did training feel? Any wins or rough days?", report_tag: "performance" },
+  { type: "text", prompt: "Anything you want me to know?", optional: true },
+]
+
 async function main() {
   for (const [key, value] of Object.entries(APP_CONFIG)) {
     check(await admin.from("app_config").upsert({ key, value }, { onConflict: "key", ignoreDuplicates: true }))
@@ -81,6 +105,22 @@ async function main() {
   await addMissingKeys("coach_settings", "coach_id", coachId, "target_defaults", COACH_SETTINGS.target_defaults)
   check(await admin.from("app_config").upsert({ key: "default_coach_id", value: coachId }, { onConflict: "key" }))
   console.log(`Coach: ${coachEmail} (${coachId})`)
+
+  // State disclosure (PRD F16, Q73); never overwrite coach edits.
+  check(
+    await admin
+      .from("coach_settings")
+      .update({ disclosure_title: DISCLOSURE.title, disclosure_text: DISCLOSURE.body })
+      .eq("coach_id", coachId)
+      .is("disclosure_text", null)
+  )
+
+  // Check-in steps (PRD F5, Q72), only when the coach has none.
+  const { count: questionCount } = await admin.from("checkin_questions").select("id", { count: "exact", head: true }).eq("coach_id", coachId)
+  if (!questionCount) {
+    check(await admin.from("checkin_questions").insert(CHECKIN_QUESTIONS.map((q, i) => ({ coach_id: coachId, position: i + 1, low_label: null, high_label: null, report_tag: null, ...q, optional: q.optional ?? false }))))
+    console.log(`Check-in questions: ${CHECKIN_QUESTIONS.length}`)
+  }
 
   // Nutrition module settings (QUESTIONS.md Q33); never overwrite coach edits.
   check(

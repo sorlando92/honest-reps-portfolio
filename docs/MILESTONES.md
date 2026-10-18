@@ -48,6 +48,7 @@ Done when: the parsing eval meets every pass bar in `evals/README.md`, including
 - Events: `signup_started`, `signup_completed`, `onboarding_completed`, `pwa_installed`, `push_enabled`, `weight_logged`, `day_switched`, `streak_milestone`, `day_note_saved`, `macro_card_mode_changed`, `progress_viewed`, `progress_week_changed`, `weight_range_changed`, `quick_action_used`, `calendar_expanded`, `search_performed`, `barcode_scanned`, `barcode_mismatch`, `label_scanned`, `custom_food_created`
 
 ### 4. Client loop (F5, F12, F16 disclosure)
+Built 2026-10-18 on branch `step-4` (CHANGELOG). Owner tasks 17 and 18; Q76 to Q79 open.
 - Sign in stays the email code and link only (PM 2026-10-18); Google sign in (AUTH_SPEC) is post-MVP
 - Coach invite by email with a single-use token (expires after 14 days or on use) carrying the coach and the paid flag set to comped or external; it binds whatever method or email the client signs in with; the coach sees the email each client signed in with; the invited client skips any upgrade step
 - State disclosure accepted during invited client onboarding

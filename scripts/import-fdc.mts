@@ -18,8 +18,11 @@
 //   pnpm db:import-fdc --dir <folder>                      local (.env.local)
 //   node --conditions=react-server --env-file=.env.hosted scripts/import-fdc.mts --dir <folder>   hosted
 //
-// Needs NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.
+// Needs NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY. Optional
+// HOSTED_DB_URL: when the word rebuild times out through the API (hosted has
+// a statement timeout), it reruns over a direct connection (PM 2026-10-18).
 
+import { execFileSync } from "node:child_process"
 import { appendFileSync, createReadStream, readdirSync, statSync } from "node:fs"
 import { join } from "node:path"
 import { createInterface } from "node:readline"
@@ -142,10 +145,23 @@ async function main() {
   } else console.log(`Branded: no ${BRANDED_PREFIX} folder, skipped`)
   if (!found) throw new Error(`No FDC release folders in ${root}`)
 
-  const { data: words, error } = await admin.rpc("refresh_food_words")
-  if (error) throw new Error(`refresh_food_words: ${error.message}`)
+  const words = await refreshWords()
   console.log(`Imported ${total} foods into ${new URL(url).host}; ${words} search words.`)
   writeSummary()
+}
+
+/** Rebuilds food_words through the API, else over HOSTED_DB_URL when the API times out. */
+async function refreshWords(): Promise<string> {
+  const { data, error } = await admin.rpc("refresh_food_words")
+  if (!error) return String(data)
+  const dbUrl = process.env.HOSTED_DB_URL
+  if (!dbUrl || !/statement timeout/i.test(error.message)) throw new Error(`refresh_food_words: ${error.message}`)
+  console.log("refresh_food_words timed out through the API; rerunning over HOSTED_DB_URL")
+  const out = execFileSync("pnpm", ["exec", "supabase", "db", "query", "--db-url", dbUrl, "select public.refresh_food_words() as words"], {
+    encoding: "utf8",
+    shell: process.platform === "win32",
+  })
+  return /"words":\s*(\d+)/.exec(out)?.[1] ?? "unknown"
 }
 
 /** JSON with sorted keys, so stored jsonb and fresh rows compare equal. */

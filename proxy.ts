@@ -3,7 +3,10 @@ import { createServerClient } from "@supabase/ssr"
 import { publicEnv } from "@/lib/env"
 
 // Routes anyone can open without a session.
-const PUBLIC_PATHS = ["/sign-in", "/auth/confirm", "/api/events", "/offline", "/legal"]
+const PUBLIC_PATHS = ["/sign-in", "/auth/confirm", "/api/events", "/offline", "/legal", "/invite", "/api/jobs"]
+
+// core/invites/token.ts INVITE_COOKIE; the proxy keeps its imports minimal.
+const INVITE_COOKIE = "hr_invite"
 
 function isPublic(pathname: string) {
   return PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`))
@@ -34,6 +37,10 @@ export async function proxy(request: NextRequest) {
 
   if (!signedIn && !isPublic(pathname)) {
     return redirectKeepingCookies(request, response, "/sign-in")
+  }
+  // An invite opened while signed out binds whoever signs in next (Q69).
+  if (signedIn && request.cookies.has(INVITE_COOKIE) && !pathname.startsWith("/invite") && !pathname.startsWith("/api/")) {
+    return redirectKeepingCookies(request, response, "/invite/accept")
   }
   if (signedIn && pathname === "/sign-in") {
     return redirectKeepingCookies(request, response, "/today")

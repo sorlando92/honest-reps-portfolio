@@ -2,6 +2,7 @@ import { Suspense } from "react"
 import type { Metadata } from "next"
 import { cn } from "cn"
 import { getCurrentUser } from "@/core/auth/current-user"
+import { CheckinCard } from "@/core/checkins/ui/checkin-card"
 import { addDays, localDate, localToday } from "@/core/time/local-day"
 import { createClient } from "@/lib/supabase/server"
 import { EmptyState } from "@/components/screen"
@@ -111,6 +112,7 @@ async function Journal({ searchParams }: { searchParams: PageProps<"/today">["se
         date={date}
         today={today}
       />
+      {isToday && <CheckinCard supabase={supabase} userId={user.id} timezone={timezone} />}
       <ul aria-label={isToday ? "Today's entries" : "Entries"} className="flex flex-col gap-3">
         {MEALS.map((meal) => {
           const mealEntries = entries.filter((e) => e.meal === meal)

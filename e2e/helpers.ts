@@ -36,7 +36,7 @@ export async function signInWithCode(page: Page, email: string, { onboarded = tr
   await page.waitForURL("**/today")
 }
 
-async function markOnboarded(email: string) {
+export async function markOnboarded(email: string) {
   // Local databases collect thousands of test accounts: look through every page.
   let user: { id: string } | undefined
   for (let page = 1; !user; page++) {

@@ -1,6 +1,7 @@
 import { Suspense } from "react"
 import { redirect } from "next/navigation"
 import { getCurrentUser } from "@/core/auth/current-user"
+import { needsDisclosure } from "@/core/compliance/disclosure"
 import { createClient } from "@/lib/supabase/server"
 import { MonitoringUser } from "@/components/monitoring-user"
 import { KeyboardWatcher } from "@/components/nav/keyboard-watcher"
@@ -28,6 +29,8 @@ async function RoleAwareTabBar() {
   // PRD F1: nobody uses the app before onboarding sets their targets.
   if (!user.onboardingCompleted) redirect("/onboarding")
   const supabase = await createClient()
+  // PRD F16: invited paid clients accept the state disclosure before coaching.
+  if (await needsDisclosure(supabase, user)) redirect("/disclosure")
   const { data: windows } = await supabase.from("app_config").select("value").eq("key", "meal_windows").maybeSingle()
   return (
     <>

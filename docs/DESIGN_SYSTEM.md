@@ -181,7 +181,10 @@ Spec: `docs/PROGRESS_SPEC.md` on top of `docs/SCREENS_V2.md` "Progress (dashboar
 Over target, a bar rises above the dashed target line with no red or warning color.
 
 ### Check-in (paid)
-One question per screen, progress dots at top, big tap targets for 1 to 5 scales, photo step with skip, short text last, Submit. Target completion under 60 seconds.
+One question per screen, progress dots at top, big tap targets for 1 to 5 scales, photo step with skip, short text last, Submit. Target completion under 60 seconds. The steps and their copy come from `checkin_questions` (Q72). Scale buttons are 56px tall with the low and high labels under 1 and 5. Today shows the check-in card under the macro card while it is open and unsent.
+
+### State disclosure (invited paid clients)
+Title, the coach's disclosure text, the checkbox "I have read and understand this." (44pt) and "Accept and continue" (Q73).
 
 ### Weekly report (paid)
 Single scroll: headline sentence, coach note, 4 to 6 stat cards (including "Weighed"), trend chart.
@@ -219,6 +222,11 @@ Examples
 | Offline save | Saved. Will sync when you're back online. |
 | Evening nudge | Nothing logged today. Two minutes now keeps the week honest. |
 | Check-in reminder | Check-in is open. Takes under a minute. |
+| Check-in follow-up push | Check-in still open / A minute now and {coach} can review your week. |
+| Coach reply push | {coach} replied to your check-in / first 80 characters |
+| Coach, new check-in push | New check-in / {client first name} checked in. |
+| Invite used | This invite was already used. |
+| Invite, other account | This invite was sent to another account. Sign out to accept it. |
 | Upgrade screen title | Get coached |
 | Locked report | Your weekly report unlocks with coaching |
 | Estimated item hint | Weigh it |

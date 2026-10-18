@@ -58,6 +58,8 @@ test("a paid client sees coach targets read only", async ({ page }, info) => {
   await signInWithCode(page, email)
   const id = await userId(email)
   await admin.from("profiles").update({ tier: "paid", billing_source: "comped" }).eq("id", id)
+  // Accepted the state disclosure already (PRD F16), so the app does not ask first.
+  await admin.from("consents").insert({ user_id: id, kind: "mo_disclosure", version: "draft-2026-10" })
   await admin.from("targets").insert({ user_id: id, calories: 2400, protein_g: 190, carbs_g: 250, fat_g: 75, set_by: "coach" })
   await page.goto("/me")
   const targets = page.getByRole("region", { name: "Targets" })

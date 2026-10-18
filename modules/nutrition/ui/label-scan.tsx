@@ -4,6 +4,7 @@ import { useRef, useState } from "react"
 import { Camera } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { track } from "@/core/events/client"
+import { shrinkImage } from "@/lib/shrink-image"
 import type { FoodResult } from "../foods/hits"
 import { CustomFoodForm, EMPTY_FOOD, editedCount, type CustomFoodValues } from "./custom-food-form"
 
@@ -28,17 +29,6 @@ type State =
   | { kind: "reading" }
   | { kind: "form"; values: CustomFoodValues; check: (keyof CustomFoodValues)[]; note?: string; read: boolean }
 
-/** A photo, resized and re-encoded as JPEG on the phone so uploads stay small. */
-async function shrink(file: File): Promise<Blob> {
-  const bitmap = await createImageBitmap(file)
-  const scale = Math.min(1, MAX_SIDE / Math.max(bitmap.width, bitmap.height))
-  const canvas = document.createElement("canvas")
-  canvas.width = Math.round(bitmap.width * scale)
-  canvas.height = Math.round(bitmap.height * scale)
-  canvas.getContext("2d")!.drawImage(bitmap, 0, 0, canvas.width, canvas.height)
-  bitmap.close()
-  return new Promise((resolve, reject) => canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("encode"))), "image/jpeg", 0.85))
-}
 
 const fmt = (n: number | null) => (n === null ? "" : String(Math.round(n * 10) / 10))
 
@@ -80,7 +70,7 @@ export function LabelScan({ gtin, onSaved, onCancel }: { gtin: string | null; on
     setState({ kind: "reading" })
     const body = new FormData()
     try {
-      body.append("photo", await shrink(file), "label.jpg")
+      body.append("photo", await shrinkImage(file, MAX_SIDE), "label.jpg")
     } catch {
       body.append("photo", file)
     }
