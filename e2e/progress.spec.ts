@@ -61,7 +61,11 @@ test("all sections populated; tiles match the database; weeks, range and long pr
 
   await expect(page.getByRole("heading", { level: 1, name: /^Hi/ })).toBeVisible()
   await expect(chart(page).getByRole("heading", { name: "This week" })).toBeVisible()
-  await expect(page.getByRole("region", { name: "Week averages" })).toBeVisible()
+  // The fixture logs only past days and weeks start on Monday, so on a Monday
+  // this week has no logs yet and shows the empty line instead of the stats.
+  const isMonday = new Date(`${localDate(0)}T12:00:00Z`).getUTCDay() === 1
+  if (isMonday) await expect(page.getByText("No logs this week yet.")).toBeVisible()
+  else await expect(page.getByRole("region", { name: "Week averages" })).toBeVisible()
   await expect(page.getByRole("region", { name: "Consistency, 30 days" })).toContainText("days logged")
   await expect(page.getByRole("region", { name: "Weight trend" })).toContainText(/Trend \d+\.\d lb/)
   await expect(page.getByRole("region", { name: "Weight trend" })).toContainText(/(Down|Up) \d+\.\d lb in 30 days|No change in 30 days/)
@@ -81,7 +85,6 @@ test("all sections populated; tiles match the database; weeks, range and long pr
   const yesterday = localDate(-1)
   const { data: totals } = await admin.rpc("daily_totals", { p_user_id: id, p_from: yesterday, p_to: yesterday })
   const y = totals![0]
-  const isMonday = new Date(`${localDate(0)}T12:00:00Z`).getUTCDay() === 1
   if (isMonday) await page.getByRole("button", { name: "Previous week" }).click()
   const [yy, ym, yd] = yesterday.split("-").map(Number)
   const longName = new Intl.DateTimeFormat("en-US", { timeZone: "UTC", weekday: "long", month: "long", day: "numeric" }).format(new Date(Date.UTC(yy, ym - 1, yd)))

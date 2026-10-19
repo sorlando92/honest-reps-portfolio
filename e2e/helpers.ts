@@ -77,7 +77,11 @@ export async function expectNoAxeViolations(page: Page) {
   expect(results.violations.map((v) => `${v.id}: ${v.help} (${v.nodes.length}) ${v.nodes[0]?.target.join(" ")}`)).toEqual([])
 }
 
-/** Every visible interactive element is at least 44 by 44 CSS pixels. */
+/**
+ * Every visible interactive element is at least 44 by 44 CSS pixels. Sizes
+ * are rounded to whole pixels first: a 44px button can measure 43.9999 while
+ * a sheet animates in, which is layout rounding, not a smaller target.
+ */
 export async function expectTapTargets(page: Page) {
   const small = await page.locator("a:visible, button:visible, input:visible").evaluateAll((els) =>
     els
@@ -85,7 +89,7 @@ export async function expectTapTargets(page: Page) {
         const r = el.getBoundingClientRect()
         return { label: el.getAttribute("aria-label") || el.textContent?.trim() || el.tagName, w: r.width, h: r.height }
       })
-      .filter((t) => t.w < 44 || t.h < 44)
+      .filter((t) => Math.round(t.w) < 44 || Math.round(t.h) < 44)
   )
   expect(small).toEqual([])
 }
