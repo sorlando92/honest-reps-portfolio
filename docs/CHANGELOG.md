@@ -383,6 +383,12 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
   - The client sees "Your coach replied." on Today and reads replies on the Coach tab, which marks them read.
 - Reminders (F5, F17, Q74, Q76): `POST /api/jobs/checkin-reminders` (Bearer `JOBS_SECRET`) sends the morning reminder and evening follow-up at the client's local times, once each per week; only the follow-up goes if both are due. Push sending lives in `core/notifications/push.ts`, which removes dead subscriptions.
 - Links sent outside the app use `appBaseUrl()`: `APP_URL`, else `https://$VERCEL_URL` on previews (PM 2026-10-19; owner task 17 done).
+- PM answers 2026-10-19 (Q76 to Q79):
+  - Migration 20261019000001_job_events (additive): `job_run` added to the event name check and kept server only.
+  - The reminder job moved to `core/jobs/checkin-reminders.ts`. The route compares the secret in constant time over SHA-256 digests, the job claims before sending, and every run logs one `job_run`.
+  - The invite link now shows "Copy this now. For security it won't be shown again." under Copy link.
+  - Database test `tests/rls/checkin-reminders-job.test.ts`: two runs at the same moment send each reminder once and both log `job_run`; members cannot write `job_run`.
+  - Copy check for Q78: the copy lint passes, and a scan of every step 4 string finds only the exempt legal "dietitian".
 - Ops (PM 2026-10-18): the FDC import reruns the word rebuild over `HOSTED_DB_URL` when the API path hits the statement timeout; `fdc-refresh.yml` passes the secret.
 - Fixes found while testing:
   - Route handler redirects built from `request.url` or `nextUrl` named `localhost`, which lost the session behind 127.0.0.1. The invite routes now redirect with a relative Location.

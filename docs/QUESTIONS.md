@@ -61,17 +61,12 @@ Recommendation: keep the email field visible below Continue with Google and labe
 **Q71. [PRD section 5] When `signup_completed` fires.** It needs a method (google, email_code, email_link), but the database trigger fires when the email code is requested, before the method is known and before the person proves the address.
 Recommendation: move `signup_completed` to the first completed sign in, written by the server step with its method. Accounts that requested a code and never entered it stop counting as signups. Blocks: nothing; can wait for Google sign in (post-MVP), or apply now so step 4 counts verified signups only.
 
-**Q76. [ARCHITECTURE "Jobs", step 4] Where the reminder job runs.** ARCHITECTURE says pg_cron plus Edge Functions. Step 4 schedules with pg_cron, which calls `POST /api/jobs/checkin-reminders` on the app through pg_net with a shared secret (Vault `app_url`, `jobs_secret`; Vercel `JOBS_SECRET`). Push sending (`web-push`, Node) lives in one place for the job, the coach reply and the new check-in push, and the due list is one SQL function (`due_checkin_reminders`) with database tests. Still not Vercel cron.
-Recommendation: approve this (pg_cron schedules, the app executes). Moving the executor into an Edge Function later only moves the route. Blocks: nothing; built this way.
+### Resolved by the PM (step 4 follow up, 2026-10-19)
 
-**Q77. [F5, step 4] When a late check-in closes.** "Stays open until the review day" read as: closes when the review day starts (Sunday 12:00am, coach's timezone), matching Q32 ("between Saturday 10:00pm and Sunday"). Late check-ins (after the overdue time) are marked `on_time = false`.
-Recommendation: keep. The alternative is the end of the review day. Blocks: nothing.
-
-**Q78. [Design system, step 4] Copy engineering wrote for step 4, for review.** Today card: "Weekly check-in", "Takes under a minute.", overdue "Overdue. Still open through {weekday}.", "Start check-in", reply "Your coach replied." with "Read". Check-in: "Next", "Back", "Skip" (photo step with no photo), "Add photo", "Remove", "Uploading", "Saved", "Not saved", "Optional", "Submit", done "Check-in sent." and "Your coach will reply here in the app.", not open "This check-in is not open right now.", error "Not sent. Try again.". Coach tab: "Check-in reply, {date}", empty "Your coach's replies to your check-ins show up here.". Disclosure checkbox unticked: the browser's required field message. Clients: "Check-ins this week", "No check-ins sent yet this week.", "Needs reply", "Replied", "Late", "Invite a client", "First name (optional)", "Billing" with "Comped" and "Billed outside the app", "Send invite", "Invite sent.", "The email did not go out. Copy the link and send it yourself.", "Copy link", "Link copied", "Invites", "Pending, comped", "Joined as {email}", "Resend", "Revoke". Reply: "Reply to {name}", "Send reply", "Reply sent.", "Write a reply first.". Invite status page: "Go to the app".
-Recommendation: approve as written, or send replacements. Blocks: nothing.
-
-**Q79. [F12, step 4] Copy link after the invite.** Q69 did not say how a coach gets a link when the email cannot go out. Built: the link shows once after Send invite and after Resend with Copy link (only its hash is stored, so it cannot be shown later). Useful for texting a client and while `RESEND_API_KEY` is unset.
-Recommendation: keep. Blocks: nothing.
+- **Q76** Approved: pg_cron plus pg_net call `/api/jobs/*` on the app with a shared secret, and one push sender. Conditions, all built: the secret is compared in constant time, runs are idempotent (each reminder is claimed in `notifications_sent` before it is sent), and every run is logged to events as `job_run`. ARCHITECTURE updated.
+- **Q77** Keep: a late check-in closes when the review day starts (Sunday 12:00am, coach's timezone).
+- **Q78** Approved provisionally, subject to the copy check. Engineering ran the copy lint and a scan of every step 4 string. The only flagged word is "dietitian" in the state disclosure, which is legally required and exempt (CLAUDE.md rule 7). The full table went to the PM on 2026-10-19.
+- **Q79** Keep: the link is shown once with Copy link, and under it "Copy this now. For security it won't be shown again."
 
 ### Resolved by the PM (step 4, 2026-10-18)
 

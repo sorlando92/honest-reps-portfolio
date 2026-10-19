@@ -95,6 +95,8 @@ export function IssuedLink({ issued, copied, onCopy }: { issued: Issued; copied:
       >
         {copied ? "Link copied" : "Copy link"}
       </Button>
+      {/* Q79: only the token's hash is stored, so the link cannot be shown again. */}
+      <p className="text-caption text-text-muted">{"Copy this now. For security it won't be shown again."}</p>
     </div>
   )
 }

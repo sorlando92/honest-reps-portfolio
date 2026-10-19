@@ -59,6 +59,7 @@ async function issueInvite(page: Page, email: string): Promise<string> {
   await form.getByRole("button", { name: "Send invite" }).click()
   // No RESEND_API_KEY in e2e: the screen offers the link instead.
   await expect(form.getByRole("status")).toContainText("Copy the link and send it yourself.")
+  await expect(form.getByRole("status")).toContainText("Copy this now. For security it won't be shown again.")
   await form.getByRole("button", { name: "Copy link" }).click()
   return page.evaluate(() => navigator.clipboard.readText())
 }

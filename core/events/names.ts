@@ -36,6 +36,8 @@ export const EVENT_NAMES = [
   "barcode_mismatch",
   "label_scanned",
   "custom_food_created",
+  // Q76: one per scheduled job run, server only, no user id.
+  "job_run",
 ] as const
 
 export type EventName = (typeof EVENT_NAMES)[number]
@@ -45,13 +47,14 @@ export const PRE_AUTH_EVENTS = ["signup_started", "pwa_installed"] as const sati
 
 /**
  * Events only the server writes, with the service role (signup trigger,
- * Stripe webhook, review send). RLS refuses them from a signed in client.
+ * Stripe webhook, review send, scheduled jobs). RLS refuses them from a signed in client.
  */
 export const SERVER_ONLY_EVENTS = [
   "signup_completed",
   "upgrade_completed",
   "subscription_canceled",
   "review_reply_sent",
+  "job_run",
 ] as const satisfies readonly EventName[]
 
 export type EventProps = Record<string, string | number | boolean | null>
