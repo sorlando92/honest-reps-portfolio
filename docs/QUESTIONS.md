@@ -65,7 +65,7 @@ Recommendation: move `signup_completed` to the first completed sign in, written 
 
 - **Q76** Approved: pg_cron plus pg_net call `/api/jobs/*` on the app with a shared secret, and one push sender. Conditions, all built: the secret is compared in constant time, runs are idempotent (each reminder is claimed in `notifications_sent` before it is sent), and every run is logged to events as `job_run`. ARCHITECTURE updated.
 - **Q77** Keep: a late check-in closes when the review day starts (Sunday 12:00am, coach's timezone).
-- **Q78** Approved provisionally, subject to the copy check. Engineering ran the copy lint and a scan of every step 4 string. The only flagged word is "dietitian" in the state disclosure, which is legally required and exempt (CLAUDE.md rule 7). The full table went to the PM on 2026-10-19.
+- **Q78** Approved 2026-10-19: all step 4 copy as written in the table sent to the PM that day, including the disclosure line "Coaching and personal training since 2012." The copy lint passed, and the only protected word is the legally required "dietitian" in the disclosure (exempt, CLAUDE.md rule 7).
 - **Q79** Keep: the link is shown once with Copy link, and under it "Copy this now. For security it won't be shown again."
 
 ### Resolved by the PM (step 4, 2026-10-18)
