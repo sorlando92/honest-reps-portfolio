@@ -360,7 +360,15 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
 - More (was Me; `/me` redirects): Goals (Targets), App (Units, Add to Home Screen and turn on reminders, Food scale), Account (Name per Q63, signed in email, Privacy and data, Terms, About with Open Food Facts, Sign out). Reminders times, Subscription, Delete account and Coach settings appear when they ship (Q64).
 - Tests: e2e at 375px light and dark for tab order, labels and selection, Progress greeting and avatar, More name, /me redirect, week slide without changing the day, never past the current week, tap to select, month calendar select and collapse, tap outside, compact row swap and back, quick actions on a past day (copy at the anchor, weight sheet, day note focus), bars hidden while typing, Search food from Progress, log bar from Progress to Today, events; existing specs updated for tabs, the band and the log bar. The "+" button exposes `data-hydrated` so tests wait until a tap can work.
 
-### 2026-10-18: MVP step 4, client loop (branch `step-4`, not deployed)
+### 2026-10-18: MVP step 4, client loop (deployed 2026-10-19)
+
+- Deployed 2026-10-19: PR #3 merged (main `bf7cb13`), production `honest-reps-lzkhizqtc` Ready. `RESEND_API_KEY` in Production and Preview (owner task 18). `JOBS_SECRET` in Vercel Production only, with the matching Vault secrets `app_url` (https://app.honestreps.app) and `jobs_secret` on hosted. Checked live:
+  - `/sign-in` and the invite status pages answer 200; `/checkin` and `/disclosure` redirect to sign in when signed out.
+  - The job answers 401 without the secret.
+  - An authorized call returned outcome ok with due 0 (Monday, not a check-in day).
+  - The first pg_cron tick at 20:15 UTC got a 200 from production, and both runs are in events as `job_run`.
+  - Not yet exercised on production: an invite email, a real check-in and a reminder push. The first scheduled reminders go out Friday at 8:00am client time.
+
 
 - Migration 20261018000001_client_loop (additive; applied to hosted 2026-10-18 under the standing rule). New tables: `invites`, `checkin_questions`, `checkins`, `checkin_photos`, `messages`, `notifications_sent`; new column `coach_settings.disclosure_title`; private `checkin-photos` bucket (no app-user storage policies). Functions: `claim_invite`, `checkin_state`, `due_checkin_reminders`, `private.checkin_window` and `private.run_checkin_reminders`. pg_cron job `checkin-reminders` every 15 minutes, which does nothing until the Vault secrets `app_url` and `jobs_secret` exist. Seed (local and hosted): the Q72 check-in steps, the Q73 disclosure, and `consent_versions.mo_disclosure` = draft-2026-10.
 - Invites (F12, Q69, Q75): Clients has Invite a client (email, optional first name, comped or billed outside the app). The invite email goes through the Resend API with reply-to the coach. The link is shown once with Copy link (Q79). Pending invites have Resend (new token; the old one dies) and Revoke; accepted invites show "Joined as {email}". `/invite/{token}`:
