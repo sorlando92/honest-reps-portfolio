@@ -161,7 +161,7 @@ Restore into a new Supabase project (or the same one after a reset):
 
 ## Environment variables
 
-`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL`, `USDA_API_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT`, `APP_URL`, `COACH_EMAIL` (the account `pnpm db:seed` makes the coach), `NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_AUTH_TOKEN`, `SENTRY_ORG` and `SENTRY_PROJECT` (Vercel Production and Preview only). `RESEND_API_KEY` (invite emails), `JOBS_SECRET` (Production only; the same value as Vault `jobs_secret`). Supabase Vault: `app_url`, `jobs_secret`. GitHub secrets: `HOSTED_SUPABASE_URL`, `HOSTED_SUPABASE_SERVICE_ROLE_KEY` (FDC refresh), `HOSTED_DB_URL`, `BACKUP_PASSPHRASE` (backup).
+`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL`, `USDA_API_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT`, `APP_URL` (Production and local only; previews and any unset environment use `https://$VERCEL_URL` through `lib/app-url.ts`), `COACH_EMAIL` (the account `pnpm db:seed` makes the coach), `NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_AUTH_TOKEN`, `SENTRY_ORG` and `SENTRY_PROJECT` (Vercel Production and Preview only). `RESEND_API_KEY` (invite emails), `JOBS_SECRET` (Production only; the same value as Vault `jobs_secret`). Supabase Vault: `app_url`, `jobs_secret`. GitHub secrets: `HOSTED_SUPABASE_URL`, `HOSTED_SUPABASE_SERVICE_ROLE_KEY` (FDC refresh), `HOSTED_DB_URL`, `BACKUP_PASSPHRASE` (backup).
 
 ## Testing
 

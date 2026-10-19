@@ -1,6 +1,7 @@
 import "server-only"
 import type { SupabaseClient } from "@supabase/supabase-js"
 import { coachName } from "@/core/people"
+import { appBaseUrl } from "@/lib/app-url"
 import { getPublicConfig } from "@/core/settings/public-config"
 import { sendInviteEmail } from "./email"
 import { hashInviteToken, newInviteToken } from "./token"
@@ -12,8 +13,7 @@ export interface IssuedInvite {
 }
 
 export function inviteLink(token: string): string {
-  const base = (process.env.APP_URL ?? "https://app.honestreps.app").replace(/\/$/, "")
-  return `${base}/invite/${token}`
+  return `${appBaseUrl()}/invite/${token}`
 }
 
 /** Stores a new invite (token hash only), emails the link and returns it once for Copy link. */

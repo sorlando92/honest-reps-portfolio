@@ -382,6 +382,7 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
   - A reply is saved as a `messages` row, pushes "{coach} replied to your check-in" with its first 80 characters, and fires `message_sent` (role coach). Submitting pushes "New check-in" to the coach.
   - The client sees "Your coach replied." on Today and reads replies on the Coach tab, which marks them read.
 - Reminders (F5, F17, Q74, Q76): `POST /api/jobs/checkin-reminders` (Bearer `JOBS_SECRET`) sends the morning reminder and evening follow-up at the client's local times, once each per week; only the follow-up goes if both are due. Push sending lives in `core/notifications/push.ts`, which removes dead subscriptions.
+- Links sent outside the app use `appBaseUrl()`: `APP_URL`, else `https://$VERCEL_URL` on previews (PM 2026-10-19; owner task 17 done).
 - Ops (PM 2026-10-18): the FDC import reruns the word rebuild over `HOSTED_DB_URL` when the API path hits the statement timeout; `fdc-refresh.yml` passes the secret.
 - Fixes found while testing:
   - Route handler redirects built from `request.url` or `nextUrl` named `localhost`, which lost the session behind 127.0.0.1. The invite routes now redirect with a relative Location.
