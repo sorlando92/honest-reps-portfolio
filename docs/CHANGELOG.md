@@ -401,6 +401,10 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
   - Removed unused `isMeal`, `servingLine` and `CheckinSubmission`, plus 22 exports used only in their own file.
   - `core/invites/app-url.ts` was renamed to `redirect.ts`.
 - Deferred: e2e programmatic sign-in and parallel workers (batch 2), loading Sentry after the page is interactive (needs a decision), and the docs merge (PM proposal).
+- Results on main (2026-10-20):
+  - CI: 12.4 min before. 10.1 min on the merge (cold caches), then 9.0 min on the next run with the Playwright cache restored, even though that run had 5 more e2e tests. E2E is still most of it (324 to 357s).
+  - Bundle: every-page JS unchanged at 188 KB gzipped and the Sentry chunk at 115 KB; zod's 30 KB chunk is gone from the client.
+  - The docs-only skip was checked with this entry.
 
 ### 2026-10-18: MVP step 4, client loop (deployed 2026-10-19)
 
