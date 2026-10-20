@@ -29,6 +29,20 @@ describe("profiles RLS", () => {
     expect(ids).not.toContain(cast.otherMember.id)
   })
 
+  it("ai_enabled starts off, and neither the member nor their coach can set it under RLS", async () => {
+    const { data } = await cast.a.client.from("profiles").select("ai_enabled").eq("id", cast.a.id).single()
+    expect(data?.ai_enabled).toBe(false)
+    for (const patch of [{ ai_enabled: true }, { ai_enabled_changed_by: cast.a.id }, { ai_enabled_changed_at: new Date().toISOString() }]) {
+      const own = await cast.a.client.from("profiles").update(patch).eq("id", cast.a.id)
+      expect(own.error?.code).toBe(PERMISSION_DENIED)
+    }
+    // The coach turns it on through /api/clients/[id]/ai, which writes with the service role.
+    const byCoach = await cast.coach.client.from("profiles").update({ ai_enabled: true }).eq("id", cast.a.id)
+    expect(byCoach.error?.code).toBe(PERMISSION_DENIED)
+    const { data: after } = await cast.admin.from("profiles").select("ai_enabled").eq("id", cast.a.id).single()
+    expect(after?.ai_enabled).toBe(false)
+  })
+
   it("a member cannot make themselves the coach", async () => {
     const { error } = await cast.a.client.from("profiles").update({ role: "coach" }).eq("id", cast.a.id)
     expect(error?.code).toBe(PERMISSION_DENIED)

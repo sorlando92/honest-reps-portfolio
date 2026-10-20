@@ -9,6 +9,7 @@ import { firstName } from "@/core/people"
 import { createClient } from "@/lib/supabase/server"
 import { EmptyState, Screen } from "@/components/screen"
 import { tidyCase } from "@/modules/nutrition/foods/label"
+import { AiToggle } from "./ai-toggle"
 
 export const metadata: Metadata = { title: "Clients" }
 
@@ -26,6 +27,7 @@ async function CoachOnly() {
   return (
     <Screen title="Clients">
       <WeekCheckins coachId={user.id} timezone={user.timezone} />
+      <AiAccess coachId={user.id} />
       <InviteForm />
       <Invites />
       <FoodLookups />
@@ -77,6 +79,48 @@ async function WeekCheckins({ coachId, timezone }: { coachId: string; timezone: 
           ))}
         </ul>
       )}
+    </section>
+  )
+}
+
+/**
+ * AI logging per client (Sean, 2026-10-20): off until the coach turns it on.
+ * RLS returns only the coach's assigned clients; the route checks again.
+ */
+async function AiAccess({ coachId }: { coachId: string }) {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from("profiles")
+    .select("id, display_name, ai_enabled, created_at")
+    .eq("coach_id", coachId)
+    .neq("id", coachId)
+    .order("created_at", { ascending: false })
+    .limit(200)
+  const clients = (data ?? []).map((p) => ({
+    id: p.id as string,
+    name: (p.display_name as string | null)?.trim() || "Unnamed client",
+    joined: new Date(p.created_at as string).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+    aiEnabled: p.ai_enabled === true,
+  }))
+  if (!clients.length) return null
+
+  return (
+    <section aria-labelledby="ai-access" className="flex flex-col gap-2">
+      <h2 id="ai-access" className="text-headline">
+        AI logging
+      </h2>
+      <p className="text-caption text-text-muted">Clients describe meals and scan labels with AI only when it is on.</p>
+      <ul className="flex flex-col divide-y divide-border rounded-lg bg-surface">
+        {clients.map((c) => (
+          <li key={c.id} className="flex items-center justify-between gap-3 px-4 py-2">
+            <span className="flex min-w-0 flex-col">
+              <span className="text-body break-words">{c.name}</span>
+              <span className="text-caption text-text-muted">{`Joined ${c.joined}, AI ${c.aiEnabled ? "on" : "off"}`}</span>
+            </span>
+            <AiToggle clientId={c.id} name={c.name} enabled={c.aiEnabled} />
+          </li>
+        ))}
+      </ul>
     </section>
   )
 }

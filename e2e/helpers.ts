@@ -13,9 +13,10 @@ export const TEST_TARGETS = { calories: 2100, protein_g: 170, carbs_g: 200, fat_
  * Signs in through the real UI, reading the code from the local mail catcher.
  * New users land on onboarding; unless `onboarded: false`, the helper marks
  * them onboarded with TEST_TARGETS and opens Today, so tests that are not
- * about onboarding start where users spend their time.
+ * about onboarding start where users spend their time. Test users get AI
+ * logging on (a coach turns it on for real clients) unless `ai: false`.
  */
-export async function signInWithCode(page: Page, email: string, { onboarded = true }: { onboarded?: boolean } = {}) {
+export async function signInWithCode(page: Page, email: string, { onboarded = true, ai = true }: { onboarded?: boolean; ai?: boolean } = {}) {
   const since = Date.now()
   await page.goto("/sign-in")
   await page.getByLabel("Email").fill(email)
@@ -32,19 +33,40 @@ export async function signInWithCode(page: Page, email: string, { onboarded = tr
     return
   }
   await markOnboarded(email)
+  if (ai) await setAiEnabled(email, true)
   await page.goto("/today")
   await page.waitForURL("**/today")
 }
 
-export async function markOnboarded(email: string) {
-  // Local databases collect thousands of test accounts: look through every page.
-  let user: { id: string } | undefined
-  for (let page = 1; !user; page++) {
+/** The auth user id for an email. Local databases collect thousands of test accounts: look through every page. */
+export async function userIdByEmail(email: string): Promise<string> {
+  for (let page = 1; ; page++) {
     const { data } = await admin.auth.admin.listUsers({ page, perPage: 1000 })
-    user = data.users.find((u) => u.email?.toLowerCase() === email.toLowerCase())
-    if (data.users.length < 1000) break
+    const user = data.users.find((u) => u.email?.toLowerCase() === email.toLowerCase())
+    if (user) return user.id
+    if (data.users.length < 1000) throw new Error(`No user ${email}`)
   }
-  if (!user) throw new Error(`No user ${email}`)
+}
+
+/** A Supabase client signed in as `email` with the anon key, for writes straight to the database under RLS. */
+export async function userClient(email: string) {
+  const { data, error } = await admin.auth.admin.generateLink({ type: "magiclink", email })
+  if (error) throw error
+  const client = createClient(local.url, local.anonKey, { auth: { persistSession: false, autoRefreshToken: false } })
+  const verified = await client.auth.verifyOtp({ type: "magiclink", token_hash: data.properties.hashed_token })
+  if (verified.error) throw verified.error
+  return client
+}
+
+/** Sets profiles.ai_enabled directly, as a coach would through the Clients screen. */
+export async function setAiEnabled(email: string, enabled: boolean) {
+  const id = await userIdByEmail(email)
+  const done = await admin.from("profiles").update({ ai_enabled: enabled }).eq("id", id)
+  if (done.error) throw done.error
+}
+
+export async function markOnboarded(email: string) {
+  const user = { id: await userIdByEmail(email) }
   const { data: profile } = await admin.from("profiles").select("onboarding_completed_at").eq("id", user.id).single()
   if (profile?.onboarding_completed_at) return
   const done = await admin.from("profiles").update({ onboarding_completed_at: new Date().toISOString() }).eq("id", user.id)

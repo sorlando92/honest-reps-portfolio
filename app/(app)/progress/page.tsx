@@ -72,6 +72,7 @@ async function Dashboard() {
         mealAnchors={mealAnchors(setting("meal_anchors"))}
         date={today}
         afterLog="today"
+        aiEnabled={user.aiEnabled}
       />
     </>
   )

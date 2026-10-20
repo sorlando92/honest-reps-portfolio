@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
+import { denyWithoutAi } from "@/core/auth/ai-access"
 import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { parseForUser } from "@/modules/nutrition/parsing/service"
@@ -18,6 +19,9 @@ export async function POST(request: Request) {
   const { data } = await supabase.auth.getClaims()
   const userId = data?.claims?.sub
   if (!userId) return NextResponse.json({ error: "Sign in required" }, { status: 401 })
+  // Before the rate limiter and the model: the coach turns AI on per client.
+  const denied = await denyWithoutAi(supabase, userId)
+  if (denied) return denied
 
   const parsed = body.safeParse(await request.json().catch(() => null))
   if (!parsed.success) return NextResponse.json({ error: "Invalid request" }, { status: 400 })

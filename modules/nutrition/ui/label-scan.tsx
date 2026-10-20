@@ -76,6 +76,11 @@ export function LabelScan({ gtin, onSaved, onCancel }: { gtin: string | null; on
     }
     if (gtin) body.append("gtin", gtin)
     const res = await fetch("/api/foods/label", { method: "POST", body }).catch(() => null)
+    if (res?.status === 403) {
+      // The coach turned AI off since the app loaded (core/auth/ai-access.ts).
+      setState({ kind: "photo" })
+      return setError("AI logging is off. Your coach will turn it on. Enter it yourself for now.")
+    }
     if (!res || res.status === 429) {
       setState({ kind: "photo" })
       return setError(!res ? (navigator.onLine ? "That did not work. Try again." : "You're offline. Label scans work when you're back online.") : "Too many label scans in an hour. Enter it yourself for now.")

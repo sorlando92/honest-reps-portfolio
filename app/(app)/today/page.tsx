@@ -142,6 +142,7 @@ async function Journal({ searchParams }: { searchParams: PageProps<"/today">["se
         mealWindows={mealWindows(setting("meal_windows"))}
         mealAnchors={mealAnchors(setting("meal_anchors"))}
         date={date}
+        aiEnabled={user.aiEnabled}
       />
       <TodayQuickActions date={date} timezone={timezone} mealWindows={mealWindows(setting("meal_windows"))} />
     </>

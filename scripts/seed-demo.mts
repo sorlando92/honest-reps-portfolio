@@ -97,7 +97,7 @@ async function createDemo() {
   await check(
     admin
       .from("profiles")
-      .update({ display_name: "Demo Member", coach_id: coach.id, is_test: true, units: "imperial", timezone: TZ, date_of_birth: "1990-05-14", onboarding_completed_at: `${start}T14:00:00Z` })
+      .update({ display_name: "Demo Member", coach_id: coach.id, is_test: true, ai_enabled: true, units: "imperial", timezone: TZ, date_of_birth: "1990-05-14", onboarding_completed_at: `${start}T14:00:00Z` })
       .eq("id", id)
   )
   await check(admin.from("nutrition_profiles").upsert({ user_id: id, goal: "lose_fat", sex: "male", height_cm: 180, activity_level: "moderate", goal_weight_kg: 82, has_scale: true }))

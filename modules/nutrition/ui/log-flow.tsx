@@ -47,6 +47,9 @@ type Searching =
 
 type Method = "text" | "search" | "manual" | "barcode"
 
+/** Shown while the coach has AI off for this client (core/auth/ai-access.ts AI_DISABLED). */
+const AI_OFF = "AI logging is off. Your coach will turn it on."
+
 /**
  * The log loop on Today: describe a meal or search for foods, check the
  * card, tap Log it (PRD F2, DESIGN_SYSTEM.md "Log bar" and "Log confirmation").
@@ -60,6 +63,7 @@ export function LogFlow({
   mealAnchors,
   date,
   afterLog,
+  aiEnabled,
 }: {
   units: "imperial" | "metric"
   hasScale: boolean | null
@@ -71,6 +75,12 @@ export function LogFlow({
   date: string
   /** NAV_SPEC 3: on Progress, logs go to today and the app switches to Today after Log it. */
   afterLog?: "today"
+  /**
+   * Set by the coach. Off: no "Describe with AI" and no label scan, and send
+   * opens food search with what was typed. Search, barcode, quick add and
+   * "Enter it yourself" still log.
+   */
+  aiEnabled: boolean
 }) {
   const router = useRouter()
   const online = useOnline()
@@ -129,6 +139,7 @@ export function LogFlow({
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ text, localTime }),
       })
+      if (res.status === 403) throw new Error(`${AI_OFF} Search for each food for now.`)
       if (res.status === 429) throw new Error("Too many meals in an hour. Try again in a few minutes.")
       if (!res.ok) throw new Error("We could not read that meal. Try again.")
       const result = (await res.json()) as DraftResult
@@ -311,11 +322,12 @@ export function LogFlow({
     <>
       <LogBar
         disabled={phase.kind === "reading"}
-        onSubmit={read}
+        aiEnabled={aiEnabled}
+        onSubmit={aiEnabled ? read : (text) => startSearch({ query: text, target: "add" })}
         onPickHit={pickHit}
         browse={browse}
         onScan={() => startSearch({ query: "", target: "scan" })}
-        onLabel={() => startSearch({ query: "", target: "label", scan: null })}
+        onLabel={aiEnabled ? () => startSearch({ query: "", target: "label", scan: null }) : undefined}
         onManual={(text) => startSearch({ query: text, target: "add", manual: true })}
         chips={chips}
         onChip={quickAdd}
@@ -417,7 +429,7 @@ export function LogFlow({
                 const words = [result.brand, result.name].filter(Boolean).join(" ").replace(/[^\p{L}\p{N} ]+/gu, " ").replace(/\s+/g, " ").trim()
                 setSearching({ query: words.slice(0, 100), target: "add", notThis: { scan, returnedId: result.foodItemId } })
               }}
-              onLabel={(scan) => setSearching({ query: "", target: "label", scan })}
+              onLabel={aiEnabled ? (scan) => setSearching({ query: "", target: "label", scan }) : undefined}
               onSearch={(scan) => setSearching({ query: "", target: "add", scan })}
               onManual={(scan) => setSearching({ query: "", target: "add", manual: true, gtin: scan.gtin, scan })}
               onCancel={() => setSearching(null)}
@@ -442,7 +454,7 @@ export function LogFlow({
             initialQuery={searching.query}
             gtin={searching.target === "add" ? (searching.gtin ?? null) : null}
             allowManual={searching.target === "add"}
-            onLabel={searching.target === "add" ? () => setSearching({ query: "", target: "label", scan: searching.notThis?.scan ?? searching.scan ?? null }) : undefined}
+            onLabel={aiEnabled && searching.target === "add" ? () => setSearching({ query: "", target: "label", scan: searching.notThis?.scan ?? searching.scan ?? null }) : undefined}
             cancelLabel={draft ? "Back to your meal" : "Cancel"}
             onCancel={() => setSearching(null)}
             onPick={({ item, result, method }) => {
@@ -501,6 +513,7 @@ export function LogFlow({
  */
 function LogBar({
   disabled,
+  aiEnabled,
   onSubmit,
   onPickHit,
   browse,
@@ -516,14 +529,16 @@ function LogBar({
   inputRef: React.RefObject<HTMLInputElement | null>
   placeholder: string
   disabled: boolean
+  /** Off: send and Enter search instead of running AI, and the AI row is gone. */
+  aiEnabled: boolean
   onSubmit: (text: string) => void
   /** A tapped result; false when it could not load (the sheet stays open). */
   onPickHit: (hit: SearchHit) => Promise<boolean>
   /** Bumped by the "Search food" quick action: focus the field and show results. */
   browse: number
   onScan: () => void
-  /** The empty state: "Scan the label" and "Enter it yourself" with what was typed. */
-  onLabel: () => void
+  /** The empty state: "Scan the label" (only with AI on) and "Enter it yourself" with what was typed. */
+  onLabel?: () => void
   onManual: (text: string) => void
   chips: QuickAddChip[]
   onChip: (chip: QuickAddChip) => void
@@ -572,7 +587,7 @@ function LogBar({
   function submit() {
     const value = text.trim()
     if (!value || disabled) return
-    report({ section: null, rank: null, ai: true })
+    report({ section: null, rank: null, ai: aiEnabled })
     onSubmit(value)
     setText("")
     setBrowsing(false)
@@ -629,11 +644,14 @@ function LogBar({
             query={text}
             onPick={pick}
             busyRef={busy}
-            onAI={typing ? submit : undefined}
-            onLabel={() => {
-              report({ section: null, rank: null, ai: false })
-              onLabel()
-            }}
+            onAI={aiEnabled && typing ? submit : undefined}
+            onLabel={
+              onLabel &&
+              (() => {
+                report({ section: null, rank: null, ai: false })
+                onLabel()
+              })
+            }
             onManual={() => {
               report({ section: null, rank: null, ai: false })
               onManual(text.trim())
@@ -641,8 +659,9 @@ function LogBar({
             }}
           />
           {!typing && search.kind === "results" && resultCount(search.sections) === 0 && (
-            <p className="px-1 py-2 text-body text-text-muted">Type a food to search, or describe a meal and send it.</p>
+            <p className="px-1 py-2 text-body text-text-muted">{aiEnabled ? "Type a food to search, or describe a meal and send it." : "Type a food to search."}</p>
           )}
+          {!aiEnabled && <p className="px-1 py-2 text-caption text-text-muted">{AI_OFF}</p>}
         </div>
       )}
       {showChips && (
@@ -688,7 +707,7 @@ function LogBar({
           <Search aria-hidden />
         </Button>
         <label htmlFor={`${id}-meal`} className="sr-only">
-          What did you eat? Type to search foods, or describe a meal and send it.
+          {aiEnabled ? "What did you eat? Type to search foods, or describe a meal and send it." : "What did you eat? Type to search foods."}
         </label>
         <input
           ref={inputRef}
@@ -706,8 +725,15 @@ function LogBar({
           className="h-11 min-w-0 flex-1 bg-transparent px-1 text-body text-text outline-none placeholder:text-text-muted"
         />
         {typing ? (
-          <Button type="submit" size="icon" aria-label="Log meal" onPointerDown={(e) => e.preventDefault()} disabled={disabled} className="size-11 shrink-0 rounded-full">
-            <ArrowUp aria-hidden />
+          <Button
+            type="submit"
+            size="icon"
+            aria-label={aiEnabled ? "Log meal" : "Search for this food"}
+            onPointerDown={(e) => e.preventDefault()}
+            disabled={disabled}
+            className="size-11 shrink-0 rounded-full"
+          >
+            {aiEnabled ? <ArrowUp aria-hidden /> : <Search aria-hidden />}
           </Button>
         ) : (
           <Button type="button" variant="text" size="icon" aria-label="Scan a barcode" onPointerDown={(e) => e.preventDefault()} disabled={disabled} onClick={onScan} className="size-11 shrink-0 rounded-full">

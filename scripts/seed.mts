@@ -96,7 +96,7 @@ async function main() {
   }
 
   const coachId = await ensureUser(admin, coachEmail)
-  check(await admin.from("profiles").update({ role: "coach", coach_id: null }).eq("id", coachId))
+  check(await admin.from("profiles").update({ role: "coach", coach_id: null, ai_enabled: true }).eq("id", coachId))
   check(
     await admin
       .from("coach_settings")
@@ -155,7 +155,7 @@ async function main() {
     if (!isLocal) throw new Error("Sample users are only seeded into a local database.")
     for (const email of ["member1@example.test", "member2@example.test"]) {
       const id = await ensureUser(admin, email)
-      check(await admin.from("profiles").update({ coach_id: coachId }).eq("id", id))
+      check(await admin.from("profiles").update({ coach_id: coachId, ai_enabled: true }).eq("id", id))
       console.log(`Sample member: ${email}`)
     }
   }

@@ -83,7 +83,8 @@ export function BarcodeScanner({
   confirmLabel: string
   onConfirm: (result: FoodResult, scan: Scan) => void
   onNotThis: (result: FoodResult, scan: Scan) => void
-  onLabel: (scan: Scan) => void
+  /** Left out when the coach has not turned AI on: the label scan is an AI call. */
+  onLabel?: (scan: Scan) => void
   onSearch: (scan: Scan) => void
   onManual: (scan: Scan) => void
   onCancel: () => void
@@ -229,7 +230,7 @@ export function BarcodeScanner({
     return (
       <div role="alert" className="flex flex-col gap-3 pb-4">
         <p className="text-body">We don&rsquo;t have this barcode yet.</p>
-        <Button onClick={() => onLabel(state.scan)}>Scan the label</Button>
+        {onLabel && <Button onClick={() => onLabel(state.scan)}>Scan the label</Button>}
         <Button variant="secondary" onClick={() => onSearch(state.scan)}>
           Search
         </Button>

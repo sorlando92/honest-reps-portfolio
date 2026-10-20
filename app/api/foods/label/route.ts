@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { denyWithoutAi } from "@/core/auth/ai-access"
 import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { LABEL_MEDIA_TYPES, runP2Label, type LabelMediaType } from "@/lib/ai/p2-label"
@@ -19,6 +20,9 @@ export async function POST(request: Request) {
   const { data } = await supabase.auth.getClaims()
   const userId = data?.claims?.sub
   if (!userId) return NextResponse.json({ error: "Sign in required" }, { status: 401 })
+  // Before the rate limiter and the model: the coach turns AI on per client.
+  const denied = await denyWithoutAi(supabase, userId)
+  if (denied) return denied
 
   const form = await request.formData().catch(() => null)
   const photo = form?.get("photo")

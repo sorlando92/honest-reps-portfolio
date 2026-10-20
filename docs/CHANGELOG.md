@@ -360,6 +360,27 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
 - More (was Me; `/me` redirects): Goals (Targets), App (Units, Add to Home Screen and turn on reminders, Food scale), Account (Name per Q63, signed in email, Privacy and data, Terms, About with Open Food Facts, Sign out). Reminders times, Subscription, Delete account and Coach settings appear when they ship (Q64).
 - Tests: e2e at 375px light and dark for tab order, labels and selection, Progress greeting and avatar, More name, /me redirect, week slide without changing the day, never past the current week, tap to select, month calendar select and collapse, tap outside, compact row swap and back, quick actions on a past day (copy at the anchor, weight sheet, day note focus), bars hidden while typing, Search food from Progress, log bar from Progress to Today, events; existing specs updated for tabs, the band and the log bar. The "+" button exposes `data-hydrated` so tests wait until a tap can work.
 
+### 2026-10-20: per-client AI access (Sean)
+
+- **Migration `20261020000001_ai_access`:**
+  - adds `profiles.ai_enabled` (default false), plus `ai_enabled_changed_by` and `ai_enabled_changed_at`;
+  - turns AI on for every profile that exists when it runs; new signups start off;
+  - leaves clients' update grant at `display_name, timezone, units`.
+- **Gated routes:** `POST /api/parse` (P1) and `POST /api/foods/label` (P2 label) check `ai_enabled` right after sign-in, before the rate limiter and the model. The check is `core/auth/ai-access.ts`. It fails closed and answers 403 `{ error: "ai_disabled" }`.
+- **Coach screen:** Clients has an "AI logging" list with a switch per client. `POST /api/clients/[id]/ai` requires the coach role and a matching `coach_id`, writes with the service role, and records who changed it and when.
+- **Client app with AI off:**
+  - no "Describe with AI" row and no "Scan the label";
+  - send opens food search with the typed text;
+  - the results show "AI logging is off. Your coach will turn it on.";
+  - search, barcode, quick add and "Enter it yourself" still log.
+- **Seeds:** the coach, sample members and the demo member get AI on. The e2e helper turns AI on for test users unless a test passes `ai: false`.
+- **Tests:**
+  - RLS: neither the member nor the coach can set `ai_enabled` directly.
+  - E2E (`ai-access.spec.ts`): 403 on both AI routes with AI off; the coach turns it on and back off; a client can't turn it on themselves; another coach can't change it.
+- **Deferred:**
+  - no analytics event for the toggle;
+  - PRD and ARCHITECTURE need the new columns and behavior (PM).
+
 ### 2026-10-20: tech debt batch 1 (CI, bundle, cleanup; no user-facing change)
 
 - CI skips docs-only changes. A `changes` job reports skipped checks instead of leaving them pending. `vercel.json` `ignoreCommand` skips docs-only deploys using the same rule.

@@ -16,6 +16,8 @@ export interface CurrentUser {
   timezone: string
   /** PRD F1: set once the user finishes onboarding. */
   onboardingCompleted: boolean
+  /** Set by the coach (core/auth/ai-access.ts). The UI hides AI entry points when off; the AI routes check it themselves. */
+  aiEnabled: boolean
 }
 
 /**
@@ -31,7 +33,7 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser> => {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("role, tier, timezone, onboarding_completed_at")
+    .select("role, tier, timezone, onboarding_completed_at, ai_enabled")
     .eq("id", claims.sub)
     .single()
 
@@ -47,5 +49,6 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser> => {
     tier: profile.tier as "free" | "paid",
     timezone: profile.timezone as string,
     onboardingCompleted: profile.onboarding_completed_at !== null,
+    aiEnabled: profile.ai_enabled === true,
   }
 })
