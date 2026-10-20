@@ -4,8 +4,8 @@ import { useEffect, useRef, useState } from "react"
 import type { FoodResult, SearchHit, SearchSections } from "../foods/hits"
 
 /** docs/FOOD_LOOKUP_SPEC.md 1: results update 150 ms after the last keystroke. */
-export const SEARCH_DEBOUNCE_MS = 150
-export const MIN_CHARS = 2
+const SEARCH_DEBOUNCE_MS = 150
+const MIN_CHARS = 2
 
 export type SearchState =
   | { kind: "idle" }

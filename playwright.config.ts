@@ -1,6 +1,8 @@
 import { defineConfig, devices } from "@playwright/test"
 
-// Smoke tests at 375px wide (iPhone SE class width) in light and dark mode.
+// Smoke tests at 375px wide (iPhone SE class width). Every test runs in light
+// mode; dark mode reruns only the tests tagged @a11y, since axe's color
+// contrast check is the only thing that depends on the theme.
 // Runs against a production build, which is what offline and PWA behavior
 // depend on. Needs the local Supabase stack and .env.local (pnpm env:local).
 const PORT = 3000
@@ -19,7 +21,7 @@ export default defineConfig({
   },
   projects: [
     { name: "mobile-light", use: { ...mobile, colorScheme: "light" } },
-    { name: "mobile-dark", use: { ...mobile, colorScheme: "dark" } },
+    { name: "mobile-dark", grep: /@a11y/, use: { ...mobile, colorScheme: "dark" } },
   ],
   webServer: {
     command: "pnpm build && pnpm start --hostname 127.0.0.1 --port 3000",

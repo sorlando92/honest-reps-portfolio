@@ -76,9 +76,3 @@ export function qualityIssue(serving: Pick<Serving, "grams" | "kcal" | "protein_
   const base = Math.max(kcal, fromMacros)
   return Math.abs(kcal - fromMacros) / base > 0.2 ? "calories_mismatch" : null
 }
-
-/** The confirmation line: "Ascent Native Fuel Whey, Chocolate. 1 scoop (34 g), 130 kcal." */
-export function servingLine(serving: Pick<Serving, "label" | "kcal"> | null): string | null {
-  if (!serving) return null
-  return `${serving.label}, ${Math.round(serving.kcal)} kcal`
-}

@@ -16,7 +16,7 @@ async function body(id: string) {
   await admin.from("weights").upsert({ user_id: id, date: "2026-01-01", weight_kg: 80 })
 }
 
-test("a free user edits targets; below the floor asks first", async ({ page }, info) => {
+test("a free user edits targets; below the floor asks first", { tag: "@a11y" }, async ({ page }, info) => {
   const email = `e2e-targets-${info.project.name}-${Date.now()}@example.test`
   await signInWithCode(page, email)
   const id = await userId(email)

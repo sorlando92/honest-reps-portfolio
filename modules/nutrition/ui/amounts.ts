@@ -4,7 +4,7 @@
 import type { DraftAlternative, DraftItem } from "../parsing/service"
 
 export type WeightUnit = "g" | "oz"
-export const GRAMS_PER_OZ = 28.3495
+const GRAMS_PER_OZ = 28.3495
 
 export function toUnit(grams: number, unit: WeightUnit): number {
   return unit === "g" ? Math.round(grams) : Math.round((grams / GRAMS_PER_OZ) * 10) / 10

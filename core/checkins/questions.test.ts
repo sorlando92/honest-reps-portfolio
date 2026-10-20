@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
-import { validateSubmission, type CheckinQuestion } from "./questions"
+import type { CheckinQuestion } from "./questions"
+import { validateSubmission } from "./submission"
 import { checkinFollowupPush, coachReplyPush } from "../notifications/copy"
 import { inviteEmailContent } from "../invites/email"
 import { hashInviteToken, looksLikeInviteToken, newInviteToken } from "../invites/token"

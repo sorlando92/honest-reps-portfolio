@@ -1,31 +1,18 @@
 // Custom foods (docs/FOOD_LOOKUP_SPEC.md 4): created by label scan or "Enter
 // it yourself", private to the user. Pure: the form and the API share it.
+// No zod here: the form imports this file. The request schema is in
+// custom-input.ts.
 
-import { z } from "zod"
 import type { Serving } from "../parsing/parse-meal"
+import type { CustomFoodInput } from "./custom-input"
 import { candidates } from "./gtin"
+
+export type { CustomFoodInput }
 
 const OZ = 28.3495
 
 export const SERVING_UNITS = ["g", "oz", "ml"] as const
 export type ServingUnit = (typeof SERVING_UNITS)[number]
-
-export const customFoodInput = z.object({
-  name: z.string().trim().min(1).max(300),
-  brand: z.string().trim().max(200).nullable(),
-  /** Any barcode form; stored as the canonical GTIN-14. Must pass its check digit. */
-  gtin: z.string().trim().max(20).nullable(),
-  /** The label's words for one serving ("1 scoop"); optional. */
-  servingLabel: z.string().trim().max(100).nullable(),
-  servingSize: z.number().positive().max(5000),
-  servingUnit: z.enum(SERVING_UNITS),
-  calories: z.number().min(0).max(5000),
-  proteinG: z.number().min(0).max(1000),
-  carbsG: z.number().min(0).max(1000),
-  fatG: z.number().min(0).max(1000),
-})
-
-export type CustomFoodInput = z.infer<typeof customFoodInput>
 
 const round1 = (n: number) => Math.round(n * 10) / 10
 

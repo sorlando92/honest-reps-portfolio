@@ -27,13 +27,8 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 24
-          cache: pnpm
       # The Supabase CLI version pinned in the lockfile, as in CI.
-      - run: pnpm install --frozen-lockfile
+      - uses: ./.github/actions/setup
       - name: Dump roles, schema and data
         env:
           DB_URL: ${{ secrets.HOSTED_DB_URL }}

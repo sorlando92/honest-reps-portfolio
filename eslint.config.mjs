@@ -41,6 +41,11 @@ const eslintConfig = defineConfig([
     "playwright-report/**",
     "test-results/**",
     "supabase/**",
+    // Generated or local-only folders.
+    "evals/.cache/**",
+    "evals/results/**",
+    "public/vendor/**",
+    ".chain-sources/**",
   ]),
 ]);
 

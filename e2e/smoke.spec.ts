@@ -3,7 +3,7 @@ import { coachEmail, expectNoAxeViolations, expectTapTargets, signInWithCode } f
 
 const MEMBER_TABS = ["Progress", "Today", "Coach", "More"]
 
-test("signed out visitors land on sign in", async ({ page }) => {
+test("signed out visitors land on sign in", { tag: "@a11y" }, async ({ page }) => {
   await page.goto("/today")
   await expect(page).toHaveURL(/\/sign-in$/)
   await expect(page.getByText("Your coach can see what you log so he can help.")).toBeVisible()
@@ -24,7 +24,7 @@ test("the manifest is installable", async ({ request }) => {
   }
 })
 
-test("a new member signs in with the emailed code and sees the 4 tabs", async ({ page }, info) => {
+test("a new member signs in with the emailed code and sees the 4 tabs", { tag: "@a11y" }, async ({ page }, info) => {
   const email = `e2e-${info.project.name}-${Date.now()}@example.test`
   await signInWithCode(page, email)
 
@@ -48,7 +48,7 @@ test("a new member signs in with the emailed code and sees the 4 tabs", async ({
   await expect(page.getByRole("heading", { name: "Clients" })).toHaveCount(0)
 })
 
-test("the coach gets Clients in place of Coach", async ({ page }) => {
+test("the coach gets Clients in place of Coach", { tag: "@a11y" }, async ({ page }) => {
   await signInWithCode(page, coachEmail)
   const nav = page.getByRole("navigation", { name: "Main" })
   await expect(nav.getByRole("tab")).toHaveText(["Progress", "Today", "Clients", "More"])

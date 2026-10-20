@@ -37,7 +37,7 @@ async function stubParse(page: Page) {
 
 const section = (page: Page, name: string) => page.getByRole("list", { name: `${name} entries` })
 
-test("sections are always shown; + picks the meal and the card can change it", async ({ page }, info) => {
+test("sections are always shown; + picks the meal and the card can change it", { tag: "@a11y" }, async ({ page }, info) => {
   await signInWithCode(page, `e2e-meals-${info.project.name}-${Date.now()}@example.test`)
   await stubParse(page)
   for (const name of ["Breakfast", "Lunch", "Dinner", "Snacks"]) {
@@ -75,7 +75,7 @@ test("sections are always shown; + picks the meal and the card can change it", a
   await page.screenshot({ path: info.outputPath("sections.png"), fullPage: true })
 })
 
-test("copy yesterday's lunch logs the same items today", async ({ page }, info) => {
+test("copy yesterday's lunch logs the same items today", { tag: "@a11y" }, async ({ page }, info) => {
   await signInWithCode(page, `e2e-copy-${info.project.name}-${Date.now()}@example.test`)
   // Yesterday's lunch, saved through the real API.
   const saved = await page.request.post("/api/entries", {

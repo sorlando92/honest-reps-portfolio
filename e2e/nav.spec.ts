@@ -37,7 +37,7 @@ async function seed(id: string) {
 const band = (page: Page) => page.locator("#today-band")
 const week = (page: Page) => band(page).getByRole("group", { name: "Week" })
 
-test("tab bar: order, labels, Today by default, active pill, Progress header and avatar", async ({ page }, info) => {
+test("tab bar: order, labels, Today by default, active pill, Progress header and avatar", { tag: "@a11y" }, async ({ page }, info) => {
   await signInWithCode(page, `e2e-nav-${info.project.name}-${Date.now()}@example.test`)
   const tabs = page.getByRole("tablist", { name: "Main" }).getByRole("tab")
   await expect(tabs).toHaveText(["Progress", "Today", "Coach", "More"])
@@ -67,7 +67,7 @@ test("tab bar: order, labels, Today by default, active pill, Progress header and
   await page.waitForURL("**/more")
 })
 
-test("week strip slides by week without changing the day; month calendar selects and collapses", async ({ page }, info) => {
+test("week strip slides by week without changing the day; month calendar selects and collapses", { tag: "@a11y" }, async ({ page }, info) => {
   const email = `e2e-nav-cal-${info.project.name}-${Date.now()}@example.test`
   await signInWithCode(page, email)
   const id = await userId(email)
@@ -129,7 +129,7 @@ test("scrolling swaps the week strip for the compact macro row and back", async 
   await expect(week(page)).toBeVisible()
 })
 
-test("quick actions on a past day act on that day; from Progress they switch to Today", async ({ page }, info) => {
+test("quick actions on a past day act on that day; from Progress they switch to Today", { tag: "@a11y" }, async ({ page }, info) => {
   const email = `e2e-nav-qa-${info.project.name}-${Date.now()}@example.test`
   await signInWithCode(page, email)
   const id = await userId(email)

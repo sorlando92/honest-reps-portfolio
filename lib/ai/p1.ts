@@ -5,7 +5,7 @@ import { aiModel, anthropic, EXTRACTION_SAFETY_RULES, supportsServerFallback, ty
 
 // AI_PROMPTS.md P1. Bump the version whenever the locked text or schema
 // changes; it is logged with every call in ai_calls.
-export const P1_VERSION = "p1-2026-10-14.3"
+const P1_VERSION = "p1-2026-10-14.3"
 
 // Locked layer, verbatim from AI_PROMPTS.md P1, after the safety rules.
 const P1_SYSTEM = `${EXTRACTION_SAFETY_RULES}
@@ -42,7 +42,7 @@ export const P1Output = z.object({
 export type P1Item = z.infer<typeof P1Item>
 
 // AI_PROMPTS.md P1 "Confidence caps by amount source", applied in code.
-export const CONFIDENCE_CAPS: Record<AmountSource, number> = {
+const CONFIDENCE_CAPS: Record<AmountSource, number> = {
   estimated: 0.6,
   hand: 0.75,
   measured: 0.9,
@@ -50,7 +50,7 @@ export const CONFIDENCE_CAPS: Record<AmountSource, number> = {
   label: 1,
 }
 
-export function capConfidence(item: P1Item): P1Item {
+function capConfidence(item: P1Item): P1Item {
   const capped = Math.min(Math.max(item.confidence, 0), CONFIDENCE_CAPS[item.amount_source])
   return { ...item, confidence: capped }
 }

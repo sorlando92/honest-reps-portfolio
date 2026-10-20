@@ -4,8 +4,8 @@ import Anthropic from "@anthropic-ai/sdk"
 // Model from ANTHROPIC_MODEL (ARCHITECTURE.md). The default is the P1 model
 // chosen by the parsing eval (AI_PROMPTS.md "Model"): Claude Sonnet 5.5, the
 // cheapest model passing every bar but holdout meal calories, which all three
-// models miss (CHANGELOG 2026-10-13, provisional until the PM confirms).
-export const DEFAULT_MODEL = "claude-sonnet-5-5"
+// models miss (CHANGELOG 2026-10-13). Locked by the PM in Q42.
+const DEFAULT_MODEL = "claude-sonnet-5-5"
 
 export function aiModel(): string {
   return process.env.ANTHROPIC_MODEL || DEFAULT_MODEL

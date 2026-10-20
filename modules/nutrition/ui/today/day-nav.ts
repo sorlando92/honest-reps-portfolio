@@ -5,7 +5,7 @@ import { track } from "@/core/events/client"
 import { daysBetween } from "../../days/week"
 
 /** The Today URL for a local date; today itself is plain /today. */
-export function todayHref(date: string, today: string): string {
+function todayHref(date: string, today: string): string {
   return date === today ? "/today" : `/today?date=${date}`
 }
 

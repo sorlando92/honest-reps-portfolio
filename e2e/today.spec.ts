@@ -72,7 +72,7 @@ async function seed(email: string) {
 
 const rings = (page: Page) => page.getByRole("region", { name: "Macros" })
 
-test("journal: rings, mode, week strip, past day logging, copy, weight, note", async ({ page }, info) => {
+test("journal: rings, mode, week strip, past day logging, copy, weight, note", { tag: "@a11y" }, async ({ page }, info) => {
   const email = `e2e-today-${info.project.name}-${Date.now()}@example.test`
   await signInWithCode(page, email)
   const userId = await seed(email)

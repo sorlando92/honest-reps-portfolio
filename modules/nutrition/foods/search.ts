@@ -82,7 +82,7 @@ export async function foodItemResult(supabase: SupabaseClient, id: string): Prom
 }
 
 /** A USDA portion stored in food_items.serving, with its nutrition. */
-export function portionServing(portion: Portion, per: Per100g): Serving {
+function portionServing(portion: Portion, per: Per100g): Serving {
   const f = portion.grams / 100
   return { label: portion.label, grams: portion.grams, kcal: round1(per.kcal * f), protein_g: round1(per.protein_g * f), carbs_g: round1(per.carbs_g * f), fat_g: round1(per.fat_g * f) }
 }

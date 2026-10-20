@@ -73,7 +73,7 @@ async function describeMeal(page: Page) {
   return page.getByRole("dialog", { name: "Your meal" })
 }
 
-test("describe a meal, fix it on the card, log it", async ({ page }, info) => {
+test("describe a meal, fix it on the card, log it", { tag: "@a11y" }, async ({ page }, info) => {
   await signInWithCode(page, `e2e-log-${info.project.name}-${Date.now()}@example.test`)
   await stubParse(page)
   const card = await describeMeal(page)
@@ -125,7 +125,7 @@ test("an unconfirmed card comes back after reopening the app", async ({ page }, 
   await expect(page.getByRole("dialog", { name: "Your meal" })).toHaveCount(0)
 })
 
-test("edit a logged entry, then delete it", async ({ page }, info) => {
+test("edit a logged entry, then delete it", { tag: "@a11y" }, async ({ page }, info) => {
   await signInWithCode(page, `e2e-edit-${info.project.name}-${Date.now()}@example.test`)
   await stubParse(page)
   const card = await describeMeal(page)
@@ -198,7 +198,7 @@ test("swiping a row left opens the editor", async ({ page }, info) => {
   await expect(page.getByRole("dialog", { name: "Edit entry" })).toBeVisible()
 })
 
-test("star an entry, then log it again from a quick add chip", async ({ page }, info) => {
+test("star an entry, then log it again from a quick add chip", { tag: "@a11y" }, async ({ page }, info) => {
   await signInWithCode(page, `e2e-quick-${info.project.name}-${Date.now()}@example.test`)
   await stubParse(page)
   const card = await describeMeal(page)

@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
 import { createClient } from "@/lib/supabase/server"
-import { customFoodColumns, customFoodInput } from "@/modules/nutrition/foods/custom"
+import { customFoodColumns } from "@/modules/nutrition/foods/custom"
+import { customFoodInput } from "@/modules/nutrition/foods/custom-input"
 import { toFoodResult, type FoodItemRow } from "@/modules/nutrition/foods/hits"
 import { FOOD_ITEM_COLUMNS } from "@/modules/nutrition/foods/search"
 

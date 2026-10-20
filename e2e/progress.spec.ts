@@ -52,7 +52,7 @@ async function seed(id: string) {
 
 const chart = (page: Page) => page.getByRole("region", { name: /^(This week|\w{3} \d+ to \w{3} \d+)$/ })
 
-test("all sections populated; tiles match the database; weeks, range and long press", async ({ page }, info) => {
+test("all sections populated; tiles match the database; weeks, range and long press", { tag: "@a11y" }, async ({ page }, info) => {
   const email = `e2e-progress-${info.project.name}-${Date.now()}@example.test`
   await signInWithCode(page, email)
   const id = await userId(email)
@@ -130,7 +130,7 @@ test("all sections populated; tiles match the database; weeks, range and long pr
   expect(events!.find((e) => e.name === "progress_week_changed" && e.props.weeks_from_current === -12)).toBeTruthy()
 })
 
-test("a new user sees every empty state and no errors", async ({ page }, info) => {
+test("a new user sees every empty state and no errors", { tag: "@a11y" }, async ({ page }, info) => {
   const errors: string[] = []
   page.on("pageerror", (e) => errors.push(e.message))
   await signInWithCode(page, `e2e-progress-empty-${info.project.name}-${Date.now()}@example.test`)

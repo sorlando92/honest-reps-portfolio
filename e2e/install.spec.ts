@@ -5,7 +5,7 @@ import { admin, expectNoAxeViolations, expectTapTargets, signInWithCode } from "
 // has no push service, so the browser's subscribe call is stubbed with a fake
 // https endpoint; the save goes through the real API and database.
 
-test("Not now once; 3 days later one banner on Today; after that never again (Q62)", async ({ page, context }, info) => {
+test("Not now once; 3 days later one banner on Today; after that never again (Q62)", { tag: "@a11y" }, async ({ page, context }, info) => {
   await signInWithCode(page, `e2e-install-${info.project.name}-${Date.now()}@example.test`)
   await page.goto("/install")
   await expect(page.getByRole("heading", { name: /on your Home Screen$/ })).toBeVisible()
@@ -98,17 +98,20 @@ test("turning on reminders saves this device's subscription", async ({ page, con
 test("a push service that never answers gives up after 10 seconds", async ({ page, context }, info) => {
   await stubPush(context, "https://push.example.test/never", true)
   await signInWithCode(page, `e2e-push-hang-${info.project.name}-${Date.now()}@example.test`)
+  await page.clock.install()
   await page.goto("/install")
   await page.getByRole("button", { name: "Turn on reminders" }).click()
   await expect(page.getByRole("button", { name: "Turning on" })).toBeDisabled()
-  await expect(page.getByRole("alert").filter({ hasText: "Reminders could not be turned on. Try again." })).toBeVisible({ timeout: 15_000 })
+  // Fake time: jump past the 10 second limit instead of waiting it out.
+  await page.clock.runFor(10_000)
+  await expect(page.getByRole("alert").filter({ hasText: "Reminders could not be turned on. Try again." })).toBeVisible()
   await expect(page.getByRole("button", { name: "Turn on reminders" })).toBeEnabled()
 })
 
 test.describe("on iPhone in Safari", () => {
   test.use({ userAgent: devices["iPhone 14"].userAgent })
 
-  test("shows the Share and Add to Home Screen steps and says reminders need the Home Screen", async ({ page }, info) => {
+  test("shows the Share and Add to Home Screen steps and says reminders need the Home Screen", { tag: "@a11y" }, async ({ page }, info) => {
     await signInWithCode(page, `e2e-ios-${info.project.name}-${Date.now()}@example.test`)
     await page.goto("/install")
     await expect(page.getByText("Tap Share in the Safari toolbar.")).toBeVisible()

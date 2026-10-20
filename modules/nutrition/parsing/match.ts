@@ -44,7 +44,7 @@ export function tokens(text: string): string[] {
     .map((t) => (t.length > 3 && t.endsWith("s") && !t.endsWith("ss") ? t.slice(0, -1) : t))
 }
 
-export function isStateful(name: string): boolean {
+function isStateful(name: string): boolean {
   return STATEFUL.test(name.toLowerCase())
 }
 

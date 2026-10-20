@@ -23,7 +23,7 @@ function barLabel(d: DayTotals, today: string): string {
 }
 
 /** "This week: average 2,040 calories, 4 of 6 days on target, protein 5 of 6." */
-export function chartSummary(label: string, a: WeekAverages): string {
+function chartSummary(label: string, a: WeekAverages): string {
   if (a.loggedDays === 0) return `${label}: no logs yet.`
   const parts = [`average ${formatNumber(a.avgCalories ?? 0)} calories`]
   if (a.daysOnTarget !== null) parts.push(`${a.daysOnTarget} of ${a.elapsedDays} days on target`)

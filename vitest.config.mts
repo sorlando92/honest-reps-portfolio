@@ -15,8 +15,9 @@ export default defineConfig({
         test: {
           name: "unit",
           environment: "node",
-          include: ["**/*.test.ts"],
-          exclude: ["node_modules/**", "tests/rls/**", "e2e/**"],
+          // Source folders only: a repo-wide glob walks .next and the eval cache.
+          include: ["{app,components,core,lib,modules,eslint-rules,evals}/**/*.test.ts"],
+          exclude: ["evals/.cache/**", "evals/results/**"],
         },
       },
       {

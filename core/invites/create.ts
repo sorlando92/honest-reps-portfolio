@@ -12,7 +12,7 @@ export interface IssuedInvite {
   emailed: boolean
 }
 
-export function inviteLink(token: string): string {
+function inviteLink(token: string): string {
   return `${appBaseUrl()}/invite/${token}`
 }
 

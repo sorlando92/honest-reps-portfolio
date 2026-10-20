@@ -5,7 +5,7 @@
 import { addDays } from "@/core/time/local-day"
 
 export const LB_PER_KG = 2.20462
-export const DEFAULT_TREND_ALPHA = 0.1
+const DEFAULT_TREND_ALPHA = 0.1
 
 export type Units = "imperial" | "metric"
 
@@ -35,7 +35,7 @@ export function ewma(weighIns: WeighIn[], alpha: number = DEFAULT_TREND_ALPHA): 
 }
 
 /** The latest trend value on or before a date. */
-export function trendOn(points: TrendPoint[], date: string): number | null {
+function trendOn(points: TrendPoint[], date: string): number | null {
   let found: number | null = null
   for (const p of points) if (p.date <= date) found = p.trendKg
   return found

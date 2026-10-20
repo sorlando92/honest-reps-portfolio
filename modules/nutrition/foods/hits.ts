@@ -114,7 +114,7 @@ export interface FoodItemRow {
  * custom foods) step in their published serving; for generic USDA foods
  * food_items.serving holds the common portion instead.
  */
-export function isLabelFood(row: { source: string; data_type: string | null }): boolean {
+function isLabelFood(row: { source: string; data_type: string | null }): boolean {
   return row.source !== "usda" || row.data_type === "Branded"
 }
 

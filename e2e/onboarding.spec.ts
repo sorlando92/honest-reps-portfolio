@@ -5,7 +5,7 @@ import { admin, expectNoAxeViolations, expectTapTargets, signInWithCode } from "
 const next = (page: Page) => page.getByRole("button", { name: "Next" }).click()
 const choose = (page: Page, group: string, option: string) => page.getByRole("radiogroup", { name: group }).getByRole("radio", { name: new RegExp(`^${option}`) }).click()
 
-test("a new member answers onboarding and lands on Today with targets", async ({ page }, info) => {
+test("a new member answers onboarding and lands on Today with targets", { tag: "@a11y" }, async ({ page }, info) => {
   const email = `e2e-onboard-${info.project.name}-${Date.now()}@example.test`
   await signInWithCode(page, email, { onboarded: false })
   await expect(page).toHaveURL(/\/onboarding$/)

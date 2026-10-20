@@ -82,7 +82,7 @@ export function fill(eaten: number, target: number | null | undefined): number {
 }
 
 /** Streak lengths that earn a moment (docs/TODAY_SPEC.md 4). */
-export const STREAK_MILESTONES = [7, 14, 30, 60, 100] as const
+const STREAK_MILESTONES = [7, 14, 30, 60, 100] as const
 
 export function isStreakMilestone(days: number): boolean {
   return (STREAK_MILESTONES as readonly number[]).includes(days)

@@ -1,5 +1,5 @@
 import type { NextRequest } from "next/server"
-import { redirectTo } from "@/core/invites/app-url"
+import { redirectTo } from "@/core/invites/redirect"
 import { INVITE_COOKIE, looksLikeInviteToken } from "@/core/invites/token"
 import { createClient } from "@/lib/supabase/server"
 

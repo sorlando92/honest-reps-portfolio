@@ -69,7 +69,7 @@ async function newPage(browser: Browser, colorScheme: "light" | "dark" | "no-pre
   return context.newPage()
 }
 
-test("invite, disclosure, check-in, coach reply", async ({ page, browser }, info) => {
+test("invite, disclosure, check-in, coach reply", { tag: "@a11y" }, async ({ page, browser }, info) => {
   test.setTimeout(180_000)
   const tag = `${info.project.name}-${run()}`
   const coach = await newCoach(page, tag)
@@ -190,7 +190,7 @@ test("invite, disclosure, check-in, coach reply", async ({ page, browser }, info
   await stranger.context().close()
 })
 
-test("expired, resent, revoked and other-account invites", async ({ page, browser }, info) => {
+test("expired, resent, revoked and other-account invites", { tag: "@a11y" }, async ({ page, browser }, info) => {
   test.setTimeout(120_000)
   const tag = `${info.project.name}-${run()}`
   const coach = await newCoach(page, tag)

@@ -130,7 +130,7 @@ export async function saveEntry(supabase: SupabaseClient, userId: string, body: 
 }
 
 /** The meal for an entry by its local time in the user's timezone (docs/TODAY_SPEC.md 6). */
-export async function defaultMeal(supabase: SupabaseClient, userId: string, loggedAt: string): Promise<Meal> {
+async function defaultMeal(supabase: SupabaseClient, userId: string, loggedAt: string): Promise<Meal> {
   const [{ data: profile }, { data: config }] = await Promise.all([
     supabase.from("profiles").select("timezone").eq("id", userId).single(),
     supabase.from("app_config").select("value").eq("key", "meal_windows").maybeSingle(),

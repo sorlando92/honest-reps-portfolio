@@ -44,7 +44,7 @@ const UNCURATED_CHAINS = [
   "waffle house", "crumbl", "freddys", "steak n shake", "white castle", "noodles and company",
 ]
 
-export function normalizeBrand(brand: string): string {
+function normalizeBrand(brand: string): string {
   return brand
     .toLowerCase()
     .replace(/['’]s\b/g, "s")

@@ -31,7 +31,7 @@ function toAlternative(r: FoodResult): DraftAlternative {
 }
 
 /** Grams for a generic food with no common portion, until the user weighs it. */
-export const SEARCH_DEFAULT_GRAMS = 100
+const SEARCH_DEFAULT_GRAMS = 100
 
 /**
  * A searched food as a card row (PRD F2, PM 2026-10-15). A food with a

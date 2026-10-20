@@ -8,7 +8,7 @@ import { mealFor, MEAL_LABEL, type MealWindows } from "@/modules/nutrition/entri
 import { shortDate } from "@/modules/nutrition/days/week"
 import { CardSheet } from "@/modules/nutrition/ui/card-sheet"
 
-export const QUICK_ACTIONS = ["search", "scan", "weight", "note", "copy"] as const
+const QUICK_ACTIONS = ["search", "scan", "weight", "note", "copy"] as const
 export type QuickAction = (typeof QUICK_ACTIONS)[number]
 
 /** Sent on Today; the journal's handler carries the action out on the selected day. */

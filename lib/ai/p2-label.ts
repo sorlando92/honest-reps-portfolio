@@ -5,7 +5,7 @@ import { aiModel, anthropic, EXTRACTION_SAFETY_RULES, supportsServerFallback, ty
 
 // AI_PROMPTS.md "P2 label mode". Bump the version whenever the locked text or
 // schema changes; it is logged with every call in ai_calls.
-export const P2_LABEL_VERSION = "p2-label-2026-10-17.1"
+const P2_LABEL_VERSION = "p2-label-2026-10-17.1"
 
 // Locked layer, verbatim from AI_PROMPTS.md, after the safety rules.
 const P2_LABEL_SYSTEM = `${EXTRACTION_SAFETY_RULES}

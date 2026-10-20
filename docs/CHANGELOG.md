@@ -360,6 +360,27 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
 - More (was Me; `/me` redirects): Goals (Targets), App (Units, Add to Home Screen and turn on reminders, Food scale), Account (Name per Q63, signed in email, Privacy and data, Terms, About with Open Food Facts, Sign out). Reminders times, Subscription, Delete account and Coach settings appear when they ship (Q64).
 - Tests: e2e at 375px light and dark for tab order, labels and selection, Progress greeting and avatar, More name, /me redirect, week slide without changing the day, never past the current week, tap to select, month calendar select and collapse, tap outside, compact row swap and back, quick actions on a past day (copy at the anchor, weight sheet, day note focus), bars hidden while typing, Search food from Progress, log bar from Progress to Today, events; existing specs updated for tabs, the band and the log bar. The "+" button exposes `data-hydrated` so tests wait until a tap can work.
 
+### 2026-10-20: tech debt batch 1 (CI, bundle, cleanup; no user-facing change)
+
+- CI skips docs-only changes. A `changes` job reports skipped checks instead of leaving them pending. `vercel.json` `ignoreCommand` skips docs-only deploys using the same rule.
+- CI changes:
+  - typecheck and lint run in a parallel job;
+  - seeds after `supabase start` instead of `db:reset`, which applied every migration twice;
+  - caches the Playwright browser and `.next/cache`;
+  - no longer starts realtime or postgres-meta.
+  - The three workflows share `.github/actions/setup`.
+- E2E: every test runs in light. Dark reruns only the 25 tests tagged `@a11y` (axe contrast is the only theme-dependent check). That makes 74 runs instead of 98: 3.7 min locally. The push timeout test uses a fake clock (about 11s down to 1.2s).
+- Bundle:
+  - zod no longer reaches the browser (30 KB gzipped off the check-in and custom-food routes). The schemas moved to `core/checkins/submission.ts` and `modules/nutrition/foods/custom-input.ts`.
+  - Sentry costs 57 KB gzipped on every page (188 KB with it, 130 KB without). Its tree-shaking flags saved only 1 KB under Turbopack, so they were not kept.
+- Cleanup:
+  - Vitest and ESLint skip `.next`, the eval cache and `public/vendor`.
+  - `.env.example` lists `RESEND_API_KEY` and `JOBS_SECRET` and comments out Stripe.
+  - `@types/node` is now 24 and realtime is off in `config.toml`.
+  - Removed unused `isMeal`, `servingLine` and `CheckinSubmission`, plus 22 exports used only in their own file.
+  - `core/invites/app-url.ts` was renamed to `redirect.ts`.
+- Deferred: e2e programmatic sign-in and parallel workers (batch 2), loading Sentry after the page is interactive (needs a decision), and the docs merge (PM proposal).
+
 ### 2026-10-18: MVP step 4, client loop (deployed 2026-10-19)
 
 - Deployed 2026-10-19: PR #3 merged (main `bf7cb13`), production `honest-reps-lzkhizqtc` Ready. `RESEND_API_KEY` in Production and Preview (owner task 18). `JOBS_SECRET` in Vercel Production only, with the matching Vault secrets `app_url` (https://app.honestreps.app) and `jobs_secret` on hosted. Checked live:

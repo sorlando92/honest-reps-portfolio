@@ -45,7 +45,7 @@ const DISMISSED_AT = "hr:install-dismissed-at"
 const BANNER_DONE = "hr:install-banner-done"
 /** Before Q62 was decided: a count of install screen dismissals. */
 const LEGACY_DISMISSALS = "hr:install-dismissals"
-export const INSTALL_BANNER_AFTER_DAYS = 3
+const INSTALL_BANNER_AFTER_DAYS = 3
 const DAY_MS = 86_400_000
 
 function read(key: string): string | null {

@@ -14,10 +14,6 @@ export type MealWindows = Record<Exclude<Meal, "snack">, [number, number]>
 
 export const DEFAULT_MEAL_WINDOWS: MealWindows = { breakfast: [4, 11], lunch: [11, 16], dinner: [16, 22] }
 
-export function isMeal(value: unknown): value is Meal {
-  return typeof value === "string" && (MEALS as readonly string[]).includes(value)
-}
-
 /** Reads app_config "meal_windows", falling back to the defaults for anything missing or malformed. */
 export function mealWindows(value: unknown): MealWindows {
   const v = (value ?? {}) as Partial<Record<string, unknown>>

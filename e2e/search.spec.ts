@@ -89,7 +89,7 @@ async function forbidParse(page: Page) {
   return calls
 }
 
-test("typing in the log bar shows results; a tapped result opens the card without the model", async ({ page }, info) => {
+test("typing in the log bar shows results; a tapped result opens the card without the model", { tag: "@a11y" }, async ({ page }, info) => {
   await signInWithCode(page, `e2e-search-${info.project.name}-${Date.now()}@example.test`)
   await stubSearch(page)
   const parses = await forbidParse(page)
@@ -138,7 +138,7 @@ test("Enter and Describe with AI always run AI parsing", async ({ page }, info) 
   await expect.poll(() => texts).toEqual(["chicken and rice", "two eggs"])
 })
 
-test("no match offers AI, the label and entering it yourself", async ({ page }, info) => {
+test("no match offers AI, the label and entering it yourself", { tag: "@a11y" }, async ({ page }, info) => {
   await signInWithCode(page, `e2e-nomatch-${info.project.name}-${Date.now()}@example.test`)
   await stubSearch(page)
   await page.getByLabel("What did you eat?").fill("zzqx")
@@ -151,7 +151,7 @@ test("no match offers AI, the label and entering it yourself", async ({ page }, 
   await expect(page.getByRole("dialog", { name: "Add food" }).getByLabel("Food", { exact: true })).toHaveValue("zzqx")
 })
 
-test("add a curated item and a food entered by hand to a described meal", async ({ page }, info) => {
+test("add a curated item and a food entered by hand to a described meal", { tag: "@a11y" }, async ({ page }, info) => {
   await signInWithCode(page, `e2e-add-${info.project.name}-${Date.now()}@example.test`)
   await stubSearch(page)
   await page.route("**/api/parse", (route) =>
@@ -313,7 +313,7 @@ async function stubBarcode(page: Page, result: object | null) {
   return outcomes
 }
 
-test("a typed barcode is confirmed, then logs one serving, with attribution", async ({ page }, info) => {
+test("a typed barcode is confirmed, then logs one serving, with attribution", { tag: "@a11y" }, async ({ page }, info) => {
   await signInWithCode(page, `e2e-barcode-${info.project.name}-${Date.now()}@example.test`)
   await stubSearch(page)
   const outcomes = await stubBarcode(page, yogurt)
@@ -365,7 +365,7 @@ test("Not this opens search with the product's words and saves the pick as the c
   ])
 })
 
-test("a barcode we do not have: scan the label, save it, and the next scan finds it", async ({ page }, info) => {
+test("a barcode we do not have: scan the label, save it, and the next scan finds it", { tag: "@a11y" }, async ({ page }, info) => {
   await signInWithCode(page, `e2e-label-${info.project.name}-${Date.now()}@example.test`)
   await stubSearch(page)
   // A made up product (valid check digit); only this user's lookups find it once saved.
