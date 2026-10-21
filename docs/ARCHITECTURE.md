@@ -155,9 +155,49 @@ Restore into a new Supabase project (or the same one after a reset):
 2. Decrypt and unpack: `gpg -d honest-reps-YYYY-MM-DD.tar.gz.gpg | tar -xz` (asks for the passphrase).
 3. Restore, with the target project's session pooler URL: `psql "$TARGET_DB_URL" --single-transaction -v ON_ERROR_STOP=1 -f roles.sql -f schema.sql -c 'SET session_replication_role = replica' -f data.sql`. `session_replication_role = replica` keeps triggers (signup, `log_count`, events) from firing on restored rows.
 4. Reload the FDC reference data: `node --env-file=<target env> scripts/fdc-refresh.mts` (about 20 minutes).
-5. Reapply the dashboard settings: email templates and SMTP, Site URL and redirect URLs, OTP length 6 and expiry 3600.
+5. Reapply the dashboard settings: email templates and SMTP, Site URL and redirect URLs, OTP length 6 and expiry 3600, and the Before User Created hook (`public.hook_before_user_created`, see "Account deletion" below for the invite-only rule).
 6. If it is a new project, point Vercel's `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` and `SUPABASE_SERVICE_ROLE_KEY` at it and redeploy.
 7. Check: sign in as the coach, open Today and Progress for a real account, and compare row counts of `profiles`, `food_entries` and `weights` with the old project.
+
+## Invite-only signup
+
+Supabase Auth calls `public.hook_before_user_created` (migration 20261020000002) before it creates any user, whatever the sign in method. It allows a new account only for an email with an open invite: not claimed, revoked or expired, compared without case. Anyone else gets `invite_required` (HTTP 403), and the sign in screen says the app is invite only. Existing users sign in as before, since the hook runs only on creation. Users created with the admin API (the seed, RLS fixtures) skip it. `app_config.signup_allowlist` (`{"emails": [], "domains": []}`) lets local and CI test accounts in (`example.test`); the seed writes it only with `--sample`, so hosted has none, and a coach adds a tester by sending an invite. Accepting an invite sets `ai_enabled = true`, recorded as changed by the coach who sent it. Local: `supabase/config.toml` `[auth.hook.before_user_created]`. Hosted: Authentication, Hooks, Before User Created, Postgres function `public.hook_before_user_created`.
+
+## Account deletion (manual, until Delete account ships)
+
+The under-18 stop in onboarding deletes the account by itself (`core/account/delete.ts`). For any other request, for example a tester asking to leave, follow these steps in the Supabase dashboard. They do the same thing as that code. Never use them on the coach account: deleting it also deletes coach settings, check-in questions and invites.
+
+1. Confirm the request came from the account's own email address, by a reply from that address.
+2. Find the user id in the SQL editor:
+   `select id, email, created_at from auth.users where lower(email) = lower('PERSON@EXAMPLE.COM');`
+3. Remove what the cascade in step 5 would leave behind: the meal text in `ai_calls`, and the email recorded on a claimed invite.
+   ```sql
+   begin;
+   delete from public.ai_calls where user_id = 'USER_ID';
+   update public.invites set claimed_email = null where claimed_by = 'USER_ID';
+   commit;
+   ```
+4. Delete the check-in photos: Storage, `checkin-photos`, the folder named USER_ID, then delete the folder.
+5. Delete the auth user: Authentication, Users, the user, Delete user. The cascade removes the profile and everything owned through it:
+   - nutrition profile, targets, weights and day notes;
+   - food entries and items, favorites and custom foods;
+   - barcode scans and matches;
+   - check-ins, photo rows and their message thread;
+   - consents, push subscriptions and notification records.
+6. Check that every count is 0:
+   ```sql
+   select (select count(*) from auth.users where id = 'USER_ID') as auth_user,
+          (select count(*) from public.profiles where id = 'USER_ID') as profile,
+          (select count(*) from public.food_entries where user_id = 'USER_ID') as entries,
+          (select count(*) from public.ai_calls where user_id = 'USER_ID') as ai_calls,
+          (select count(*) from storage.objects where bucket_id = 'checkin-photos' and name like 'USER_ID/%') as photos;
+   ```
+7. What stays, so the reply can say so:
+   - `events` rows lose their user id and hold only event names and counts;
+   - encrypted backups age out within 30 days (see "Backups and restore");
+   - Sentry errors carry only the user id and expire on Sentry's retention;
+   - Vercel and Resend logs expire on their own retention.
+8. Reply to the person that the account is deleted, with the date.
 
 ## Environment variables
 

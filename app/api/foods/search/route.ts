@@ -3,6 +3,7 @@ import { z } from "zod"
 import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { searchIndex } from "@/modules/nutrition/foods/search"
+import { withinRateLimit } from "@/core/rate-limit"
 
 // Search as you type runs on the local index (docs/FOOD_LOOKUP_SPEC.md 2):
 // one request per pause in typing, so the limit only stops runaway clients.
@@ -21,12 +22,7 @@ export async function GET(request: Request) {
   const q = query.safeParse(new URL(request.url).searchParams.get("q") ?? "")
   if (!q.success) return NextResponse.json({ error: "Invalid search" }, { status: 400 })
 
-  const { data: allowed } = await createAdminClient().rpc("hit_rate_limit", {
-    p_key: `food-search:${userId}`,
-    p_limit: SEARCHES_PER_HOUR,
-    p_window_seconds: 3600,
-  })
-  if (allowed === false) return NextResponse.json({ error: "Too many requests" }, { status: 429 })
+  if (!(await withinRateLimit(createAdminClient(), `food-search:${userId}`, SEARCHES_PER_HOUR, 3600))) return NextResponse.json({ error: "Too many requests" }, { status: 429 })
 
   try {
     return NextResponse.json({ sections: await searchIndex(supabase, q.data) })

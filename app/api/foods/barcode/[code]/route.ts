@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { logScan, lookupBarcode } from "@/modules/nutrition/foods/barcode"
 import { candidates, type BarcodeFormat } from "@/modules/nutrition/foods/gtin"
+import { withinRateLimit } from "@/core/rate-limit"
 
 const LOOKUPS_PER_HOUR = 120
 
@@ -34,8 +35,7 @@ export async function GET(request: Request, ctx: RouteContext<"/api/foods/barcod
   if (!gtins.length) return NextResponse.json({ error: "Invalid barcode" }, { status: 400 })
 
   const admin = createAdminClient()
-  const { data: allowed } = await admin.rpc("hit_rate_limit", { p_key: `barcode:${userId}`, p_limit: LOOKUPS_PER_HOUR, p_window_seconds: 3600 })
-  if (allowed === false) return NextResponse.json({ error: "Too many requests" }, { status: 429 })
+  if (!(await withinRateLimit(admin, `barcode:${userId}`, LOOKUPS_PER_HOUR, 3600))) return NextResponse.json({ error: "Too many requests" }, { status: 429 })
 
   const lookup = await lookupBarcode(admin, userId, gtins)
   const msToResult = p.ms === null ? null : p.ms + (Date.now() - started)

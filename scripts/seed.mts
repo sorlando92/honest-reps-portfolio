@@ -2,7 +2,7 @@
 // settings are never overwritten, so edits made in Coach settings survive.
 //
 //   pnpm db:seed            settings and coach (local or hosted)
-//   pnpm db:seed --sample   also two sample members (local only)
+//   pnpm db:seed --sample   also two sample members and the example.test signup allowlist (local only)
 //
 // Needs NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY and COACH_EMAIL.
 
@@ -153,6 +153,9 @@ async function main() {
 
   if (withSample) {
     if (!isLocal) throw new Error("Sample users are only seeded into a local database.")
+    // Invite-only signup (migration 20261020000002): local and CI test
+    // accounts sign up at example.test without an invite. Never on hosted.
+    check(await admin.from("app_config").upsert({ key: "signup_allowlist", value: { emails: [], domains: ["example.test"] } }, { onConflict: "key" }))
     for (const email of ["member1@example.test", "member2@example.test"]) {
       const id = await ensureUser(admin, email)
       check(await admin.from("profiles").update({ coach_id: coachId, ai_enabled: true }).eq("id", id))

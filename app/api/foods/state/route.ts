@@ -3,6 +3,7 @@ import { z } from "zod"
 import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { matchForState } from "@/modules/nutrition/foods/state"
+import { withinRateLimit } from "@/core/rate-limit"
 
 const params = z.object({ name: z.string().trim().min(2).max(300), state: z.enum(["raw", "cooked", "dry"]) })
 
@@ -18,7 +19,6 @@ export async function GET(request: Request) {
 
   const admin = createAdminClient()
   // Shares the food search budget: each flip spends three USDA requests.
-  const { data: allowed } = await admin.rpc("hit_rate_limit", { p_key: `food-search:${userId}`, p_limit: 120, p_window_seconds: 3600 })
-  if (allowed === false) return NextResponse.json({ error: "Too many requests" }, { status: 429 })
+  if (!(await withinRateLimit(admin, `food-search:${userId}`, 120, 3600))) return NextResponse.json({ error: "Too many requests" }, { status: 429 })
   return NextResponse.json({ result: await matchForState(admin, parsed.data.name, parsed.data.state) })
 }

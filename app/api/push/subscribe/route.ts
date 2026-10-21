@@ -3,10 +3,11 @@ import { z } from "zod"
 import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { track } from "@/core/events/track"
+import { isPushServiceEndpoint } from "@/core/notifications/endpoint"
 
 // The browser's PushSubscription.toJSON().
 const subscription = z.object({
-  endpoint: z.url().startsWith("https://").max(1000),
+  endpoint: z.url().max(1000).refine(isPushServiceEndpoint),
   keys: z.object({ p256dh: z.string().min(1).max(200), auth: z.string().min(1).max(100) }),
 })
 

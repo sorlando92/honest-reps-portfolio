@@ -4,6 +4,7 @@ import { denyWithoutAi } from "@/core/auth/ai-access"
 import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { parseForUser } from "@/modules/nutrition/parsing/service"
+import { withinRateLimit } from "@/core/rate-limit"
 
 // Caps model spend per user: a heavy logger logs maybe 15 meals a day.
 const PARSES_PER_HOUR = 60
@@ -26,12 +27,7 @@ export async function POST(request: Request) {
   const parsed = body.safeParse(await request.json().catch(() => null))
   if (!parsed.success) return NextResponse.json({ error: "Invalid request" }, { status: 400 })
 
-  const { data: allowed } = await createAdminClient().rpc("hit_rate_limit", {
-    p_key: `parse:${userId}`,
-    p_limit: PARSES_PER_HOUR,
-    p_window_seconds: 3600,
-  })
-  if (allowed === false) return NextResponse.json({ error: "Too many requests" }, { status: 429 })
+  if (!(await withinRateLimit(createAdminClient(), `parse:${userId}`, PARSES_PER_HOUR, 3600))) return NextResponse.json({ error: "Too many requests" }, { status: 429 })
 
   const draft = await parseForUser(supabase, userId, parsed.data.text, parsed.data.localTime)
   return NextResponse.json(draft)

@@ -76,7 +76,7 @@ async function stubPush(context: BrowserContext, endpoint: string, hang = false)
 
 test("turning on reminders saves this device's subscription", async ({ page, context }, info) => {
   const email = `e2e-push-${info.project.name}-${Date.now()}@example.test`
-  const endpoint = `https://push.example.test/send/${info.project.name}-${Date.now()}`
+  const endpoint = `https://fcm.googleapis.com/fcm/send/e2e-${info.project.name}-${Date.now()}`
   await stubPush(context, endpoint)
   await signInWithCode(page, email)
   await page.goto("/install")
@@ -96,7 +96,7 @@ test("turning on reminders saves this device's subscription", async ({ page, con
 })
 
 test("a push service that never answers gives up after 10 seconds", async ({ page, context }, info) => {
-  await stubPush(context, "https://push.example.test/never", true)
+  await stubPush(context, "https://fcm.googleapis.com/fcm/send/e2e-never", true)
   await signInWithCode(page, `e2e-push-hang-${info.project.name}-${Date.now()}@example.test`)
   await page.clock.install()
   await page.goto("/install")

@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { LABEL_MEDIA_TYPES, runP2Label, type LabelMediaType } from "@/lib/ai/p2-label"
 import { candidates } from "@/modules/nutrition/foods/gtin"
+import { withinRateLimit } from "@/core/rate-limit"
 
 // AI_PROMPTS.md P2 label mode: free for every user, so it is rate limited.
 const LABELS_PER_HOUR = 20
@@ -33,8 +34,7 @@ export async function POST(request: Request) {
   const gtin = typeof rawGtin === "string" && rawGtin ? (candidates(rawGtin)[0] ?? null) : null
 
   const admin = createAdminClient()
-  const { data: allowed } = await admin.rpc("hit_rate_limit", { p_key: `label:${userId}`, p_limit: LABELS_PER_HOUR, p_window_seconds: 3600 })
-  if (allowed === false) return NextResponse.json({ error: "Too many requests" }, { status: 429 })
+  if (!(await withinRateLimit(admin, `label:${userId}`, LABELS_PER_HOUR, 3600))) return NextResponse.json({ error: "Too many requests" }, { status: 429 })
 
   const result = await runP2Label({ data: Buffer.from(await photo.arrayBuffer()).toString("base64"), mediaType: photo.type as LabelMediaType })
   const call = result.record

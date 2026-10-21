@@ -360,6 +360,27 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
 - More (was Me; `/me` redirects): Goals (Targets), App (Units, Add to Home Screen and turn on reminders, Food scale), Account (Name per Q63, signed in email, Privacy and data, Terms, About with Open Food Facts, Sign out). Reminders times, Subscription, Delete account and Coach settings appear when they ship (Q64).
 - Tests: e2e at 375px light and dark for tab order, labels and selection, Progress greeting and avatar, More name, /me redirect, week slide without changing the day, never past the current week, tap to select, month calendar select and collapse, tap outside, compact row swap and back, quick actions on a past day (copy at the anchor, weight sheet, day note focus), bars hidden while typing, Search food from Progress, log bar from Progress to Today, events; existing specs updated for tabs, the band and the log bar. The "+" button exposes `data-hydrated` so tests wait until a tap can work.
 
+### 2026-10-20: security must-fix before testers (audit M1, M2, M3, L1, L2)
+
+- **M1, invite-only signup.**
+  - Migration `20261020000002` adds `public.hook_before_user_created`, which Supabase Auth runs before creating any user. It allows only emails with an open invite and returns `invite_required` (403) otherwise. The sign in screen says the app is invite only.
+  - `app_config.signup_allowlist` covers local and CI test accounts (`example.test`, seeded only with `--sample`).
+  - `claim_invite` now also sets `ai_enabled = true`, recorded as changed by the inviting coach.
+  - Changed behavior: an invite can no longer create an account under a different email than the one invited (Q69 allowed any email). An existing account can still claim it.
+- **M2, headers on every route:**
+  - HSTS with `includeSubDomains`;
+  - `X-Frame-Options: DENY` and an enforced `frame-ancestors 'none'`;
+  - `nosniff`, `Referrer-Policy` and `Permissions-Policy` (camera only);
+  - a full CSP in report-only, which reports to Sentry when a DSN is set (`lib/security-headers.ts`).
+- **M3:** push subscriptions must point at FCM, Apple, Mozilla or Windows push hosts (`core/notifications/endpoint.ts`).
+- **L1:** rate limits fail closed through `withinRateLimit` (`core/rate-limit.ts`) on all 7 limited routes.
+- **L2:**
+  - The under-18 stop deletes the account (`core/account/delete.ts`: `ai_calls`, invite email, photos, then the auth user with its cascade) and signs out. The server-side age check in `finishOnboarding` does the same.
+  - Manual deletion runbook: ARCHITECTURE "Account deletion".
+  - Fixed: a phone still holding the session of a deleted account bounced between sign in and Today until the token expired. A missing profile now goes to the new `/auth/signout`, which clears the session and opens sign in.
+- **Tests:** unit tests for headers, push hosts and the rate limiter; an RLS test for the hook (API roles refused, invite rules); e2e `security.spec.ts` (headers, stranger refused, invited email signs up with AI on, push hosts); the under-18 e2e checks the account is gone.
+- **Hosted, after approval:** apply the migration, then enable the hook in the dashboard (Authentication, Hooks).
+
 ### 2026-10-20: per-client AI access (Sean)
 
 - **Migration `20261020000001_ai_access`:**

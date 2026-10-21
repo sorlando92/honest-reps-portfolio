@@ -31,13 +31,18 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser> => {
   const claims = data?.claims
   if (!claims?.sub) redirect("/sign-in")
 
-  const { data: profile } = await supabase
+  const { data: profile, error } = await supabase
     .from("profiles")
     .select("role, tier, timezone, onboarding_completed_at, ai_enabled")
     .eq("id", claims.sub)
     .single()
 
-  if (!profile) redirect("/sign-in")
+  // A valid token with no profile row (PGRST116): the account was deleted. Clear the
+  // session, or sign in and Today would bounce. Any other failure is an error, not a sign out.
+  if (!profile) {
+    if (error?.code === "PGRST116") redirect("/auth/signout")
+    throw new Error(`Profile lookup failed: ${error?.code ?? "no row"}`)
+  }
 
   // Server errors in this request carry the user id only (lib/monitoring).
   Sentry.setUser({ id: claims.sub })

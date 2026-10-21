@@ -1,8 +1,21 @@
 import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs/config";
+import { securityHeaders } from "./lib/security-headers";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: securityHeaders({
+          supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
+          sentryDsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+          dev: process.env.NODE_ENV === "development",
+        }),
+      },
+    ];
+  },
   cacheComponents: true,
   partialPrefetching: true,
   turbopack: {

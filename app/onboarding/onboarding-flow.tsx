@@ -3,9 +3,10 @@
 import { useId, useMemo, useState, useTransition, type ReactNode } from "react"
 import { Grab, Hand, HandFist, ThumbsUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { createClient } from "@/lib/supabase/client"
 import { ageOn, computeTargets, MINIMUM_AGE, type Goal, type Sex, type TargetDefaults } from "@/modules/nutrition/targets/formula"
 import { signOut } from "../(app)/more/actions"
-import { finishOnboarding, type OnboardingAnswers } from "./actions"
+import { closeUnderageAccount, finishOnboarding, type OnboardingAnswers } from "./actions"
 
 const LB_PER_KG = 2.20462
 const CM_PER_IN = 2.54
@@ -53,6 +54,13 @@ interface Draft {
  */
 export function OnboardingFlow({ initialUnits, today, targetDefaults }: { initialUnits: Units; today: string; targetDefaults: TargetDefaults | null }) {
   const [step, setStep] = useState<Step>("units")
+  /** Under 18: true once the server has deleted the account. */
+  const [closed, setClosed] = useState(false)
+  /** The account is gone: drop this phone's session too, so no page treats it as signed in. */
+  function accountClosed(deleted: boolean) {
+    setClosed(deleted)
+    if (deleted) void createClient().auth.signOut({ scope: "local" }).catch(() => {})
+  }
   const [d, setD] = useState<Draft>({
     units: initialUnits,
     goal: null,
@@ -105,7 +113,11 @@ export function OnboardingFlow({ initialUnits, today, targetDefaults }: { initia
 
   function next() {
     setError(null)
-    if (step === "birth" && ageOn(d.dateOfBirth, today) < MINIMUM_AGE) return setStep("underage")
+    if (step === "birth" && ageOn(d.dateOfBirth, today) < MINIMUM_AGE) {
+      // Q61 and security audit L2: the account is deleted, not just stopped.
+      void closeUnderageAccount(d.dateOfBirth).then((r) => accountClosed(r.deleted), () => accountClosed(false))
+      return setStep("underage")
+    }
     if (step === "scale" && d.hasScale === false) return setStep("no_scale")
     if (step === "no_scale") return setStep("medical")
     if (step === "targets") return finish()
@@ -136,7 +148,11 @@ export function OnboardingFlow({ initialUnits, today, targetDefaults }: { initia
         consents: { terms: true, privacy: true, disclaimer: true },
       }).catch(() => ({ ok: false as const, error: "network" as const }))
       // Success redirects to Today; anything returned is a problem.
-      if (result?.error === "underage") return setStep("underage")
+      // The server deleted the account too (its own age check).
+      if (result?.error === "underage") {
+        accountClosed(true)
+        return setStep("underage")
+      }
       setError(
         result?.error === "network"
           ? "Could not reach Honest Reps. Check your connection and try again. Nothing is saved twice."
@@ -150,11 +166,23 @@ export function OnboardingFlow({ initialUnits, today, targetDefaults }: { initia
   if (step === "underage") {
     return (
       <Screen title="Honest Reps is for adults 18 and over for now.">
-        <form action={signOut} className="mt-auto">
-          <Button type="submit" className="w-full">
-            Sign out
+        {closed && (
+          <p role="status" className="text-body">
+            We deleted this account and kept none of your answers.
+          </p>
+        )}
+        {closed ? (
+          // Already signed out here, so a plain link: a server action would hit the sign in redirect.
+          <Button asChild className="mt-auto w-full">
+            <a href="/sign-in">Done</a>
           </Button>
-        </form>
+        ) : (
+          <form action={signOut} className="mt-auto">
+            <Button type="submit" className="w-full">
+              Sign out
+            </Button>
+          </form>
+        )}
       </Screen>
     )
   }

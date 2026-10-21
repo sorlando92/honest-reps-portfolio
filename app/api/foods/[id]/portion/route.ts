@@ -3,6 +3,7 @@ import { z } from "zod"
 import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { portionForFood } from "@/modules/nutrition/foods/search"
+import { withinRateLimit } from "@/core/rate-limit"
 
 /** The common portion a picked USDA food starts at (PM 2026-10-15). */
 export async function GET(_request: Request, ctx: RouteContext<"/api/foods/[id]/portion">) {
@@ -15,7 +16,6 @@ export async function GET(_request: Request, ctx: RouteContext<"/api/foods/[id]/
 
   const admin = createAdminClient()
   // Shares the search budget: a lookup can spend one USDA request.
-  const { data: allowed } = await admin.rpc("hit_rate_limit", { p_key: `food-search:${userId}`, p_limit: 120, p_window_seconds: 3600 })
-  if (allowed === false) return NextResponse.json({ portion: null })
+  if (!(await withinRateLimit(admin, `food-search:${userId}`, 120, 3600))) return NextResponse.json({ portion: null })
   return NextResponse.json({ portion: await portionForFood(admin, id.data) })
 }

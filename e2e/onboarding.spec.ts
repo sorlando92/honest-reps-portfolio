@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test"
-import { admin, expectNoAxeViolations, expectTapTargets, signInWithCode } from "./helpers"
+import { admin, expectNoAxeViolations, expectTapTargets, signInWithCode, userIdByEmail } from "./helpers"
 
 // PRD F1 onboarding at 375px, through the real UI and database.
 const next = (page: Page) => page.getByRole("button", { name: "Next" }).click()
@@ -86,8 +86,9 @@ test("a new member answers onboarding and lands on Today with targets", { tag: "
   await expect(page).toHaveURL(/\/today$/)
 })
 
-test("under 18 stops at the date of birth and saves nothing", async ({ page }, info) => {
-  await signInWithCode(page, `e2e-minor-${info.project.name}-${Date.now()}@example.test`, { onboarded: false })
+test("under 18 stops at the date of birth and deletes the account", async ({ page }, info) => {
+  const email = `e2e-minor-${info.project.name}-${Date.now()}@example.test`
+  await signInWithCode(page, email, { onboarded: false })
   await next(page)
   await choose(page, "Goal", "Maintain")
   await next(page)
@@ -97,8 +98,24 @@ test("under 18 stops at the date of birth and saves nothing", async ({ page }, i
   await page.getByLabel("Date of birth").fill(`${year}-06-01`)
   await next(page)
   await expect(page.getByRole("heading", { name: "Honest Reps is for adults 18 and over for now." })).toBeVisible()
-  await page.getByRole("button", { name: "Sign out" }).click()
+  await expect(page.getByText("We deleted this account and kept none of your answers.")).toBeVisible()
+  // Gone from auth, and with it the profile (cascade).
+  await expect(userIdByEmail(email)).rejects.toThrow()
+  await page.getByRole("link", { name: "Done" }).click()
   await page.waitForURL("**/sign-in")
+  await page.goto("/today")
+  await page.waitForURL("**/sign-in")
+})
+
+test("a session whose account was deleted lands on sign in, not a redirect loop", async ({ page, context }, info) => {
+  const email = `e2e-deleted-${info.project.name}-${Date.now()}@example.test`
+  await signInWithCode(page, email)
+  // As the manual runbook does it (ARCHITECTURE "Account deletion"), while this phone is still signed in.
+  await admin.auth.admin.deleteUser(await userIdByEmail(email))
+  await page.goto("/today")
+  await page.waitForURL("**/sign-in")
+  await expect(page.getByLabel("Email")).toBeVisible()
+  expect((await context.cookies()).filter((c) => c.name.includes("auth-token"))).toEqual([])
 })
 
 /** Onboarding ends on the install step (PRD F1); "Not now" goes to Today. */

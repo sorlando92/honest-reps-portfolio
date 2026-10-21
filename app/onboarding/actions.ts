@@ -5,6 +5,7 @@ import { redirect } from "next/navigation"
 import { getCurrentUser } from "@/core/auth/current-user"
 import { track } from "@/core/events/track"
 import { localToday } from "@/core/time/local-day"
+import { deleteAccount } from "@/core/account/delete"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { resolveTargetDefaults } from "@/modules/nutrition/targets/defaults"
 import { ageOn, computeTargets, MINIMUM_AGE } from "@/modules/nutrition/targets/formula"
@@ -24,6 +25,29 @@ const answers = z.object({
 })
 
 export type OnboardingAnswers = z.infer<typeof answers>
+
+/**
+ * Under 18 (Q61, security audit L2): the screen stops at the date of birth
+ * and calls this, which checks the age again on the server and deletes the
+ * account. Nothing about the person is kept.
+ */
+export async function closeUnderageAccount(dateOfBirth: string): Promise<{ deleted: boolean }> {
+  if (!z.iso.date().safeParse(dateOfBirth).success) return { deleted: false }
+  const user = await getCurrentUser()
+  if (ageOn(dateOfBirth, localToday(user.timezone)) >= MINIMUM_AGE) return { deleted: false }
+  return { deleted: await closeAccount(user.id) }
+}
+
+/**
+ * Deletes without touching cookies here: changing them in a server action
+ * re-renders the page, which would leave for sign in before the screen can
+ * say the account is gone. The screen clears the session itself afterwards.
+ */
+async function closeAccount(userId: string): Promise<boolean> {
+  const deleted = await deleteAccount(createAdminClient(), userId)
+  if (!deleted) console.error("[onboarding] under 18 account not deleted", { userId })
+  return deleted
+}
 
 /** Why a save failed, so the screen can say what happened (never "connection" unless it was the network). */
 export type FinishResult = { ok: false; error: "underage" | "invalid" | "server" }
@@ -47,7 +71,10 @@ export async function finishOnboarding(input: OnboardingAnswers): Promise<Finish
   const user = await getCurrentUser()
   const today = localToday(user.timezone)
   const age = ageOn(a.dateOfBirth, today)
-  if (age < MINIMUM_AGE) return { ok: false, error: "underage" }
+  if (age < MINIMUM_AGE) {
+    await closeAccount(user.id)
+    return { ok: false, error: "underage" }
+  }
 
   const admin = createAdminClient()
   const [resolved, { data: consentConfig }] = await Promise.all([

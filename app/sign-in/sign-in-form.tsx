@@ -62,7 +62,10 @@ function EmailStep({ onSent }: { onSent: (email: string) => void }) {
         setError(
           error.status === 429
             ? "Too many codes requested. Wait a minute and try again."
-            : "We could not send the code. Check the email address and try again."
+            : // Invite-only signup: the before-user-created hook refuses a new email without an open invite.
+              error.status === 403 && error.message === "invite_required"
+              ? "Honest Reps is invite only. Use the email your coach sent the invite to, or ask your coach for an invite."
+              : "We could not send the code. Check the email address and try again."
         )
         return
       }
