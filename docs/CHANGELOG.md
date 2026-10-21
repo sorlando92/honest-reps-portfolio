@@ -360,6 +360,20 @@ All runs: 29 cases x 3, USDA cache from clean runs only, 0 failed searches.
 - More (was Me; `/me` redirects): Goals (Targets), App (Units, Add to Home Screen and turn on reminders, Food scale), Account (Name per Q63, signed in email, Privacy and data, Terms, About with Open Food Facts, Sign out). Reminders times, Subscription, Delete account and Coach settings appear when they ship (Q64).
 - Tests: e2e at 375px light and dark for tab order, labels and selection, Progress greeting and avatar, More name, /me redirect, week slide without changing the day, never past the current week, tap to select, month calendar select and collapse, tap outside, compact row swap and back, quick actions on a past day (copy at the anchor, weight sheet, day note focus), bars hidden while typing, Search food from Progress, log bar from Progress to Today, events; existing specs updated for tabs, the band and the log bar. The "+" button exposes `data-hydrated` so tests wait until a tap can work.
 
+### 2026-10-21: sign in code lasts 10 minutes (audit L4); signup hook live on hosted
+
+- **L4, sign in code expiry (#9):**
+  - Hosted Email OTP expiration is 600 seconds (Sean, 2026-10-20).
+  - The sign in email says "The code works for 10 minutes." in `supabase/templates/sign-in.html`. Sean made the same change in the hosted Confirm signup and Magic Link templates.
+  - Local `supabase/config.toml` has `otp_expiry = 600`.
+  - The ARCHITECTURE restore steps say expiry 600, and no longer claim a settings sync script that was never built. Hosted templates are set by hand in the dashboard.
+- **M1 on hosted:** Sean enabled the Before User Created hook (`public.hook_before_user_created`). Checked on production:
+  - an email with no invite is refused with 403 `invite_required`, and no account is created;
+  - the API roles cannot call the function;
+  - an invited email signs up;
+  - an existing account still gets a sign in code.
+  - The test invite and test account were deleted afterward.
+
 ### 2026-10-20: security must-fix before testers (audit M1, M2, M3, L1, L2)
 
 - **M1, invite-only signup.**
